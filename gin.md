@@ -146,54 +146,6 @@ I represent each operator using these primitives:
 [anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
 [jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
 
-### Text search
-
-#### Operators
-
-Create a GIN index on `tsvector`, and use [the operator][2]
-
-    tsvector @@ tsquery → boolean
-
-#### Example
-
-This example is inspired by [habr blog][3].  Run on upstream postgres.
-
-```sql
-CREATE TABLE docs (
-    doc text,
-    ts tsvector GENERATED ALWAYS AS (to_tsvector('simple', doc)) STORED);
-INSERT INTO docs (doc) VALUES
-  ('Can a sheet slitter slit sheets?'),
-  ('How many sheets could a sheet slitter slit?'),
-  ('I slit a sheet, a sheet I slit.'),
-  ('Upon a slitted sheet I sit.'),
-  ('Whoever slit the sheets is a good sheet slitter.'),
-  ('I am a sheet slitter.'),
-  ('I slit sheets.'),
-  ('I am the sleekest sheet slitter that ever slit sheets.'),
-  ('She slits the sheet she sits on.');
-SELECT * FROM docs; -- what tsvector looks like
-```
-
-```sql
-CREATE INDEX ON docs USING GIN (ts);
-SET enable_seqscan = OFF;
-EXPLAIN SELECT * FROM docs
-    WHERE ts @@ to_tsquery('simple', 'many'); -- this is index scan
-```
-
-Example of what can be done, all using the index:
-
-```sql
-SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');
-SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many | slitter');
-SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'slit:* & !slit');
-SELECT ts_rank(ts, to_tsquery('simple', 'i & sheet:* & slit:*')) as rank, doc
-    FROM docs
-    WHERE ts @@ to_tsquery('simple', 'i & sheet:* & slit:*')
-    ORDER BY rank DESC;
-```
-
 #### DocDB
 
 DocDB can probably encode these like
@@ -208,63 +160,6 @@ encoded so that `t` is the last part of the search, not something like `!`
 (`kGroupEnd`).  TODO: look into DocDB encoding for `kString`.
 
 TODO: look into `tsvector` **weights**
-
-[3]: https://habr.com/en/company/postgrespro/blog/448746/
-
-### Json
-
-#### Operators
-
-Create a GIN index on `jsonb`, and use [these operators][5]:
-
-    jsonb @> jsonb → boolean
-    jsonb ? text → boolean
-    jsonb ?| text[] → boolean
-    jsonb ?& text[] → boolean
-    jsonb @? jsonpath → boolean
-    jsonb @@ jsonpath → boolean
-
-Look up `json` vs `jsonb` if you aren't familiar.
-
-#### Example
-
-```sql
-CREATE TABLE records (p SERIAL PRIMARY KEY, j jsonb);
-INSERT INTO records (j) VALUES
-  ('{"a": 1}'),
-  ('{"b": {"c": "d"}}'),
-  ('{"b": {"c": "e"}}'),
-  ('{"b": [1, [2, 3], 4], "c": "f"}');
-CREATE INDEX ON records USING GIN (j jsonb_ops);
-SET enable_seqscan = OFF;
-EXPLAIN SELECT * FROM records WHERE j @> '{"b": {}}'; -- this is index scan
-```
-
-Example of what can be done, all using the index:
-
-```sql
-SELECT * FROM records WHERE j @> '{"b": {}}';
-SELECT * FROM records WHERE j ? 'c';
-SELECT * FROM records WHERE j ?| ARRAY['a', 'c'];
-SELECT * FROM records WHERE j ?& ARRAY['c', 'b'];
-SELECT * FROM records WHERE j @? '$.b[*] ? (@ > 3)';
-SELECT * FROM records WHERE j @@ '$.b.c == "e"';
-```
-
-You can think of
-
-```sql
-SELECT * FROM records WHERE j @? '$.b[*] ? (@ == 3)';
-```
-
-to be like
-
-```sql
-SELECT * FROM records WHERE (
-    j @@ '$.b[0] == 3' or
-    j @@ '$.b[1] == 3' or
-    j @@ '$.b[2] == 3');
-```
 
 #### DocDB
 
@@ -310,226 +205,6 @@ Concerns
   suggests that work needs to be done to either
   - push down tsvector/tsquery `@@` operator to DocDB
   - interpret tsqueries at a high level and split into multiple simple scans
-
-## Design points
-
-
-
-## Notes
-
-- At `ginbeginscan`,
-
-  ```
-  (gdb) p so->ginstate
-  $32 = {
-    index = 0x7fbef38c56f0,
-    oneCol = true,
-    origTupdesc = 0x7fbef38c5a10,
-    tupdesc = {0x7fbef38c5a10, 0x0 <repeats 31 times>},
-    compareFn = {{
-        fn_addr = 0x842b30 <gin_cmp_tslexeme>,
-        fn_oid = 3724,
-        fn_nargs = 2,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17ee788
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    extractValueFn = {{
-        fn_addr = 0x842d90 <gin_extract_tsvector>,
-        fn_oid = 3656,
-        fn_nargs = 3,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17eea70
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    extractQueryFn = {{
-        fn_addr = 0x842e30 <gin_extract_tsquery>,
-        fn_oid = 3657,
-        fn_nargs = 7,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17eeac0
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    consistentFn = {{
-        fn_addr = 0x843000 <gin_tsquery_consistent>,
-        fn_oid = 3658,
-        fn_nargs = 8,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17eeb60
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    triConsistentFn = {{
-        fn_addr = 0x843070 <gin_tsquery_triconsistent>,
-        fn_oid = 3921,
-        fn_nargs = 7,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17eeb10
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    comparePartialFn = {{
-        fn_addr = 0x842c50 <gin_cmp_prefix>,
-        fn_oid = 2700,
-        fn_nargs = 4,
-        fn_strict = true,
-        fn_retset = false,
-        fn_stats = 2 '\002',
-        fn_extra = 0x0,
-        fn_mcxt = 0x17e5760,
-        fn_expr = 0x17ff748
-      }, {
-        fn_addr = 0x0,
-        fn_oid = 0,
-        fn_nargs = 0,
-        fn_strict = false,
-        fn_retset = false,
-        fn_stats = 0 '\000',
-        fn_extra = 0x0,
-        fn_mcxt = 0x0,
-        fn_expr = 0x0
-      } <repeats 31 times>},
-    canPartialMatch = {true, false <repeats 31 times>},
-    supportCollation = {100, 0 <repeats 31 times>}
-  }
-  ```
-
-- Also,
-
-  ```
-  (gdb) bt
-  #0  TS_execute (curitem=0x1749d90, arg=arg@entry=0x7ffdf8c8ea50, flags=flags@entry=2, chkcond=chkcond@entry=0x842ad0 <checkcondition_gin>) at tsvector_op.c:1848
-  #1  0x00000000008430c3 in gin_tsquery_triconsistent (fcinfo=<optimized out>) at tsginidx.c:287
-  #2  0x0000000000881fdd in FunctionCall7Coll (flinfo=0x17ffe98, collation=<optimized out>, arg1=<optimized out>, arg2=<optimized out>, arg3=<optimized out>, arg4=<optimized out>, arg5=25151648, arg6=25151592, arg7=25151768) at fmgr.c:1311
-  #3  0x000000000049dc10 in directTriConsistentFn (key=<optimized out>) at ginlogic.c:97
-  #4  0x000000000049c39f in startScanKey (ginstate=0x17fe580, so=0x17fe578, so=0x17fe578, key=0x17fc648) at ginget.c:566
-  #5  startScan (scan=0x17e73f0, scan=0x17e73f0) at ginget.c:642
-  #6  gingetbitmap (scan=0x17e73f0, tbm=0x18053d8) at ginget.c:1951
-  #7  0x00000000004d3d9a in index_getbitmap (scan=scan@entry=0x17e73f0, bitmap=bitmap@entry=0x18053d8) at indexam.c:671
-  #8  0x0000000000632882 in MultiExecBitmapIndexScan (node=0x17e7100) at nodeBitmapIndexscan.c:105
-  #9  0x00000000006220e1 in MultiExecProcNode (node=<optimized out>) at execProcnode.c:510
-  #10 0x0000000000631f50 in BitmapHeapNext (node=node@entry=0x17e6e10) at nodeBitmapHeapscan.c:113
-  #11 0x00000000006245fa in ExecScanFetch (recheckMtd=0x6321c0 <BitmapHeapRecheck>, accessMtd=0x631820 <BitmapHeapNext>, node=0x17e6e10) at execScan.c:133
-  #12 ExecScan (node=0x17e6e10, accessMtd=0x631820 <BitmapHeapNext>, recheckMtd=0x6321c0 <BitmapHeapRecheck>) at execScan.c:199
-  #13 0x000000000061af52 in ExecProcNode (node=0x17e6e10) at ../../../src/include/executor/executor.h:248
-  #14 ExecutePlan (execute_once=<optimized out>, dest=0x17f5ba8, direction=<optimized out>, numberTuples=0, sendTuples=true, operation=CMD_SELECT, use_parallel_mode=<optimized out>, planstate=0x17e6e10, estate=0x17e6be8) at execMain.c:1646
-  #15 standard_ExecutorRun (queryDesc=0x17f9738, direction=<optimized out>, count=0, execute_once=<optimized out>) at execMain.c:364
-  #16 0x0000000000770afb in PortalRunSelect (portal=portal@entry=0x178b008, forward=forward@entry=true, count=0, count@entry=9223372036854775807, dest=dest@entry=0x17f5ba8) at pquery.c:912
-  #17 0x0000000000771d68 in PortalRun (portal=portal@entry=0x178b008, count=count@entry=9223372036854775807, isTopLevel=isTopLevel@entry=true, run_once=run_once@entry=true, dest=dest@entry=0x17f5ba8, altdest=altdest@entry=0x17f5ba8, qc=qc@entry=0x7ffdf8c8
-  efe0) at pquery.c:756
-  #18 0x000000000076dabe in exec_simple_query (query_string=0x1724c68 "SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');") at postgres.c:1239
-  #19 0x000000000076ee37 in PostgresMain (argc=<optimized out>, argv=argv@entry=0x174f0b8, dbname=0x174f000 "testupdatejoin", username=<optimized out>) at postgres.c:4315
-  #20 0x0000000000481e23 in BackendRun (port=<optimized out>, port=<optimized out>) at postmaster.c:4536
-  #21 BackendStartup (port=0x1748270) at postmaster.c:4220
-  #22 ServerLoop () at postmaster.c:1739
-  #23 0x00000000006fc793 in PostmasterMain (argc=argc@entry=3, argv=argv@entry=0x171f980) at postmaster.c:1412
-  #24 0x0000000000482a6e in main (argc=3, argv=0x171f980) at main.c:210
-  ```
-
-- Tree
-
-  ```
-  exec_simple_query
-    PortalStart
-      ExecutorStart
-        standard_ExecutorStart
-          InitPlan
-            ExecInitNode
-              ExecInitBitmapHeapScan
-                ExecInitNode
-                  ExecInitBitmapIndexScan
-                    index_beginscan_bitmap
-                      index_beginscan_internal
-                        ambeginscan
-    PortalRun
-      PortalRunSelect
-        ExecutorRun
-          standard_ExecutorRun
-            ExecutePlan
-              ... ExecBitmapHeapScan
-                ExecScanFetch
-                  BitmapHeapNext
-                    MultiExecProcNode
-                      MultiExecBitmapIndexScan
-                        index_getbitmap
-                          gingetbitmap
-                      MultiExecBitmapAnd
-                      MultiExecBitmapOr
-  ```
-
-- Useful
-
-  ```
-  #define JsonbContainsStrategyNumber   7
-  #define JsonbExistsStrategyNumber   9
-  #define JsonbExistsAnyStrategyNumber  10
-  #define JsonbExistsAllStrategyNumber  11
-  #define JsonbJsonpathExistsStrategyNumber   15
-  #define JsonbJsonpathPredicateStrategyNumber  16
-  ```
 
 # Advanced material
 
@@ -595,3 +270,297 @@ In simpler terms,
 `IndexScan` on `i = 2` can look in this index for `[2]` prefix, get the value
 `true`, then look up `true` in the indexed table.
 
+## Example: tsvector
+
+Here is an example of using a tsvector GIN index.  It is inspired by a [habr
+blog][3].  Run on upstream postgres.
+
+```sql
+CREATE TABLE docs (
+    doc text,
+    ts tsvector GENERATED ALWAYS AS (to_tsvector('simple', doc)) STORED);
+INSERT INTO docs (doc) VALUES
+  ('Can a sheet slitter slit sheets?'),
+  ('How many sheets could a sheet slitter slit?'),
+  ('I slit a sheet, a sheet I slit.'),
+  ('Upon a slitted sheet I sit.'),
+  ('Whoever slit the sheets is a good sheet slitter.'),
+  ('I am a sheet slitter.'),
+  ('I slit sheets.'),
+  ('I am the sleekest sheet slitter that ever slit sheets.'),
+  ('She slits the sheet she sits on.');
+SELECT * FROM docs; -- what tsvector looks like
+```
+
+```sql
+CREATE INDEX ON docs USING GIN (ts);
+SET enable_seqscan = OFF;
+EXPLAIN SELECT * FROM docs
+    WHERE ts @@ to_tsquery('simple', 'many'); -- this is index scan
+```
+
+Example of what can be done, all using the index:
+
+```sql
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many | slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'slit:* & !slit');
+SELECT ts_rank(ts, to_tsquery('simple', 'i & sheet:* & slit:*')) as rank, doc
+    FROM docs
+    WHERE ts @@ to_tsquery('simple', 'i & sheet:* & slit:*')
+    ORDER BY rank DESC;
+```
+
+[3]: https://habr.com/en/company/postgrespro/blog/448746/
+
+## Example: jsonb
+
+Here is an example of using a jsonb GIN index.
+
+```sql
+CREATE TABLE records (p SERIAL PRIMARY KEY, j jsonb);
+INSERT INTO records (j) VALUES
+  ('{"a": 1}'),
+  ('{"b": {"c": "d"}}'),
+  ('{"b": {"c": "e"}}'),
+  ('{"b": [1, [2, 3], 4], "c": "f"}');
+CREATE INDEX ON records USING GIN (j jsonb_ops);
+SET enable_seqscan = OFF;
+EXPLAIN SELECT * FROM records WHERE j @> '{"b": {}}'; -- this is index scan
+```
+
+Example of what can be done, all using the index:
+
+```sql
+SELECT * FROM records WHERE j @> '{"b": {}}';
+SELECT * FROM records WHERE j ? 'c';
+SELECT * FROM records WHERE j ?| ARRAY['a', 'c'];
+SELECT * FROM records WHERE j ?& ARRAY['c', 'b'];
+SELECT * FROM records WHERE j @? '$.b[*] ? (@ > 3)';
+SELECT * FROM records WHERE j @@ '$.b.c == "e"';
+```
+
+You can think of
+
+```sql
+SELECT * FROM records WHERE j @? '$.b[*] ? (@ == 3)';
+```
+
+to be like
+
+```sql
+SELECT * FROM records WHERE (
+    j @@ '$.b[0] == 3' or
+    j @@ '$.b[1] == 3' or
+    j @@ '$.b[2] == 3');
+```
+
+## Execution trees
+
+### Read
+
+    exec_simple_query
+      PortalStart
+        ExecutorStart
+          standard_ExecutorStart
+            InitPlan
+              ExecInitNode
+                ExecInitBitmapHeapScan
+                  ExecInitNode
+                    ExecInitBitmapIndexScan
+                      index_beginscan_bitmap
+                        index_beginscan_internal
+                          ambeginscan
+      PortalRun
+        PortalRunSelect
+          ExecutorRun
+            standard_ExecutorRun
+              ExecutePlan
+                ... ExecBitmapHeapScan
+                  ExecScanFetch
+                    BitmapHeapNext
+                      MultiExecProcNode
+                        MultiExecBitmapIndexScan
+                          index_getbitmap
+                            gingetbitmap
+                        MultiExecBitmapAnd
+                        MultiExecBitmapOr
+
+Entry point for using text search functions:
+
+    (gdb) bt
+    #0  TS_execute (curitem=0x1749d90, arg=arg@entry=0x7ffdf8c8ea50, flags=flags@entry=2, chkcond=chkcond@entry=0x842ad0 <checkcondition_gin>) at tsvector_op.c:1848
+    #1  0x00000000008430c3 in gin_tsquery_triconsistent (fcinfo=<optimized out>) at tsginidx.c:287
+    #2  0x0000000000881fdd in FunctionCall7Coll (flinfo=0x17ffe98, collation=<optimized out>, arg1=<optimized out>, arg2=<optimized out>, arg3=<optimized out>, arg4=<optimized out>, arg5=25151648, arg6=25151592, arg7=25151768) at fmgr.c:1311
+    #3  0x000000000049dc10 in directTriConsistentFn (key=<optimized out>) at ginlogic.c:97
+    #4  0x000000000049c39f in startScanKey (ginstate=0x17fe580, so=0x17fe578, so=0x17fe578, key=0x17fc648) at ginget.c:566
+    #5  startScan (scan=0x17e73f0, scan=0x17e73f0) at ginget.c:642
+    #6  gingetbitmap (scan=0x17e73f0, tbm=0x18053d8) at ginget.c:1951
+    #7  0x00000000004d3d9a in index_getbitmap (scan=scan@entry=0x17e73f0, bitmap=bitmap@entry=0x18053d8) at indexam.c:671
+    #8  0x0000000000632882 in MultiExecBitmapIndexScan (node=0x17e7100) at nodeBitmapIndexscan.c:105
+    #9  0x00000000006220e1 in MultiExecProcNode (node=<optimized out>) at execProcnode.c:510
+    #10 0x0000000000631f50 in BitmapHeapNext (node=node@entry=0x17e6e10) at nodeBitmapHeapscan.c:113
+    #11 0x00000000006245fa in ExecScanFetch (recheckMtd=0x6321c0 <BitmapHeapRecheck>, accessMtd=0x631820 <BitmapHeapNext>, node=0x17e6e10) at execScan.c:133
+    #12 ExecScan (node=0x17e6e10, accessMtd=0x631820 <BitmapHeapNext>, recheckMtd=0x6321c0 <BitmapHeapRecheck>) at execScan.c:199
+    #13 0x000000000061af52 in ExecProcNode (node=0x17e6e10) at ../../../src/include/executor/executor.h:248
+    #14 ExecutePlan (execute_once=<optimized out>, dest=0x17f5ba8, direction=<optimized out>, numberTuples=0, sendTuples=true, operation=CMD_SELECT, use_parallel_mode=<optimized out>, planstate=0x17e6e10, estate=0x17e6be8) at execMain.c:1646
+    #15 standard_ExecutorRun (queryDesc=0x17f9738, direction=<optimized out>, count=0, execute_once=<optimized out>) at execMain.c:364
+    #16 0x0000000000770afb in PortalRunSelect (portal=portal@entry=0x178b008, forward=forward@entry=true, count=0, count@entry=9223372036854775807, dest=dest@entry=0x17f5ba8) at pquery.c:912
+    #17 0x0000000000771d68 in PortalRun (portal=portal@entry=0x178b008, count=count@entry=9223372036854775807, isTopLevel=isTopLevel@entry=true, run_once=run_once@entry=true, dest=dest@entry=0x17f5ba8, altdest=altdest@entry=0x17f5ba8, qc=qc@entry=0x7ffdf8c8
+    efe0) at pquery.c:756
+    #18 0x000000000076dabe in exec_simple_query (query_string=0x1724c68 "SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');") at postgres.c:1239
+    #19 0x000000000076ee37 in PostgresMain (argc=<optimized out>, argv=argv@entry=0x174f0b8, dbname=0x174f000 "testupdatejoin", username=<optimized out>) at postgres.c:4315
+    #20 0x0000000000481e23 in BackendRun (port=<optimized out>, port=<optimized out>) at postmaster.c:4536
+    #21 BackendStartup (port=0x1748270) at postmaster.c:4220
+    #22 ServerLoop () at postmaster.c:1739
+    #23 0x00000000006fc793 in PostmasterMain (argc=argc@entry=3, argv=argv@entry=0x171f980) at postmaster.c:1412
+    #24 0x0000000000482a6e in main (argc=3, argv=0x171f980) at main.c:210
+
+## Constants
+
+    #define JsonbContainsStrategyNumber   7
+    #define JsonbExistsStrategyNumber   9
+    #define JsonbExistsAnyStrategyNumber  10
+    #define JsonbExistsAllStrategyNumber  11
+    #define JsonbJsonpathExistsStrategyNumber   15
+    #define JsonbJsonpathPredicateStrategyNumber  16
+
+## Misc
+
+- At `ginbeginscan`,
+
+      (gdb) p so->ginstate
+      $32 = {
+        index = 0x7fbef38c56f0,
+        oneCol = true,
+        origTupdesc = 0x7fbef38c5a10,
+        tupdesc = {0x7fbef38c5a10, 0x0 <repeats 31 times>},
+        compareFn = {{
+            fn_addr = 0x842b30 <gin_cmp_tslexeme>,
+            fn_oid = 3724,
+            fn_nargs = 2,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17ee788
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        extractValueFn = {{
+            fn_addr = 0x842d90 <gin_extract_tsvector>,
+            fn_oid = 3656,
+            fn_nargs = 3,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17eea70
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        extractQueryFn = {{
+            fn_addr = 0x842e30 <gin_extract_tsquery>,
+            fn_oid = 3657,
+            fn_nargs = 7,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17eeac0
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        consistentFn = {{
+            fn_addr = 0x843000 <gin_tsquery_consistent>,
+            fn_oid = 3658,
+            fn_nargs = 8,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17eeb60
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        triConsistentFn = {{
+            fn_addr = 0x843070 <gin_tsquery_triconsistent>,
+            fn_oid = 3921,
+            fn_nargs = 7,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17eeb10
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        comparePartialFn = {{
+            fn_addr = 0x842c50 <gin_cmp_prefix>,
+            fn_oid = 2700,
+            fn_nargs = 4,
+            fn_strict = true,
+            fn_retset = false,
+            fn_stats = 2 '\002',
+            fn_extra = 0x0,
+            fn_mcxt = 0x17e5760,
+            fn_expr = 0x17ff748
+          }, {
+            fn_addr = 0x0,
+            fn_oid = 0,
+            fn_nargs = 0,
+            fn_strict = false,
+            fn_retset = false,
+            fn_stats = 0 '\000',
+            fn_extra = 0x0,
+            fn_mcxt = 0x0,
+            fn_expr = 0x0
+          } <repeats 31 times>},
+        canPartialMatch = {true, false <repeats 31 times>},
+        supportCollation = {100, 0 <repeats 31 times>}
+      }
