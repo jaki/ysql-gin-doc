@@ -3,6 +3,11 @@
 ## Terms
 
 - indexed table: indexes are on _indexed tables_
+- pending list: in postgres, to avoid having each GIN index insert hit disk,
+  write to a linear list of tuples (_pending list_) first, and flush it later
+  in bulk
+- posting list: in postgres, a GIN index tuple maps key to _posting list_,
+  a list of ctids corresponding to the indexed table rows
 
 ## Background
 
@@ -116,6 +121,49 @@ phase out the need to use recheck as DocDB becomes more capable.
 [pg-tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
 [pg-anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
 [pg-jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
+
+## Read and write path
+
+### Write path
+
+`INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))`
+does
+
+1. insert to main table (`table_tuple_insert`)
+1. insert to gin index (`ExecInsertIndexTuples`)
+   1. if fast update is enabled, write index tuples to pending list
+      (`ginHeapTupleFastInsert`)
+   1. otherwise, write index tuples to disk (`ginHeapTupleInsert`)
+      1. prepare index keys: `the`, `quick`, `brown` (`ginExtractEntries`)
+      1. if tuple with key already exists, append the indexed table ctid to
+         the posting list (`addItemPointersToLeafTuple`)
+      1. otherwise, create a posting list containing just the indexed table
+         ctid (`buildFreshLeafTuple`)
+
+For the gin index part, we should only keep "prepare index keys".  The way
+index keys are formed depends on the opclass.  For example, `gin_extract_jsonb`
+takes individual pieces (keys, values) out of the jsonb and normalizes each of
+them; however, `gin_extract_jsonb_path` takes 32-bit hashes for each leaf
+(values) of the jsonb.
+
+We could create our own opclass to form the keys in a way that fits with DocDB.
+We could also have a translation layer that takes these postgres-derived keys
+and converts them to DocDB format and vice versa.
+
+### Read path
+
+`SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')`
+does
+
+1. create scan key: `the` (`gingetbitmap`, `ginNewScanKey`)
+1. get blocks from pending list (`gingetbitmap`, `scanPendingInsert`)
+1. get blocks from disk (`gingetbitmap`, `startScan`)
+1. get tuples from blocks (`BitmapHeapNext`, `table_scan_bitmap_next_tuple`)
+1. recheck tuple if needed (`BitmapHeapNext`, `ExecQualAndReset`)
+
+We should only keep "create scan key" and "recheck tuple if needed".  Getting
+rows can be done by sending the scan key to DocDB.  Recheck should be done in
+most cases where pushdown couldn't be done (e.g. `'the & brown'`).
 
 #### DocDB
 
