@@ -138,13 +138,13 @@ I represent each operator using these primitives:
     `<key>b.<num>`) AND (set `LHS` contains element **with prefix**
     `<key>c.<num>`) + recheck
 
-- [tsvector operators][tsvector-ops]
-- [anyarray operators][anyarray-ops]
-- [jsonb operators][jsonb-ops]
+- [tsvector operators][pg-tsvector-ops]
+- [anyarray operators][pg-anyarray-ops]
+- [jsonb operators][pg-jsonb-ops]
 
-[tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
-[anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
-[jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
+[pg-tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
+[pg-anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
+[pg-jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
 
 #### DocDB
 
