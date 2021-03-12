@@ -86,6 +86,15 @@ If I `CREATE INDEX ON bar USING gin (jsonb_col)`, I implicitly use opclass
 `jsonb_ops`.  To use `jsonb_path_ops`, I need to `CREATE INDEX ON bar USING gin
 (jsonb_col jsonb_path_ops)`.
 
+`jsonb_ops` forms an index key for each individual piece (key or value) of the
+jsonb.
+
+`jsonb_path_ops` forms an index key for each path from root to leaf.
+
+We could create our own opclass to form the keys in a way that fits with DocDB,
+or we could instead have a translation layer that takes these postgres-derived
+keys and converts them to DocDB format and vice versa.
+
 ## Operators
 
 See the operators in postgresql docs:
@@ -131,45 +140,31 @@ appendix][appendix-op-to-prim].
 
 ### Write path
 
-`INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))`
-does
+For postgres, `INSERT INTO table_with_gin_index (to_tsvector('simple', 'the
+quick brown'))` does
 
-1. insert to main table (`ExecInsert`, `table_tuple_insert`)
-1. insert to gin index (`ExecInsert`, `ExecInsertIndexTuples`)
-   1. if fast update is enabled, write index tuples to pending list
-      (`gininsert`, `ginHeapTupleFastInsert`)
-   1. otherwise, write index tuples to disk (`gininsert`, `ginHeapTupleInsert`)
-      1. prepare index keys: `the`, `quick`, `brown` (`ginHeapTupleInsert`,
-         `ginExtractEntries`)
-      1. if tuple with key already exists, append the indexed table ctid to
-         the posting list (`ginEntryInsert`, `addItemPointersToLeafTuple`)
-      1. otherwise, create a posting list containing just the indexed table
-         ctid (`ginEntryInsert`, `buildFreshLeafTuple`)
+1. prepare index keys: `the`, `quick`, `brown`
+1. for each index key, append the indexed table ctid to the key's posting list
 
-For the gin index part, we should only keep "prepare index keys".  The way
-index keys are formed depends on the opclass.  For example, `gin_extract_jsonb`
-takes individual pieces (keys, values) out of the jsonb and normalizes each of
-them; however, `gin_extract_jsonb_path` takes 32-bit hashes for each leaf
-(values) of the jsonb.
+For Yugabyte, we should
 
-We could create our own opclass to form the keys in a way that fits with DocDB.
-We could also have a translation layer that takes these postgres-derived keys
-and converts them to DocDB format and vice versa.
+1. prepare index keys: `the`, `quick`, `brown`
+1. **for each index key, write (key, ctid) pair to DocDB**
 
 ### Read path
 
-`SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')`
-does
+For postgres, `SELECT * FROM table_with_gin_index WHERE tscol @@
+to_tsquery('simple', 'the')` does
 
-1. create scan key: `the` (`gingetbitmap`, `ginNewScanKey`)
-1. get blocks from pending list (`gingetbitmap`, `scanPendingInsert`)
-1. get blocks from disk (`gingetbitmap`, `startScan`)
-1. get tuples from blocks (`BitmapHeapNext`, `table_scan_bitmap_next_tuple`)
-1. recheck tuple if needed (`BitmapHeapNext`, `ExecQualAndReset`)
+1. create scan key: `the`
+1. get tuples matching scan key
+1. recheck each tuple if needed
 
-We should only keep "create scan key" and "recheck tuple if needed".  Getting
-rows can be done by sending the scan key to DocDB.  Recheck should be done in
-most cases where pushdown couldn't be done (e.g. `'the & brown'`).
+For Yugabyte, we should
+
+1. create scan key: `the`
+1. **fetch tuples from DocDB matching scan key**
+1. recheck each tuple if needed
 
 #### DocDB
 
@@ -427,6 +422,36 @@ SELECT * FROM records WHERE (
 # Advanced material
 
 These are some more involved details that can be helpful to developers.
+
+## Read and write path extended
+
+### Write path extended
+
+`INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))`
+does
+
+1. insert to main table (`ExecInsert`, `table_tuple_insert`)
+1. insert to gin index (`ExecInsert`, `ExecInsertIndexTuples`)
+   1. if fast update is enabled, write index tuples to pending list
+      (`gininsert`, `ginHeapTupleFastInsert`)
+   1. otherwise, write index tuples to disk (`gininsert`, `ginHeapTupleInsert`)
+      1. prepare index keys: `the`, `quick`, `brown` (`ginHeapTupleInsert`,
+         `ginExtractEntries`)
+      1. if tuple with key already exists, append the indexed table ctid to
+         the posting list (`ginEntryInsert`, `addItemPointersToLeafTuple`)
+      1. otherwise, create a posting list containing just the indexed table
+         ctid (`ginEntryInsert`, `buildFreshLeafTuple`)
+
+### Read path extended
+
+`SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')`
+does
+
+1. create scan key: `the` (`gingetbitmap`, `ginNewScanKey`)
+1. get blocks from pending list (`gingetbitmap`, `scanPendingInsert`)
+1. get blocks from disk (`gingetbitmap`, `startScan`)
+1. get tuples from blocks (`BitmapHeapNext`, `table_scan_bitmap_next_tuple`)
+1. recheck tuple if needed (`BitmapHeapNext`, `ExecQualAndReset`)
 
 ## Execution trees
 
