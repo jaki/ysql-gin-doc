@@ -66,7 +66,7 @@ total words, I add 300 records to the index, all referencing the same page.
 
 Indexes have an access method (e.g. btree, lsm, gin) and an opclass.  **The
 opclass determines the index key format!**  Here are the opclasses that can be
-used with GIN ([source][1]):
+used with GIN ([source][pg-gin-opclasses]):
 
 | opclass          | type       | supported operators
 | ---------------- | ---------- | ---------------------------------
@@ -79,7 +79,7 @@ If I `CREATE INDEX ON bar USING gin (jsonb_col)`, I implicitly use opclass
 `jsonb_ops`.  To use `jsonb_path_ops`, I need to `CREATE INDEX ON bar USING gin
 (jsonb_col jsonb_path_ops)`.
 
-[1]: https://www.postgresql.org/docs/current/gin-builtin-opclasses.html
+[pg-gin-opclasses]: https://www.postgresql.org/docs/current/gin-builtin-opclasses.html
 
 ## Operators
 
@@ -174,7 +174,7 @@ DocDB can probably encode these like
 1. `[<JSON>, b, <ARRAY>, 4, 4]`
 1. `[<JSON>, c, f, 4]`
 
-(This is inspired by [CockroachDB's inverted index RFC][6].)
+(This is inspired by [CockroachDB's inverted index RFC][crdb-rfc].)
 
 Contains (`@>`) searches can be like
 
@@ -195,7 +195,7 @@ Concerns
   contents of the JSON GIN key have to be encoded in some way to make
   exclamation marks unambiguous?
 
-[6]: https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md
+[crdb-rfc]: https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md
 
 ## Postgres changes
 
@@ -273,7 +273,7 @@ In simpler terms,
 ## Example: tsvector
 
 Here is an example of using a tsvector GIN index.  It is inspired by a [habr
-blog][3].  Run on upstream postgres.
+blog][habr-blog].  Run on upstream postgres.
 
 ```sql
 CREATE TABLE docs (
@@ -311,7 +311,7 @@ SELECT ts_rank(ts, to_tsquery('simple', 'i & sheet:* & slit:*')) as rank, doc
     ORDER BY rank DESC;
 ```
 
-[3]: https://habr.com/en/company/postgrespro/blog/448746/
+[habr-blog]: https://habr.com/en/company/postgrespro/blog/448746/
 
 ## Example: jsonb
 
