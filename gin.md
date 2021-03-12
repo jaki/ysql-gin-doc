@@ -134,16 +134,17 @@ appendix][appendix-op-to-prim].
 `INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))`
 does
 
-1. insert to main table (`table_tuple_insert`)
-1. insert to gin index (`ExecInsertIndexTuples`)
+1. insert to main table (`ExecInsert`, `table_tuple_insert`)
+1. insert to gin index (`ExecInsert`, `ExecInsertIndexTuples`)
    1. if fast update is enabled, write index tuples to pending list
-      (`ginHeapTupleFastInsert`)
-   1. otherwise, write index tuples to disk (`ginHeapTupleInsert`)
-      1. prepare index keys: `the`, `quick`, `brown` (`ginExtractEntries`)
+      (`gininsert`, `ginHeapTupleFastInsert`)
+   1. otherwise, write index tuples to disk (`gininsert`, `ginHeapTupleInsert`)
+      1. prepare index keys: `the`, `quick`, `brown` (`ginHeapTupleInsert`,
+         `ginExtractEntries`)
       1. if tuple with key already exists, append the indexed table ctid to
-         the posting list (`addItemPointersToLeafTuple`)
+         the posting list (`ginEntryInsert`, `addItemPointersToLeafTuple`)
       1. otherwise, create a posting list containing just the indexed table
-         ctid (`buildFreshLeafTuple`)
+         ctid (`ginEntryInsert`, `buildFreshLeafTuple`)
 
 For the gin index part, we should only keep "prepare index keys".  The way
 index keys are formed depends on the opclass.  For example, `gin_extract_jsonb`
