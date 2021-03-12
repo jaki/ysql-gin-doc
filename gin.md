@@ -94,6 +94,10 @@ See the operators in postgresql docs:
 - [anyarray operators][pg-anyarray-ops]
 - [jsonb operators][pg-jsonb-ops]
 
+[pg-tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
+[pg-anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
+[pg-jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
+
 All the operators boil down to a combination of these primitives:
 
 - set `a` contains element `b`?  (`@>`)
@@ -117,10 +121,6 @@ column equals the query array.  This can be done by
 
 Recheck is the fallback we can rely on for complicated queries.  We can slowly
 phase out the need to use recheck as DocDB becomes more capable.
-
-[pg-tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
-[pg-anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
-[pg-jsonb-ops]: https://www.postgresql.org/docs/current/functions-json.html
 
 ## Read and write path
 
