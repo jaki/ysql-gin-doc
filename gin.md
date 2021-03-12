@@ -73,6 +73,8 @@ Indexes have an access method (e.g. btree, lsm, gin) and an opclass (e.g.
 char_ops, numeric_ops).  **The opclass determines the index key format!**  Here
 are the opclasses that can be used with GIN ([source][pg-gin-opclasses]):
 
+[pg-gin-opclasses]: https://www.postgresql.org/docs/current/gin-builtin-opclasses.html
+
 | opclass          | type       | supported operators
 | ---------------- | ---------- | ---------------------------------
 | `tsvector_ops`   | `tsvector` | `@@`, `@@@`
@@ -83,8 +85,6 @@ are the opclasses that can be used with GIN ([source][pg-gin-opclasses]):
 If I `CREATE INDEX ON bar USING gin (jsonb_col)`, I implicitly use opclass
 `jsonb_ops`.  To use `jsonb_path_ops`, I need to `CREATE INDEX ON bar USING gin
 (jsonb_col jsonb_path_ops)`.
-
-[pg-gin-opclasses]: https://www.postgresql.org/docs/current/gin-builtin-opclasses.html
 
 ## Operators
 
