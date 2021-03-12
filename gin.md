@@ -83,6 +83,12 @@ If I `CREATE INDEX ON bar USING gin (jsonb_col)`, I implicitly use opclass
 
 ## Operators
 
+See the operators in postgresql docs:
+
+- [tsvector operators][pg-tsvector-ops]
+- [anyarray operators][pg-anyarray-ops]
+- [jsonb operators][pg-jsonb-ops]
+
 All the operators boil down to a combination of these primitives:
 
 - set `a` contains element `b`?  (`@>`)
@@ -94,53 +100,18 @@ All the operators boil down to a combination of these primitives:
 - logical and, not, or
 - recheck
 
-Recheck is the fallback we can rely on for complicated queries.
+For example, the `=` operator for arrays makes sure that the indexed array
+column equals the query array.  This can be done by
 
-I represent each operator using these primitives:
+1. For each element in the query array, get a set of row ids whose array column
+   _contains_ the element
+1. Intersect the sets of row ids (_logical and_) to obtain a set of row ids whose
+   array column contains the query array (`@>`)
+1. _recheck_ each row to make sure its array has the same number of (distinct)
+   elements as the query array
 
-- `tsvector @@ tsquery → boolean`: (custom)
-  - tsquery `a | b`: (set `LHS` contains element `a`) OR (set `LHS` contains
-    element `b`)
-  - tsquery `a & b`: (set `LHS` contains element `a`) AND (set `LHS` contains
-    element `b`)
-  - tsquery `!a`: NOT(set `LHS` contains element `a`)
-  - tsquery `a:*'`: (set `LHS` contains element **with prefix** `a`)
-- `anyarray && anyarray → boolean`: OR(set `LHS` contains element `RHS[*]`)
-- `anyarray <@ anyarray → boolean`: OR(set `LHS` contains element `RHS[*]`) +
-  recheck
-- `anyarray = anyarray → boolean`: AND(set `LHS` contains element `RHS[*]`) +
-  recheck
-- `anyarray @> anyarray → boolean`: AND(set `LHS` contains element `RHS[*]`)
-- `jsonb ? text → boolean`: set `LHS` contains element `RHS`
-- `jsonb ?& text[] → boolean`: AND(set `LHS` contains element `RHS[*]`)
-- `jsonb ?| text[] → boolean`: OR(set `LHS` contains element `RHS[*]`)
-- `jsonb @> jsonb → boolean`: AND(set `LHS` contains element `RHS[*]`)
-- `jsonb @? jsonpath → boolean`: (custom)
-- `jsonb @@ jsonpath → boolean`: (custom)
-  - jsonpath `$.a == 7`: set `LHS` contains element `<key>a.<num>7`
-  - jsonpath `$.a > 7`: (set `LHS` contains element **greater than**
-    `<key>a.<num>7`) AND (set `LHS` contains element **with prefix**
-    `<key>a.<num>`)
-  - jsonpath `$.a != 7`: (set `LHS` contains element **with prefix**
-    `<key>a.<num>`) AND NOT(set `LHS` contains element `<key>a.<num>7`)
-  - jsonpath `($.a == 7) && ! ($.b == 8)`: (set `LHS` contains element
-    `<key>a.<num>7`) AND NOT(set `LHS` contains element `<key>b.<num>8`)
-  - jsonpath `$.a like_regex "^foo.*bar"`: set `LHS` contains element **with
-    prefix** `<key>a.<str>` + recheck
-  - jsonpath `$.a starts with "bar"`: set `LHS` contains element **with
-    prefix** `<key>a.<str>bar`
-  - jsonpath `$.a.ceiling() == 5`: set `LHS` contains element `<key>a.<num>` +
-    recheck
-  - jsonpath `$.a.type() == "number"`: set `LHS` contains element **with
-    prefix** `<key>a.<num>`
-  - jsonpath `$.a + ($.b % $.c) == 7`: (set `LHS` contains element **with
-    prefix** `<key>a.<num>`) AND (set `LHS` contains element **with prefix**
-    `<key>b.<num>`) AND (set `LHS` contains element **with prefix**
-    `<key>c.<num>`) + recheck
-
-- [tsvector operators][pg-tsvector-ops]
-- [anyarray operators][pg-anyarray-ops]
-- [jsonb operators][pg-jsonb-ops]
+Recheck is the fallback we can rely on for complicated queries.  We can slowly
+phase out the need to use recheck as DocDB becomes more capable.
 
 [pg-tsvector-ops]: https://www.postgresql.org/docs/current/functions-textsearch.html
 [pg-anyarray-ops]: https://www.postgresql.org/docs/current/functions-array.html
@@ -269,6 +240,50 @@ In simpler terms,
 
 `IndexScan` on `i = 2` can look in this index for `[2]` prefix, get the value
 `true`, then look up `true` in the indexed table.
+
+## Operators to primitives
+
+You can represent each GIN operator using the primitives:
+
+- `tsvector @@ tsquery → boolean`: (custom)
+  - tsquery `a | b`: (set `LHS` contains element `a`) OR (set `LHS` contains
+    element `b`)
+  - tsquery `a & b`: (set `LHS` contains element `a`) AND (set `LHS` contains
+    element `b`)
+  - tsquery `!a`: NOT(set `LHS` contains element `a`)
+  - tsquery `a:*'`: (set `LHS` contains element **with prefix** `a`)
+- `anyarray && anyarray → boolean`: OR(set `LHS` contains element `RHS[*]`)
+- `anyarray <@ anyarray → boolean`: OR(set `LHS` contains element `RHS[*]`) +
+  recheck
+- `anyarray = anyarray → boolean`: AND(set `LHS` contains element `RHS[*]`) +
+  recheck
+- `anyarray @> anyarray → boolean`: AND(set `LHS` contains element `RHS[*]`)
+- `jsonb ? text → boolean`: set `LHS` contains element `RHS`
+- `jsonb ?& text[] → boolean`: AND(set `LHS` contains element `RHS[*]`)
+- `jsonb ?| text[] → boolean`: OR(set `LHS` contains element `RHS[*]`)
+- `jsonb @> jsonb → boolean`: AND(set `LHS` contains element `RHS[*]`)
+- `jsonb @? jsonpath → boolean`: (custom)
+- `jsonb @@ jsonpath → boolean`: (custom)
+  - jsonpath `$.a == 7`: set `LHS` contains element `<key>a.<num>7`
+  - jsonpath `$.a > 7`: (set `LHS` contains element **greater than**
+    `<key>a.<num>7`) AND (set `LHS` contains element **with prefix**
+    `<key>a.<num>`)
+  - jsonpath `$.a != 7`: (set `LHS` contains element **with prefix**
+    `<key>a.<num>`) AND NOT(set `LHS` contains element `<key>a.<num>7`)
+  - jsonpath `($.a == 7) && ! ($.b == 8)`: (set `LHS` contains element
+    `<key>a.<num>7`) AND NOT(set `LHS` contains element `<key>b.<num>8`)
+  - jsonpath `$.a like_regex "^foo.*bar"`: set `LHS` contains element **with
+    prefix** `<key>a.<str>` + recheck
+  - jsonpath `$.a starts with "bar"`: set `LHS` contains element **with
+    prefix** `<key>a.<str>bar`
+  - jsonpath `$.a.ceiling() == 5`: set `LHS` contains element `<key>a.<num>` +
+    recheck
+  - jsonpath `$.a.type() == "number"`: set `LHS` contains element **with
+    prefix** `<key>a.<num>`
+  - jsonpath `$.a + ($.b % $.c) == 7`: (set `LHS` contains element **with
+    prefix** `<key>a.<num>`) AND (set `LHS` contains element **with prefix**
+    `<key>b.<num>`) AND (set `LHS` contains element **with prefix**
+    `<key>c.<num>`) + recheck
 
 ## Example: tsvector
 
