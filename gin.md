@@ -122,6 +122,11 @@ column equals the query array.  This can be done by
 Recheck is the fallback we can rely on for complicated queries.  We can slowly
 phase out the need to use recheck as DocDB becomes more capable.
 
+See translations of all operators to primitives in [the
+appendix][appendix-op-to-prim].
+
+[appendix-op-to-prim]: #operators-to-primitives
+
 ## Read and write path
 
 ### Write path
