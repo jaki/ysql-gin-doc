@@ -64,9 +64,9 @@ total words, I add 300 records to the index, all referencing the same page.
 
 ## GIN opclasses
 
-Indexes have an access method (e.g. btree, lsm, gin) and an opclass.  **The
-opclass determines the index key format!**  Here are the opclasses that can be
-used with GIN ([source][pg-gin-opclasses]):
+Indexes have an access method (e.g. btree, lsm, gin) and an opclass (e.g.
+char_ops, numeric_ops).  **The opclass determines the index key format!**  Here
+are the opclasses that can be used with GIN ([source][pg-gin-opclasses]):
 
 | opclass          | type       | supported operators
 | ---------------- | ---------- | ---------------------------------
@@ -208,7 +208,7 @@ Concerns
 
 # Appendix
 
-## DocDB for normal index
+## Key format for normal index
 
 Here is a step-by-step guide to see how normal indexes are represented in
 DocDB.
