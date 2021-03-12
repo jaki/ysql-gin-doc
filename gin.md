@@ -206,7 +206,7 @@ Concerns
   - push down tsvector/tsquery `@@` operator to DocDB
   - interpret tsqueries at a high level and split into multiple simple scans
 
-# Advanced material
+# Appendix
 
 ## DocDB for normal index
 
@@ -354,6 +354,10 @@ SELECT * FROM records WHERE (
     j @@ '$.b[1] == 3' or
     j @@ '$.b[2] == 3');
 ```
+
+# Advanced material
+
+These are some more involved details that can be helpful to developers.
 
 ## Execution trees
 
