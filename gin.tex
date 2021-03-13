@@ -1,0 +1,1068 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\author{}
+\date{}
+
+\begin{document}
+
+\hypertarget{ysql-gin-indexes}{%
+\section{YSQL GIN indexes}\label{ysql-gin-indexes}}
+
+\hypertarget{terms}{%
+\subsection{Terms}\label{terms}}
+
+\begin{itemize}
+\tightlist
+\item
+  indexed table: indexes are on \emph{indexed tables}
+\item
+  pending list: in postgres, to avoid having each GIN index insert hit
+  disk, write to a linear list of tuples (\emph{pending list}) first,
+  and flush it later in bulk
+\item
+  posting list: in postgres, a GIN index tuple maps key to \emph{posting
+  list}, a list of ctids corresponding to the indexed table rows
+\end{itemize}
+
+\hypertarget{background}{%
+\subsection{Background}\label{background}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ book (page }\DataTypeTok{int} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, word text, position }\DataTypeTok{int}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+creates a DocDB table with key \texttt{page\ HASH}. I can easily ask for
+pages 5-12 using this primary key:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ book }\KeywordTok{WHERE}\NormalTok{ page }\OperatorTok{\textgreater{}=} \DecValTok{5} \KeywordTok{and}\NormalTok{ page }\OperatorTok{\textless{}=} \DecValTok{12}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ book (word);}
+\end{Highlighting}
+\end{Shaded}
+
+creates a secondary DocDB table with key
+\texttt{word\ HASH,\ page\ ASC}. This is like the index at the back of a
+book. I can easily ask what pages have the word \texttt{foo} using this
+index:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ page }\KeywordTok{FROM}\NormalTok{ book }\KeywordTok{WHERE}\NormalTok{ word }\OperatorTok{=} \StringTok{\textquotesingle{}foo\textquotesingle{}}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+What if the table were structured instead like
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ book (page }\DataTypeTok{int} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, words text[]);}
+\end{Highlighting}
+\end{Shaded}
+
+Now, looking for the specific word \texttt{foo} is time-consuming:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{select} \OperatorTok{*} \KeywordTok{from}\NormalTok{ book }\KeywordTok{where} \StringTok{\textquotesingle{}\{foo\}\textquotesingle{}}\NormalTok{ \&\& words;}
+\end{Highlighting}
+\end{Shaded}
+
+Creating a regular index won't help since you still need to search
+\texttt{words} for \texttt{foo}.
+
+\hypertarget{overview}{%
+\subsection{Overview}\label{overview}}
+
+GIN indexes map values \emph{inside a column} rather than the whole
+column.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ book }\KeywordTok{USING}\NormalTok{ gin (words);}
+\end{Highlighting}
+\end{Shaded}
+
+should create a secondary DocDB table with key
+\texttt{word\ HASH,\ pages\ ASC}, where \texttt{word} is a word in
+\texttt{words}. If I insert a page with 300 unique words and 500 total
+words, I add 300 records to the index, all referencing the same page.
+
+\hypertarget{limitations}{%
+\subsection{Limitations}\label{limitations}}
+
+\begin{itemize}
+\tightlist
+\item
+  GIN indexes can only be used on column types \texttt{tsvector},
+  \texttt{anyarray}, \texttt{jsonb}
+\item
+  GIN indexes cannot be unique
+\item
+  GIN indexes can be on more than one column, but all columns must be
+  GINable
+\end{itemize}
+
+\hypertarget{gin-opclasses}{%
+\subsection{GIN opclasses}\label{gin-opclasses}}
+
+Indexes have an access method (e.g.~btree, lsm, gin) and an opclass
+(e.g. char\_ops, numeric\_ops). \textbf{The opclass determines the index
+key format!} Here are the opclasses that can be used with GIN
+(\href{https://www.postgresql.org/docs/current/gin-builtin-opclasses.html}{source}):
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+opclass & type & supported operators \\
+\midrule
+\endhead
+\texttt{tsvector\_ops} & \texttt{tsvector} & \texttt{@@},
+\texttt{@@@} \\
+\texttt{array\_ops} & \texttt{anyarray} & \texttt{\&\&},
+\texttt{\textless{}@}, \texttt{=}, \texttt{@\textgreater{}} \\
+\texttt{jsonb\_ops} & \texttt{jsonb} & \texttt{?}, \texttt{?\&},
+\texttt{?\textbar{}}, \texttt{@\textgreater{}}, \texttt{@?},
+\texttt{@@} \\
+\texttt{jsonb\_path\_ops} & \texttt{jsonb} & \texttt{@\textgreater{}},
+\texttt{@?}, \texttt{@@} \\
+\bottomrule
+\end{longtable}
+
+If I \texttt{CREATE\ INDEX\ ON\ bar\ USING\ gin\ (jsonb\_col)}, I
+implicitly use opclass \texttt{jsonb\_ops}. To use
+\texttt{jsonb\_path\_ops}, I need to
+\texttt{CREATE\ INDEX\ ON\ bar\ USING\ gin\ (jsonb\_col\ jsonb\_path\_ops)}.
+
+\texttt{jsonb\_ops} forms an index key for each individual piece (key or
+value) of the jsonb.
+
+\texttt{jsonb\_path\_ops} forms an index key for each path from root to
+leaf.
+
+We could create our own opclass to form the keys in a way that fits with
+DocDB, or we could instead have a translation layer that takes these
+postgres-derived keys and converts them to DocDB format and vice versa.
+
+\hypertarget{operators}{%
+\subsection{Operators}\label{operators}}
+
+See the operators in postgresql docs:
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://www.postgresql.org/docs/current/functions-textsearch.html}{tsvector
+  operators}
+\item
+  \href{https://www.postgresql.org/docs/current/functions-array.html}{anyarray
+  operators}
+\item
+  \href{https://www.postgresql.org/docs/current/functions-json.html}{jsonb
+  operators}
+\end{itemize}
+
+All the operators boil down to a combination of these primitives:
+
+\begin{itemize}
+\tightlist
+\item
+  set \texttt{a} contains element \texttt{b}? (\texttt{@\textgreater{}})
+
+  \begin{itemize}
+  \tightlist
+  \item
+    contains element greater than
+  \item
+    contains element greater than or equal to
+  \item
+    contains element less than
+  \item
+    contains element less than or equal to
+  \item
+    contains element with prefix
+  \end{itemize}
+\item
+  logical and, not, or
+\item
+  recheck
+\end{itemize}
+
+For example, the \texttt{=} operator for arrays makes sure that the
+indexed array column equals the query array. This can be done by
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  For each element in the query array, get a set of row ids whose array
+  column \emph{contains} the element
+\item
+  Intersect the sets of row ids (\emph{logical and}) to obtain a set of
+  row ids whose array column contains the query array
+  (\texttt{@\textgreater{}})
+\item
+  \emph{recheck} each row to make sure its array has the same number of
+  (distinct) elements as the query array
+\end{enumerate}
+
+Recheck is the fallback we can rely on for complicated queries. We can
+slowly phase out the need to use recheck as DocDB becomes more capable.
+
+See translations of all operators to primitives in
+\protect\hyperlink{operators-to-primitives}{the appendix}.
+
+\hypertarget{read-and-write-path}{%
+\subsection{Read and write path}\label{read-and-write-path}}
+
+\hypertarget{write-path}{%
+\subsubsection{Write path}\label{write-path}}
+
+For postgres,
+\texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
+does
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
+\item
+  for each index key, append the indexed table ctid to the key's posting
+  list
+\end{enumerate}
+
+For Yugabyte, we should
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
+\item
+  \textbf{for each index key, write (key, ctid) pair to DocDB}
+\end{enumerate}
+
+\hypertarget{read-path}{%
+\subsubsection{Read path}\label{read-path}}
+
+For postgres,
+\texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
+does
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  create scan key: \texttt{the}
+\item
+  get tuples matching scan key
+\item
+  recheck each tuple if needed
+\end{enumerate}
+
+For Yugabyte, we should
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  create scan key: \texttt{the}
+\item
+  \textbf{fetch tuples from DocDB matching scan key}
+\item
+  recheck each tuple if needed
+\end{enumerate}
+
+\hypertarget{docdb-encoding}{%
+\subsection{DocDB encoding}\label{docdb-encoding}}
+
+In general, GIN index records should be encoded like
+
+\texttt{{[}\textless{}gin\_index\_keys\textgreater{},\ \textless{}primary\_keys\textgreater{}{]}}
+
+\hypertarget{tsvector}{%
+\subsubsection{tsvector}\label{tsvector}}
+
+The GIN index key should be words, like \texttt{the}, \texttt{quick},
+\texttt{brown}. To support prefix search, serialization of the words
+should be done carefully.
+
+TODO: look into DocDB encoding for \texttt{kString}. TODO: look into
+\texttt{tsvector} \textbf{weights}
+
+\hypertarget{jsonb}{%
+\subsubsection{jsonb}\label{jsonb}}
+
+The GIN index key should be paths, like
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{},\ c,\ d}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{},\ c,\ e}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ 1}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ \textless{}ARRAY\textgreater{},\ 2}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ \textless{}ARRAY\textgreater{},\ 3}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ 4}
+\item
+  \texttt{\textless{}JSON\textgreater{},\ c,\ f}
+\end{enumerate}
+
+(This is inspired by
+\href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
+inverted index RFC}.)
+
+Contains (\texttt{@\textgreater{}}) searches can have corresponding scan
+keys
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"a":\ 1\}\textquotesingle{}}
+  scans for \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
+\item
+  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ \{\}\}\textquotesingle{}}
+  scans for
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{}}
+\item
+  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}{]}\}\textquotesingle{}}
+  scans for
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{}}
+\item
+  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}{[}{]}{]}\}\textquotesingle{}}
+  scans for
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{},\ \textless{}ARR\textgreater{}}
+\item
+  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}4{]}\}\textquotesingle{}}
+  scans for
+  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{},\ 4}
+\end{itemize}
+
+Concerns
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{25.0} and \texttt{25} match should equally match--what will
+  the number format be like?
+\item
+  What will the text encoding be like, especially for weird unicode, and
+  how does prefix matching work, then?
+\item
+  How will the end of the JSON document be marked? (Same question for
+  marking array end on array GIN index.) \texttt{kGroupEnd}? But doesn't
+  this mean the contents of the JSON GIN key have to be encoded in some
+  way to make exclamation marks unambiguous?
+\end{itemize}
+
+\hypertarget{appendix}{%
+\section{Appendix}\label{appendix}}
+
+\hypertarget{key-format-for-normal-index}{%
+\subsection{Key format for normal
+index}\label{key-format-for-normal-index}}
+
+Here is a step-by-step guide to see how normal indexes are represented
+in DocDB.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{./bin/yb{-}ctl}\NormalTok{ create }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}master\_flags} \StringTok{"ysql\_disable\_index\_backfill=true"} \DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}tserver\_flags} \StringTok{"TEST\_docdb\_log\_write\_batches=true,ysql\_disable\_index\_backfill=true,ysql\_num\_shards\_per\_tserver=1"}
+\FunctionTok{tail} \AttributeTok{{-}F}\NormalTok{ \textasciitilde{}/yugabyte{-}data/node{-}1/disk{-}1/yb{-}data/tserver/logs/yb{-}tserver.INFO}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ t (p bool }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, c }\DataTypeTok{char}\NormalTok{, i }\DataTypeTok{int}\NormalTok{);}
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ t }\KeywordTok{VALUES}\NormalTok{ (}\KeywordTok{true}\NormalTok{, }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, }\DecValTok{2}\NormalTok{);}
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ t }\KeywordTok{VALUES}\NormalTok{ (}\KeywordTok{false}\NormalTok{, }\KeywordTok{null}\NormalTok{, }\KeywordTok{null}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ t (c);}
+\end{Highlighting}
+\end{Shaded}
+
+Observe logs for \emph{regular} DocDB writes
+
+\begin{verbatim}
+I0216 18:08:50.375550 31976 tablet.cc:1235] T dfc95b4d53b44afebc4827b29bcc6769 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 2 key/value pairs to kRegular RocksDB:
+Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
+1. PutCF(SubDocKey(DocKey(0xebd4, ["b"], ["G\x8f\xf7T!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80J$' (23800198BF43F5D5AB804A24))
+2. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 w: 1 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80?\xab$' (23800198BF43F5D5AB803FAB24))
+\end{verbatim}
+
+In simpler terms,
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{{[}"b",\ true{]}}
+\item
+  \texttt{{[}null,\ false{]}}
+\end{enumerate}
+
+\texttt{IndexScan} on
+\texttt{c\ =\ \textquotesingle{}b\textquotesingle{}} can look in this
+index for \texttt{{[}"b"{]}} prefix, get the next key component
+\texttt{true}, then look up \texttt{true} in the indexed table.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{UNIQUE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ t (i);}
+\end{Highlighting}
+\end{Shaded}
+
+Observe logs for \emph{regular} DocDB writes
+
+\begin{verbatim}
+I0216 18:10:06.280701 31753 tablet.cc:1235] T bb21a24b24eb421b8b7a84fb03422271 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 4 key/value pairs to kRegular RocksDB:
+Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
+1. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [SystemColumnId(0); HT{ physical: 1613527806278239 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80J$' (23800198BF3F6F8E93804A24))
+2. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [ColumnId(12); HT{ physical: 1613527806278239 w: 1 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\xabSG\x8f\xf7T!!' (23800198BF3F6F8E93803FAB53478FF7542121))
+3. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527806278239 w: 2 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\x8b$' (23800198BF3F6F8E93803F8B24))
+4. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [ColumnId(12); HT{ physical: 1613527806278239 w: 3 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?kSG\xdc@F!!' (23800198BF3F6F8E93803F6B5347DC40462121))
+\end{verbatim}
+
+In simpler terms,
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{{[}2,\ null{]}} -\textgreater{} \texttt{true}
+\item
+  \texttt{{[}null,\ false{]}} -\textgreater{} \texttt{false}
+\end{enumerate}
+
+\texttt{IndexScan} on \texttt{i\ =\ 2} can look in this index for
+\texttt{{[}2{]}} prefix, get the value \texttt{true}, then look up
+\texttt{true} in the indexed table.
+
+\hypertarget{operators-to-primitives}{%
+\subsection{Operators to primitives}\label{operators-to-primitives}}
+
+You can represent each GIN operator using the primitives:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{tsvector\ @@\ tsquery\ →\ boolean}: (custom)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    tsquery \texttt{a\ \textbar{}\ b}: (set \texttt{LHS} contains
+    element \texttt{a}) OR (set \texttt{LHS} contains element
+    \texttt{b})
+  \item
+    tsquery \texttt{a\ \&\ b}: (set \texttt{LHS} contains element
+    \texttt{a}) AND (set \texttt{LHS} contains element \texttt{b})
+  \item
+    tsquery \texttt{!a}: NOT(set \texttt{LHS} contains element
+    \texttt{a})
+  \item
+    tsquery \texttt{a:*\textquotesingle{}}: (set \texttt{LHS} contains
+    element \textbf{with prefix} \texttt{a})
+  \end{itemize}
+\item
+  \texttt{anyarray\ \&\&\ anyarray\ →\ boolean}: OR(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{anyarray\ \textless{}@\ anyarray\ →\ boolean}: OR(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}}) + recheck
+\item
+  \texttt{anyarray\ =\ anyarray\ →\ boolean}: AND(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}}) + recheck
+\item
+  \texttt{anyarray\ @\textgreater{}\ anyarray\ →\ boolean}: AND(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ ?\ text\ →\ boolean}: set \texttt{LHS} contains element
+  \texttt{RHS}
+\item
+  \texttt{jsonb\ ?\&\ text{[}{]}\ →\ boolean}: AND(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ ?\textbar{}\ text{[}{]}\ →\ boolean}: OR(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ @\textgreater{}\ jsonb\ →\ boolean}: AND(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ @?\ jsonpath\ →\ boolean}: (custom)
+\item
+  \texttt{jsonb\ @@\ jsonpath\ →\ boolean}: (custom)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    jsonpath \texttt{\$.a\ ==\ 7}: set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7}
+  \item
+    jsonpath \texttt{\$.a\ \textgreater{}\ 7}: (set \texttt{LHS}
+    contains element \textbf{greater than}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+  \item
+    jsonpath \texttt{\$.a\ !=\ 7}: (set \texttt{LHS} contains element
+    \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+    AND NOT(set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+  \item
+    jsonpath \texttt{(\$.a\ ==\ 7)\ \&\&\ !\ (\$.b\ ==\ 8)}: (set
+    \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+    AND NOT(set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}8})
+  \item
+    jsonpath \texttt{\$.a\ like\_regex\ "\^{}foo.*bar"}: set
+    \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}}
+    + recheck
+  \item
+    jsonpath \texttt{\$.a\ starts\ with\ "bar"}: set \texttt{LHS}
+    contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}bar}
+  \item
+    jsonpath \texttt{\$.a.ceiling()\ ==\ 5}: set \texttt{LHS} contains
+    element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
+    + recheck
+  \item
+    jsonpath \texttt{\$.a.type()\ ==\ "number"}: set \texttt{LHS}
+    contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
+  \item
+    jsonpath \texttt{\$.a\ +\ (\$.b\ \%\ \$.c)\ ==\ 7}: (set
+    \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}c.\textless{}num\textgreater{}})
+    + recheck
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{example-tsvector}{%
+\subsection{Example: tsvector}\label{example-tsvector}}
+
+Here is an example of using a tsvector GIN index. It is inspired by a
+\href{https://habr.com/en/company/postgrespro/blog/448746/}{habr blog}.
+Run on upstream postgres.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ docs (}
+\NormalTok{    doc text,}
+\NormalTok{    ts tsvector }\KeywordTok{GENERATED}\NormalTok{ ALWAYS }\KeywordTok{AS}\NormalTok{ (to\_tsvector(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, doc)) STORED);}
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ docs (doc) }\KeywordTok{VALUES}
+\NormalTok{  (}\StringTok{\textquotesingle{}Can a sheet slitter slit sheets?\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}How many sheets could a sheet slitter slit?\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}I slit a sheet, a sheet I slit.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}Upon a slitted sheet I sit.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}Whoever slit the sheets is a good sheet slitter.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}I am a sheet slitter.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}I slit sheets.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}I am the sleekest sheet slitter that ever slit sheets.\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}She slits the sheet she sits on.\textquotesingle{}}\NormalTok{);}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ docs; }\CommentTok{{-}{-} what tsvector looks like}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ docs }\KeywordTok{USING}\NormalTok{ GIN (ts);}
+\KeywordTok{SET}\NormalTok{ enable\_seqscan }\OperatorTok{=} \KeywordTok{OFF}\NormalTok{;}
+\KeywordTok{EXPLAIN} \KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ docs}
+    \KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many\textquotesingle{}}\NormalTok{); }\CommentTok{{-}{-} this is index scan}
+\end{Highlighting}
+\end{Shaded}
+
+Example of what can be done, all using the index:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many \& slitter\textquotesingle{}}\NormalTok{);}
+\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many | slitter\textquotesingle{}}\NormalTok{);}
+\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}slit:* \& !slit\textquotesingle{}}\NormalTok{);}
+\KeywordTok{SELECT}\NormalTok{ ts\_rank(ts, to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}i \& sheet:* \& slit:*\textquotesingle{}}\NormalTok{)) }\KeywordTok{as} \FunctionTok{rank}\NormalTok{, doc}
+    \KeywordTok{FROM}\NormalTok{ docs}
+    \KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}i \& sheet:* \& slit:*\textquotesingle{}}\NormalTok{)}
+    \KeywordTok{ORDER} \KeywordTok{BY} \FunctionTok{rank} \KeywordTok{DESC}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{example-jsonb}{%
+\subsection{Example: jsonb}\label{example-jsonb}}
+
+Here is an example of using a jsonb GIN index.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ records (p SERIAL }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, j jsonb);}
+\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ records (j) }\KeywordTok{VALUES}
+\NormalTok{  (}\StringTok{\textquotesingle{}\{"a": 1\}\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": \{"c": "d"\}\}\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": \{"c": "e"\}\}\textquotesingle{}}\NormalTok{),}
+\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": [1, [2, 3], 4], "c": "f"\}\textquotesingle{}}\NormalTok{);}
+\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ records }\KeywordTok{USING}\NormalTok{ GIN (j jsonb\_ops);}
+\KeywordTok{SET}\NormalTok{ enable\_seqscan }\OperatorTok{=} \KeywordTok{OFF}\NormalTok{;}
+\KeywordTok{EXPLAIN} \KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @}\OperatorTok{\textgreater{}} \StringTok{\textquotesingle{}\{"b": \{\}\}\textquotesingle{}}\NormalTok{; }\CommentTok{{-}{-} this is index scan}
+\end{Highlighting}
+\end{Shaded}
+
+Example of what can be done, all using the index:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @}\OperatorTok{\textgreater{}} \StringTok{\textquotesingle{}\{"b": \{\}\}\textquotesingle{}}\NormalTok{;}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ? }\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{;}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ?| }\DataTypeTok{ARRAY}\NormalTok{[}\StringTok{\textquotesingle{}a\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{];}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ?\& }\DataTypeTok{ARRAY}\NormalTok{[}\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{];}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @? }\StringTok{\textquotesingle{}$.b[*] ? (@ \textgreater{} 3)\textquotesingle{}}\NormalTok{;}
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @@ }\StringTok{\textquotesingle{}$.b.c == "e"\textquotesingle{}}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+You can think of
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @? }\StringTok{\textquotesingle{}$.b[*] ? (@ == 3)\textquotesingle{}}\NormalTok{;}
+\end{Highlighting}
+\end{Shaded}
+
+to be like
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ (}
+\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[0] == 3\textquotesingle{}} \KeywordTok{or}
+\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[1] == 3\textquotesingle{}} \KeywordTok{or}
+\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[2] == 3\textquotesingle{}}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{advanced-material}{%
+\section{Advanced material}\label{advanced-material}}
+
+These are some more involved details that can be helpful to developers.
+
+\hypertarget{read-and-write-path-extended}{%
+\subsection{Read and write path
+extended}\label{read-and-write-path-extended}}
+
+\hypertarget{write-path-extended}{%
+\subsubsection{Write path extended}\label{write-path-extended}}
+
+\texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
+does
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  insert to main table (\texttt{ExecInsert},
+  \texttt{table\_tuple\_insert})
+\item
+  insert to gin index (\texttt{ExecInsert},
+  \texttt{ExecInsertIndexTuples})
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \tightlist
+  \item
+    if fast update is enabled, write index tuples to pending list
+    (\texttt{gininsert}, \texttt{ginHeapTupleFastInsert})
+  \item
+    otherwise, write index tuples to disk (\texttt{gininsert},
+    \texttt{ginHeapTupleInsert})
+
+    \begin{enumerate}
+    \def\labelenumiii{\arabic{enumiii}.}
+    \tightlist
+    \item
+      prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
+      (\texttt{ginHeapTupleInsert}, \texttt{ginExtractEntries})
+    \item
+      if tuple with key already exists, append the indexed table ctid to
+      the posting list (\texttt{ginEntryInsert},
+      \texttt{addItemPointersToLeafTuple})
+    \item
+      otherwise, create a posting list containing just the indexed table
+      ctid (\texttt{ginEntryInsert}, \texttt{buildFreshLeafTuple})
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+\hypertarget{read-path-extended}{%
+\subsubsection{Read path extended}\label{read-path-extended}}
+
+\texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
+does
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  create scan key: \texttt{the} (\texttt{gingetbitmap},
+  \texttt{ginNewScanKey})
+\item
+  get blocks from pending list (\texttt{gingetbitmap},
+  \texttt{scanPendingInsert})
+\item
+  get blocks from disk (\texttt{gingetbitmap}, \texttt{startScan})
+\item
+  get tuples from blocks (\texttt{BitmapHeapNext},
+  \texttt{table\_scan\_bitmap\_next\_tuple})
+\item
+  recheck tuple if needed (\texttt{BitmapHeapNext},
+  \texttt{ExecQualAndReset})
+\end{enumerate}
+
+\hypertarget{execution-trees}{%
+\subsection{Execution trees}\label{execution-trees}}
+
+\hypertarget{read}{%
+\subsubsection{Read}\label{read}}
+
+\begin{verbatim}
+exec_simple_query
+  PortalStart
+    ExecutorStart
+      standard_ExecutorStart
+        InitPlan
+          ExecInitNode
+            ExecInitBitmapHeapScan
+              ExecInitNode
+                ExecInitBitmapIndexScan
+                  index_beginscan_bitmap
+                    index_beginscan_internal
+                      ambeginscan
+  PortalRun
+    PortalRunSelect
+      ExecutorRun
+        standard_ExecutorRun
+          ExecutePlan
+            ... ExecBitmapHeapScan
+              ExecScanFetch
+                BitmapHeapNext
+                  MultiExecProcNode
+                    MultiExecBitmapIndexScan
+                      index_getbitmap
+                        gingetbitmap
+                    MultiExecBitmapAnd
+                    MultiExecBitmapOr
+\end{verbatim}
+
+Entry point for using text search functions:
+
+\begin{verbatim}
+(gdb) bt
+#0  TS_execute (curitem=0x1749d90, arg=arg@entry=0x7ffdf8c8ea50, flags=flags@entry=2, chkcond=chkcond@entry=0x842ad0 <checkcondition_gin>) at tsvector_op.c:1848
+#1  0x00000000008430c3 in gin_tsquery_triconsistent (fcinfo=<optimized out>) at tsginidx.c:287
+#2  0x0000000000881fdd in FunctionCall7Coll (flinfo=0x17ffe98, collation=<optimized out>, arg1=<optimized out>, arg2=<optimized out>, arg3=<optimized out>, arg4=<optimized out>, arg5=25151648, arg6=25151592, arg7=25151768) at fmgr.c:1311
+#3  0x000000000049dc10 in directTriConsistentFn (key=<optimized out>) at ginlogic.c:97
+#4  0x000000000049c39f in startScanKey (ginstate=0x17fe580, so=0x17fe578, so=0x17fe578, key=0x17fc648) at ginget.c:566
+#5  startScan (scan=0x17e73f0, scan=0x17e73f0) at ginget.c:642
+#6  gingetbitmap (scan=0x17e73f0, tbm=0x18053d8) at ginget.c:1951
+#7  0x00000000004d3d9a in index_getbitmap (scan=scan@entry=0x17e73f0, bitmap=bitmap@entry=0x18053d8) at indexam.c:671
+#8  0x0000000000632882 in MultiExecBitmapIndexScan (node=0x17e7100) at nodeBitmapIndexscan.c:105
+#9  0x00000000006220e1 in MultiExecProcNode (node=<optimized out>) at execProcnode.c:510
+#10 0x0000000000631f50 in BitmapHeapNext (node=node@entry=0x17e6e10) at nodeBitmapHeapscan.c:113
+#11 0x00000000006245fa in ExecScanFetch (recheckMtd=0x6321c0 <BitmapHeapRecheck>, accessMtd=0x631820 <BitmapHeapNext>, node=0x17e6e10) at execScan.c:133
+#12 ExecScan (node=0x17e6e10, accessMtd=0x631820 <BitmapHeapNext>, recheckMtd=0x6321c0 <BitmapHeapRecheck>) at execScan.c:199
+#13 0x000000000061af52 in ExecProcNode (node=0x17e6e10) at ../../../src/include/executor/executor.h:248
+#14 ExecutePlan (execute_once=<optimized out>, dest=0x17f5ba8, direction=<optimized out>, numberTuples=0, sendTuples=true, operation=CMD_SELECT, use_parallel_mode=<optimized out>, planstate=0x17e6e10, estate=0x17e6be8) at execMain.c:1646
+#15 standard_ExecutorRun (queryDesc=0x17f9738, direction=<optimized out>, count=0, execute_once=<optimized out>) at execMain.c:364
+#16 0x0000000000770afb in PortalRunSelect (portal=portal@entry=0x178b008, forward=forward@entry=true, count=0, count@entry=9223372036854775807, dest=dest@entry=0x17f5ba8) at pquery.c:912
+#17 0x0000000000771d68 in PortalRun (portal=portal@entry=0x178b008, count=count@entry=9223372036854775807, isTopLevel=isTopLevel@entry=true, run_once=run_once@entry=true, dest=dest@entry=0x17f5ba8, altdest=altdest@entry=0x17f5ba8, qc=qc@entry=0x7ffdf8c8
+efe0) at pquery.c:756
+#18 0x000000000076dabe in exec_simple_query (query_string=0x1724c68 "SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');") at postgres.c:1239
+#19 0x000000000076ee37 in PostgresMain (argc=<optimized out>, argv=argv@entry=0x174f0b8, dbname=0x174f000 "testupdatejoin", username=<optimized out>) at postgres.c:4315
+#20 0x0000000000481e23 in BackendRun (port=<optimized out>, port=<optimized out>) at postmaster.c:4536
+#21 BackendStartup (port=0x1748270) at postmaster.c:4220
+#22 ServerLoop () at postmaster.c:1739
+#23 0x00000000006fc793 in PostmasterMain (argc=argc@entry=3, argv=argv@entry=0x171f980) at postmaster.c:1412
+#24 0x0000000000482a6e in main (argc=3, argv=0x171f980) at main.c:210
+\end{verbatim}
+
+\hypertarget{constants}{%
+\subsection{Constants}\label{constants}}
+
+\begin{verbatim}
+#define JsonbContainsStrategyNumber   7
+#define JsonbExistsStrategyNumber   9
+#define JsonbExistsAnyStrategyNumber  10
+#define JsonbExistsAllStrategyNumber  11
+#define JsonbJsonpathExistsStrategyNumber   15
+#define JsonbJsonpathPredicateStrategyNumber  16
+\end{verbatim}
+
+\hypertarget{misc}{%
+\subsection{Misc}\label{misc}}
+
+\begin{itemize}
+\item
+  At \texttt{ginbeginscan},
+
+\begin{verbatim}
+(gdb) p so->ginstate
+$32 = {
+  index = 0x7fbef38c56f0,
+  oneCol = true,
+  origTupdesc = 0x7fbef38c5a10,
+  tupdesc = {0x7fbef38c5a10, 0x0 <repeats 31 times>},
+  compareFn = {{
+      fn_addr = 0x842b30 <gin_cmp_tslexeme>,
+      fn_oid = 3724,
+      fn_nargs = 2,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17ee788
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  extractValueFn = {{
+      fn_addr = 0x842d90 <gin_extract_tsvector>,
+      fn_oid = 3656,
+      fn_nargs = 3,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eea70
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  extractQueryFn = {{
+      fn_addr = 0x842e30 <gin_extract_tsquery>,
+      fn_oid = 3657,
+      fn_nargs = 7,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeac0
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  consistentFn = {{
+      fn_addr = 0x843000 <gin_tsquery_consistent>,
+      fn_oid = 3658,
+      fn_nargs = 8,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeb60
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  triConsistentFn = {{
+      fn_addr = 0x843070 <gin_tsquery_triconsistent>,
+      fn_oid = 3921,
+      fn_nargs = 7,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeb10
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  comparePartialFn = {{
+      fn_addr = 0x842c50 <gin_cmp_prefix>,
+      fn_oid = 2700,
+      fn_nargs = 4,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17ff748
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  canPartialMatch = {true, false <repeats 31 times>},
+  supportCollation = {100, 0 <repeats 31 times>}
+}
+\end{verbatim}
+\end{itemize}
+
+\end{document}
