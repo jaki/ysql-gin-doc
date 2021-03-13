@@ -166,43 +166,44 @@ For Yugabyte, we should
 1. **fetch tuples from DocDB matching scan key**
 1. recheck each tuple if needed
 
-#### DocDB
+## DocDB encoding
 
-DocDB can probably encode these like
+In general, GIN index records should be encoded like
 
-1. `[many, 3]`
-1. `[many, 4]`
-1. `[slitter, 3]`
+`[<gin_index_keys>, <primary_keys>]`
 
-assuming the primary keys of the indexed table are ints like `3` and `4`.
-Prefix searches can be done like `[slit`, but the text should be carefully
-encoded so that `t` is the last part of the search, not something like `!`
-(`kGroupEnd`).  TODO: look into DocDB encoding for `kString`.
+### tsvector
 
+The GIN index key should be words, like `the`, `quick`, `brown`.  To support
+prefix search, serialization of the words should be done carefully.
+
+TODO: look into DocDB encoding for `kString`.
 TODO: look into `tsvector` **weights**
 
-#### DocDB
+### jsonb
 
-DocDB can probably encode these like
+The GIN index key should be paths, like
 
-1. `[<JSON>, a, 1, 1]`
-1. `[<JSON>, b, <JSON>, c, d, 2]`
-1. `[<JSON>, b, <JSON>, c, e, 3]`
-1. `[<JSON>, b, <ARRAY>, 1, 4]`
-1. `[<JSON>, b, <ARRAY>, <ARRAY>, 2, 4]`
-1. `[<JSON>, b, <ARRAY>, <ARRAY>, 3, 4]`
-1. `[<JSON>, b, <ARRAY>, 4, 4]`
-1. `[<JSON>, c, f, 4]`
+1. `<JSON>, a, 1`
+1. `<JSON>, b, <JSON>, c, d`
+1. `<JSON>, b, <JSON>, c, e`
+1. `<JSON>, b, <ARRAY>, 1`
+1. `<JSON>, b, <ARRAY>, <ARRAY>, 2`
+1. `<JSON>, b, <ARRAY>, <ARRAY>, 3`
+1. `<JSON>, b, <ARRAY>, 4`
+1. `<JSON>, c, f`
 
 (This is inspired by [CockroachDB's inverted index RFC][crdb-rfc].)
 
-Contains (`@>`) searches can be like
+[crdb-rfc]: https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md
 
-- `j @> '{"a": 1}'` = `[<JSON>, a, 1`
-- `j @> '{"b": {}}'` = `[<JSON>, b, <JSON>`
-- `j @> '{"b": []}'` = `[<JSON>, b, <ARR>`
-- `j @> '{"b": [[]]}'` = `[<JSON>, b, <ARR>, <ARR>`
-- `j @> '{"b": [4]}'` = `[<JSON>, b, <ARR>, 4`
+Contains (`@>`) searches can have corresponding scan keys
+
+- `j @> '{"a": 1}'` scans for `<JSON>, a, 1`
+- `j @> '{"b": {}}'` scans for `<JSON>, b, <JSON>`
+- `j @> '{"b": []}'` scans for `<JSON>, b, <ARR>`
+- `j @> '{"b": [[]]}'` scans for `<JSON>, b, <ARR>, <ARR>`
+- `j @> '{"b": [4]}'` scans for `<JSON>, b, <ARR>, 4`
 
 Concerns
 
@@ -214,8 +215,6 @@ Concerns
   array end on array GIN index.)  `kGroupEnd`?  But doesn't this mean the
   contents of the JSON GIN key have to be encoded in some way to make
   exclamation marks unambiguous?
-
-[crdb-rfc]: https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md
 
 ## Postgres changes
 
