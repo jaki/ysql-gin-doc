@@ -216,15 +216,6 @@ Concerns
   contents of the JSON GIN key have to be encoded in some way to make
   exclamation marks unambiguous?
 
-## Postgres changes
-
-- To avoid bitmap scan logic, redirection must happen from high up at
-  `ExecInitBitmapIndexScan`
-- `TS_execute` is deep in the stack, and it interprets tsquery operators.  This
-  suggests that work needs to be done to either
-  - push down tsvector/tsquery `@@` operator to DocDB
-  - interpret tsqueries at a high level and split into multiple simple scans
-
 # Appendix
 
 ## Key format for normal index
