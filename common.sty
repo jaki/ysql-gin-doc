@@ -1,0 +1,47 @@
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage{minted}
+\usepackage{parskip}
+
+% Package: minted.
+\setminted{%
+    breakanywhere=true,
+    breaklines=true,
+    fontsize=\small,
+}
+\newcommand{\setnewminted}[1]{%
+    \newminted{#1}{%
+        frame=leftline,
+    }
+}
+\newcommand{\setnewmintedfile}[1]{%
+    \newmintedfile{#1}{%
+        autogobble,
+        frame=single,
+        label=##2,
+    }
+}
+\newcommand{\setnewmintedboth}[1]{%
+    \setnewminted{#1}
+    \setnewmintedfile{#1}
+}
+\setnewmintedboth{bash}
+\setnewmintedboth{c}
+\setnewmintedboth{sql}
+\setnewmintedboth{text}
+
+\DeclarePairedDelimiter{\braces}{\lbrace}{\rbrace}
+\DeclarePairedDelimiter{\parens}{\lparen}{\rparen}
+
+\newenvironment{iparts}
+    {\begin{enumerate}[{(}i{)}]}
+    {\end{enumerate}}
+\newenvironment{nparts}
+    {\begin{enumerate}[1.]}
+    {\end{enumerate}}
+\newenvironment{qparts}
+    {\begin{enumerate}[{(}a{)}]}
+    {\end{enumerate}}

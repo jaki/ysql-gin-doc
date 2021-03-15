@@ -1,102 +1,10 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-%
-\documentclass[
-]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{lmodern}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\newenvironment{Shaded}{}{}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
+\documentclass[11pt]{article}
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\ifluatex
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 
-\author{}
-\date{}
+\usepackage{common}
+
 
 \begin{document}
 
@@ -122,53 +30,41 @@
 \hypertarget{background}{%
 \subsection{Background}\label{background}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ book (page }\DataTypeTok{int} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, word text, position }\DataTypeTok{int}\NormalTok{);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE TABLE book (page int PRIMARY KEY, word text, position int);
+\end{sqlcode}
 
 creates a DocDB table with key \texttt{page\ HASH}. I can easily ask for
 pages 5-12 using this primary key:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ book }\KeywordTok{WHERE}\NormalTok{ page }\OperatorTok{\textgreater{}=} \DecValTok{5} \KeywordTok{and}\NormalTok{ page }\OperatorTok{\textless{}=} \DecValTok{12}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT * FROM book WHERE page >= 5 and page <= 12;
+\end{sqlcode}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ book (word);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE INDEX ON book (word);
+\end{sqlcode}
 
 creates a secondary DocDB table with key
 \texttt{word\ HASH,\ page\ ASC}. This is like the index at the back of a
 book. I can easily ask what pages have the word \texttt{foo} using this
 index:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT}\NormalTok{ page }\KeywordTok{FROM}\NormalTok{ book }\KeywordTok{WHERE}\NormalTok{ word }\OperatorTok{=} \StringTok{\textquotesingle{}foo\textquotesingle{}}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT page FROM book WHERE word = 'foo';
+\end{sqlcode}
 
 What if the table were structured instead like
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ book (page }\DataTypeTok{int} \KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, words text[]);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE TABLE book (page int PRIMARY KEY, words text[]);
+\end{sqlcode}
 
 Now, looking for the specific word \texttt{foo} is time-consuming:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{select} \OperatorTok{*} \KeywordTok{from}\NormalTok{ book }\KeywordTok{where} \StringTok{\textquotesingle{}\{foo\}\textquotesingle{}}\NormalTok{ \&\& words;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+select * from book where '{foo}' && words;
+\end{sqlcode}
 
 Creating a regular index won't help since you still need to search
 \texttt{words} for \texttt{foo}.
@@ -179,11 +75,9 @@ Creating a regular index won't help since you still need to search
 GIN indexes map values \emph{inside a column} rather than the whole
 column.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ book }\KeywordTok{USING}\NormalTok{ gin (words);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE INDEX ON book USING gin (words);
+\end{sqlcode}
 
 should create a secondary DocDB table with key
 \texttt{word\ HASH,\ pages\ ASC}, where \texttt{word} is a word in
@@ -213,22 +107,23 @@ Indexes have an access method (e.g.~btree, lsm, gin) and an opclass
 key format!} Here are the opclasses that can be used with GIN
 (\href{https://www.postgresql.org/docs/current/gin-builtin-opclasses.html}{source}):
 
-\begin{longtable}[]{@{}lll@{}}
-\toprule
-opclass & type & supported operators \\
-\midrule
-\endhead
-\texttt{tsvector\_ops} & \texttt{tsvector} & \texttt{@@},
-\texttt{@@@} \\
-\texttt{array\_ops} & \texttt{anyarray} & \texttt{\&\&},
-\texttt{\textless{}@}, \texttt{=}, \texttt{@\textgreater{}} \\
-\texttt{jsonb\_ops} & \texttt{jsonb} & \texttt{?}, \texttt{?\&},
-\texttt{?\textbar{}}, \texttt{@\textgreater{}}, \texttt{@?},
-\texttt{@@} \\
-\texttt{jsonb\_path\_ops} & \texttt{jsonb} & \texttt{@\textgreater{}},
-\texttt{@?}, \texttt{@@} \\
-\bottomrule
-\end{longtable}
+\begin{center}
+    \begin{tabular}{lll}
+        \toprule
+        opclass & type & supported operators \\
+        \midrule
+        \texttt{tsvector\_ops} & \texttt{tsvector} & \texttt{@@},
+        \texttt{@@@} \\
+        \texttt{array\_ops} & \texttt{anyarray} & \texttt{\&\&},
+        \texttt{\textless{}@}, \texttt{=}, \texttt{@\textgreater{}} \\
+        \texttt{jsonb\_ops} & \texttt{jsonb} & \texttt{?}, \texttt{?\&},
+        \texttt{?\textbar{}}, \texttt{@\textgreater{}}, \texttt{@?},
+        \texttt{@@} \\
+        \texttt{jsonb\_path\_ops} & \texttt{jsonb} & \texttt{@\textgreater{}},
+        \texttt{@?}, \texttt{@@} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
 
 If I \texttt{CREATE\ INDEX\ ON\ bar\ USING\ gin\ (jsonb\_col)}, I
 implicitly use opclass \texttt{jsonb\_ops}. To use
@@ -475,37 +370,31 @@ index}\label{key-format-for-normal-index}}
 Here is a step-by-step guide to see how normal indexes are represented
 in DocDB.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\ExtensionTok{./bin/yb{-}ctl}\NormalTok{ create }\DataTypeTok{\textbackslash{}}
-  \AttributeTok{{-}{-}master\_flags} \StringTok{"ysql\_disable\_index\_backfill=true"} \DataTypeTok{\textbackslash{}}
-  \AttributeTok{{-}{-}tserver\_flags} \StringTok{"TEST\_docdb\_log\_write\_batches=true,ysql\_disable\_index\_backfill=true,ysql\_num\_shards\_per\_tserver=1"}
-\FunctionTok{tail} \AttributeTok{{-}F}\NormalTok{ \textasciitilde{}/yugabyte{-}data/node{-}1/disk{-}1/yb{-}data/tserver/logs/yb{-}tserver.INFO}
-\end{Highlighting}
-\end{Shaded}
+\begin{bashcode}
+./bin/yb-ctl create \
+  --master_flags "ysql_disable_index_backfill=true" \
+  --tserver_flags "TEST_docdb_log_write_batches=true,ysql_disable_index_backfill=true,ysql_num_shards_per_tserver=1"
+tail -F ~/yugabyte-data/node-1/disk-1/yb-data/tserver/logs/yb-tserver.INFO
+\end{bashcode}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ t (p bool }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, c }\DataTypeTok{char}\NormalTok{, i }\DataTypeTok{int}\NormalTok{);}
-\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ t }\KeywordTok{VALUES}\NormalTok{ (}\KeywordTok{true}\NormalTok{, }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{, }\DecValTok{2}\NormalTok{);}
-\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ t }\KeywordTok{VALUES}\NormalTok{ (}\KeywordTok{false}\NormalTok{, }\KeywordTok{null}\NormalTok{, }\KeywordTok{null}\NormalTok{);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE TABLE t (p bool PRIMARY KEY, c char, i int);
+INSERT INTO t VALUES (true, 'b', 2);
+INSERT INTO t VALUES (false, null, null);
+\end{sqlcode}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ t (c);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE INDEX ON t (c);
+\end{sqlcode}
 
 Observe logs for \emph{regular} DocDB writes
 
-\begin{verbatim}
+\begin{textcode}
 I0216 18:08:50.375550 31976 tablet.cc:1235] T dfc95b4d53b44afebc4827b29bcc6769 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 2 key/value pairs to kRegular RocksDB:
 Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
 1. PutCF(SubDocKey(DocKey(0xebd4, ["b"], ["G\x8f\xf7T!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80J$' (23800198BF43F5D5AB804A24))
 2. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 w: 1 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80?\xab$' (23800198BF43F5D5AB803FAB24))
-\end{verbatim}
+\end{textcode}
 
 In simpler terms,
 
@@ -523,22 +412,20 @@ In simpler terms,
 index for \texttt{{[}"b"{]}} prefix, get the next key component
 \texttt{true}, then look up \texttt{true} in the indexed table.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{UNIQUE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ t (i);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE UNIQUE INDEX ON t (i);
+\end{sqlcode}
 
 Observe logs for \emph{regular} DocDB writes
 
-\begin{verbatim}
+\begin{textcode}
 I0216 18:10:06.280701 31753 tablet.cc:1235] T bb21a24b24eb421b8b7a84fb03422271 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 4 key/value pairs to kRegular RocksDB:
 Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
 1. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [SystemColumnId(0); HT{ physical: 1613527806278239 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80J$' (23800198BF3F6F8E93804A24))
 2. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [ColumnId(12); HT{ physical: 1613527806278239 w: 1 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\xabSG\x8f\xf7T!!' (23800198BF3F6F8E93803FAB53478FF7542121))
 3. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527806278239 w: 2 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\x8b$' (23800198BF3F6F8E93803F8B24))
 4. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [ColumnId(12); HT{ physical: 1613527806278239 w: 3 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?kSG\xdc@F!!' (23800198BF3F6F8E93803F6B5347DC40462121))
-\end{verbatim}
+\end{textcode}
 
 In simpler terms,
 
@@ -670,98 +557,84 @@ Here is an example of using a tsvector GIN index. It is inspired by a
 \href{https://habr.com/en/company/postgrespro/blog/448746/}{habr blog}.
 Run on upstream postgres.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ docs (}
-\NormalTok{    doc text,}
-\NormalTok{    ts tsvector }\KeywordTok{GENERATED}\NormalTok{ ALWAYS }\KeywordTok{AS}\NormalTok{ (to\_tsvector(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, doc)) STORED);}
-\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ docs (doc) }\KeywordTok{VALUES}
-\NormalTok{  (}\StringTok{\textquotesingle{}Can a sheet slitter slit sheets?\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}How many sheets could a sheet slitter slit?\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}I slit a sheet, a sheet I slit.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}Upon a slitted sheet I sit.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}Whoever slit the sheets is a good sheet slitter.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}I am a sheet slitter.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}I slit sheets.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}I am the sleekest sheet slitter that ever slit sheets.\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}She slits the sheet she sits on.\textquotesingle{}}\NormalTok{);}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ docs; }\CommentTok{{-}{-} what tsvector looks like}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE TABLE docs (
+    doc text,
+    ts tsvector GENERATED ALWAYS AS (to_tsvector('simple', doc)) STORED);
+INSERT INTO docs (doc) VALUES
+  ('Can a sheet slitter slit sheets?'),
+  ('How many sheets could a sheet slitter slit?'),
+  ('I slit a sheet, a sheet I slit.'),
+  ('Upon a slitted sheet I sit.'),
+  ('Whoever slit the sheets is a good sheet slitter.'),
+  ('I am a sheet slitter.'),
+  ('I slit sheets.'),
+  ('I am the sleekest sheet slitter that ever slit sheets.'),
+  ('She slits the sheet she sits on.');
+SELECT * FROM docs; -- what tsvector looks like
+\end{sqlcode}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ docs }\KeywordTok{USING}\NormalTok{ GIN (ts);}
-\KeywordTok{SET}\NormalTok{ enable\_seqscan }\OperatorTok{=} \KeywordTok{OFF}\NormalTok{;}
-\KeywordTok{EXPLAIN} \KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ docs}
-    \KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many\textquotesingle{}}\NormalTok{); }\CommentTok{{-}{-} this is index scan}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE INDEX ON docs USING GIN (ts);
+SET enable_seqscan = OFF;
+EXPLAIN SELECT * FROM docs
+    WHERE ts @@ to_tsquery('simple', 'many'); -- this is index scan
+\end{sqlcode}
 
 Example of what can be done, all using the index:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many \& slitter\textquotesingle{}}\NormalTok{);}
-\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}many | slitter\textquotesingle{}}\NormalTok{);}
-\KeywordTok{SELECT}\NormalTok{ doc }\KeywordTok{FROM}\NormalTok{ docs }\KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}slit:* \& !slit\textquotesingle{}}\NormalTok{);}
-\KeywordTok{SELECT}\NormalTok{ ts\_rank(ts, to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}i \& sheet:* \& slit:*\textquotesingle{}}\NormalTok{)) }\KeywordTok{as} \FunctionTok{rank}\NormalTok{, doc}
-    \KeywordTok{FROM}\NormalTok{ docs}
-    \KeywordTok{WHERE}\NormalTok{ ts @@ to\_tsquery(}\StringTok{\textquotesingle{}simple\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}i \& sheet:* \& slit:*\textquotesingle{}}\NormalTok{)}
-    \KeywordTok{ORDER} \KeywordTok{BY} \FunctionTok{rank} \KeywordTok{DESC}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many | slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'slit:* & !slit');
+SELECT ts_rank(ts, to_tsquery('simple', 'i & sheet:* & slit:*')) as rank, doc
+    FROM docs
+    WHERE ts @@ to_tsquery('simple', 'i & sheet:* & slit:*')
+    ORDER BY rank DESC;
+\end{sqlcode}
 
 \hypertarget{example-jsonb}{%
 \subsection{Example: jsonb}\label{example-jsonb}}
 
 Here is an example of using a jsonb GIN index.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{CREATE} \KeywordTok{TABLE}\NormalTok{ records (p SERIAL }\KeywordTok{PRIMARY} \KeywordTok{KEY}\NormalTok{, j jsonb);}
-\KeywordTok{INSERT} \KeywordTok{INTO}\NormalTok{ records (j) }\KeywordTok{VALUES}
-\NormalTok{  (}\StringTok{\textquotesingle{}\{"a": 1\}\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": \{"c": "d"\}\}\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": \{"c": "e"\}\}\textquotesingle{}}\NormalTok{),}
-\NormalTok{  (}\StringTok{\textquotesingle{}\{"b": [1, [2, 3], 4], "c": "f"\}\textquotesingle{}}\NormalTok{);}
-\KeywordTok{CREATE} \KeywordTok{INDEX} \KeywordTok{ON}\NormalTok{ records }\KeywordTok{USING}\NormalTok{ GIN (j jsonb\_ops);}
-\KeywordTok{SET}\NormalTok{ enable\_seqscan }\OperatorTok{=} \KeywordTok{OFF}\NormalTok{;}
-\KeywordTok{EXPLAIN} \KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @}\OperatorTok{\textgreater{}} \StringTok{\textquotesingle{}\{"b": \{\}\}\textquotesingle{}}\NormalTok{; }\CommentTok{{-}{-} this is index scan}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+CREATE TABLE records (p SERIAL PRIMARY KEY, j jsonb);
+INSERT INTO records (j) VALUES
+  ('{"a": 1}'),
+  ('{"b": {"c": "d"}}'),
+  ('{"b": {"c": "e"}}'),
+  ('{"b": [1, [2, 3], 4], "c": "f"}');
+CREATE INDEX ON records USING GIN (j jsonb_ops);
+SET enable_seqscan = OFF;
+EXPLAIN SELECT * FROM records WHERE j @> '{"b": {}}'; -- this is index scan
+\end{sqlcode}
 
 Example of what can be done, all using the index:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @}\OperatorTok{\textgreater{}} \StringTok{\textquotesingle{}\{"b": \{\}\}\textquotesingle{}}\NormalTok{;}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ? }\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{;}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ?| }\DataTypeTok{ARRAY}\NormalTok{[}\StringTok{\textquotesingle{}a\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{];}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j ?\& }\DataTypeTok{ARRAY}\NormalTok{[}\StringTok{\textquotesingle{}c\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}b\textquotesingle{}}\NormalTok{];}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @? }\StringTok{\textquotesingle{}$.b[*] ? (@ \textgreater{} 3)\textquotesingle{}}\NormalTok{;}
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @@ }\StringTok{\textquotesingle{}$.b.c == "e"\textquotesingle{}}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT * FROM records WHERE j @> '{"b": {}}';
+SELECT * FROM records WHERE j ? 'c';
+SELECT * FROM records WHERE j ?| ARRAY['a', 'c'];
+SELECT * FROM records WHERE j ?& ARRAY['c', 'b'];
+SELECT * FROM records WHERE j @? '$.b[*] ? (@ > 3)';
+SELECT * FROM records WHERE j @@ '$.b.c == "e"';
+\end{sqlcode}
 
 You can think of
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ j @? }\StringTok{\textquotesingle{}$.b[*] ? (@ == 3)\textquotesingle{}}\NormalTok{;}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT * FROM records WHERE j @? '$.b[*] ? (@ == 3)';
+\end{sqlcode}
 
 to be like
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ records }\KeywordTok{WHERE}\NormalTok{ (}
-\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[0] == 3\textquotesingle{}} \KeywordTok{or}
-\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[1] == 3\textquotesingle{}} \KeywordTok{or}
-\NormalTok{    j @@ }\StringTok{\textquotesingle{}$.b[2] == 3\textquotesingle{}}\NormalTok{);}
-\end{Highlighting}
-\end{Shaded}
+\begin{sqlcode}
+SELECT * FROM records WHERE (
+    j @@ '$.b[0] == 3' or
+    j @@ '$.b[1] == 3' or
+    j @@ '$.b[2] == 3');
+\end{sqlcode}
 
 \hypertarget{advanced-material}{%
 \section{Advanced material}\label{advanced-material}}
@@ -846,7 +719,7 @@ does
 \hypertarget{read}{%
 \subsubsection{Read}\label{read}}
 
-\begin{verbatim}
+\begin{textcode}
 exec_simple_query
   PortalStart
     ExecutorStart
@@ -873,11 +746,11 @@ exec_simple_query
                         gingetbitmap
                     MultiExecBitmapAnd
                     MultiExecBitmapOr
-\end{verbatim}
+\end{textcode}
 
 Entry point for using text search functions:
 
-\begin{verbatim}
+\begin{textcode}
 (gdb) bt
 #0  TS_execute (curitem=0x1749d90, arg=arg@entry=0x7ffdf8c8ea50, flags=flags@entry=2, chkcond=chkcond@entry=0x842ad0 <checkcondition_gin>) at tsvector_op.c:1848
 #1  0x00000000008430c3 in gin_tsquery_triconsistent (fcinfo=<optimized out>) at tsginidx.c:287
@@ -905,19 +778,19 @@ efe0) at pquery.c:756
 #22 ServerLoop () at postmaster.c:1739
 #23 0x00000000006fc793 in PostmasterMain (argc=argc@entry=3, argv=argv@entry=0x171f980) at postmaster.c:1412
 #24 0x0000000000482a6e in main (argc=3, argv=0x171f980) at main.c:210
-\end{verbatim}
+\end{textcode}
 
 \hypertarget{constants}{%
 \subsection{Constants}\label{constants}}
 
-\begin{verbatim}
+\begin{ccode}
 #define JsonbContainsStrategyNumber   7
 #define JsonbExistsStrategyNumber   9
 #define JsonbExistsAnyStrategyNumber  10
 #define JsonbExistsAllStrategyNumber  11
 #define JsonbJsonpathExistsStrategyNumber   15
 #define JsonbJsonpathPredicateStrategyNumber  16
-\end{verbatim}
+\end{ccode}
 
 \hypertarget{misc}{%
 \subsection{Misc}\label{misc}}
@@ -926,7 +799,7 @@ efe0) at pquery.c:756
 \item
   At \texttt{ginbeginscan},
 
-\begin{verbatim}
+\begin{textcode}
 (gdb) p so->ginstate
 $32 = {
   index = 0x7fbef38c56f0,
@@ -1062,7 +935,7 @@ $32 = {
   canPartialMatch = {true, false <repeats 31 times>},
   supportCollation = {100, 0 <repeats 31 times>}
 }
-\end{verbatim}
+\end{textcode}
 \end{itemize}
 
 \end{document}
