@@ -37,11 +37,14 @@
 \DeclarePairedDelimiter{\parens}{\lparen}{\rparen}
 
 \newenvironment{iparts}
-    {\begin{enumerate}[{(}i{)}]}
+    {\begin{enumerate}[{(}i{)}]\tightlist}
     {\end{enumerate}}
 \newenvironment{nparts}
-    {\begin{enumerate}[1.]}
+    {\begin{enumerate}[1.]\tightlist}
     {\end{enumerate}}
 \newenvironment{qparts}
-    {\begin{enumerate}[{(}a{)}]}
+    {\begin{enumerate}[{(}a{)}]\tightlist}
     {\end{enumerate}}
+
+\providecommand{\tightlist}{%
+    \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
