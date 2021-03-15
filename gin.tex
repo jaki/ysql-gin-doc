@@ -12,8 +12,7 @@
 \hypertarget{terms}{%
 \subsection{Terms}\label{terms}}
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   indexed table: indexes are on \emph{indexed tables}
 \item
@@ -23,7 +22,7 @@
 \item
   posting list: in postgres, a GIN index tuple maps key to \emph{posting
   list}, a list of ctids corresponding to the indexed table rows
-\end{itemize}
+\end{oparts}
 
 \hypertarget{background}{%
 \subsection{Background}\label{background}}
@@ -85,8 +84,7 @@ words, I add 300 records to the index, all referencing the same page.
 \hypertarget{limitations}{%
 \subsection{Limitations}\label{limitations}}
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   GIN indexes can only be used on column types \texttt{tsvector},
   \texttt{anyarray}, \texttt{jsonb}
@@ -95,7 +93,7 @@ words, I add 300 records to the index, all referencing the same page.
 \item
   GIN indexes can be on more than one column, but all columns must be
   GINable
-\end{itemize}
+\end{oparts}
 
 \hypertarget{gin-opclasses}{%
 \subsection{GIN opclasses}\label{gin-opclasses}}
@@ -143,8 +141,7 @@ postgres-derived keys and converts them to DocDB format and vice versa.
 
 See the operators in postgresql docs:
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   \href{https://www.postgresql.org/docs/current/functions-textsearch.html}{tsvector
   operators}
@@ -154,17 +151,15 @@ See the operators in postgresql docs:
 \item
   \href{https://www.postgresql.org/docs/current/functions-json.html}{jsonb
   operators}
-\end{itemize}
+\end{oparts}
 
 All the operators boil down to a combination of these primitives:
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   set \texttt{a} contains element \texttt{b}? (\texttt{@\textgreater{}})
 
-  \begin{itemize}
-  \tightlist
+  \begin{oparts}
   \item
     contains element greater than
   \item
@@ -175,19 +170,17 @@ All the operators boil down to a combination of these primitives:
     contains element less than or equal to
   \item
     contains element with prefix
-  \end{itemize}
+  \end{oparts}
 \item
   logical and, not, or
 \item
   recheck
-\end{itemize}
+\end{oparts}
 
 For example, the \texttt{=} operator for arrays makes sure that the
 indexed array column equals the query array. This can be done by
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   For each element in the query array, get a set of row ids whose array
   column \emph{contains} the element
@@ -198,7 +191,7 @@ indexed array column equals the query array. This can be done by
 \item
   \emph{recheck} each row to make sure its array has the same number of
   (distinct) elements as the query array
-\end{enumerate}
+\end{nparts}
 
 Recheck is the fallback we can rely on for complicated queries. We can
 slowly phase out the need to use recheck as DocDB becomes more capable.
@@ -216,26 +209,22 @@ For postgres,
 \texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
 does
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
 \item
   for each index key, append the indexed table ctid to the key's posting
   list
-\end{enumerate}
+\end{nparts}
 
 For Yugabyte, we should
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
 \item
   \textbf{for each index key, write (key, ctid) pair to DocDB}
-\end{enumerate}
+\end{nparts}
 
 \hypertarget{read-path}{%
 \subsubsection{Read path}\label{read-path}}
@@ -244,29 +233,25 @@ For postgres,
 \texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
 does
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   create scan key: \texttt{the}
 \item
   get tuples matching scan key
 \item
   recheck each tuple if needed
-\end{enumerate}
+\end{nparts}
 
 For Yugabyte, we should
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   create scan key: \texttt{the}
 \item
   \textbf{fetch tuples from DocDB matching scan key}
 \item
   recheck each tuple if needed
-\end{enumerate}
+\end{nparts}
 
 \hypertarget{docdb-encoding}{%
 \subsection{DocDB encoding}\label{docdb-encoding}}
@@ -290,9 +275,7 @@ TODO: look into DocDB encoding for \texttt{kString}. TODO: look into
 
 The GIN index key should be paths, like
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
 \item
@@ -309,7 +292,7 @@ The GIN index key should be paths, like
   \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ 4}
 \item
   \texttt{\textless{}JSON\textgreater{},\ c,\ f}
-\end{enumerate}
+\end{nparts}
 
 (This is inspired by
 \href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
@@ -318,8 +301,7 @@ inverted index RFC}.)
 Contains (\texttt{@\textgreater{}}) searches can have corresponding scan
 keys
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"a":\ 1\}\textquotesingle{}}
   scans for \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
@@ -339,12 +321,11 @@ keys
   \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}4{]}\}\textquotesingle{}}
   scans for
   \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{},\ 4}
-\end{itemize}
+\end{oparts}
 
 Concerns
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   \texttt{25.0} and \texttt{25} match should equally match--what will
   the number format be like?
@@ -356,7 +337,7 @@ Concerns
   marking array end on array GIN index.) \texttt{kGroupEnd}? But doesn't
   this mean the contents of the JSON GIN key have to be encoded in some
   way to make exclamation marks unambiguous?
-\end{itemize}
+\end{oparts}
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
@@ -396,14 +377,12 @@ Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } 
 
 In simpler terms,
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   \texttt{{[}"b",\ true{]}}
 \item
   \texttt{{[}null,\ false{]}}
-\end{enumerate}
+\end{nparts}
 
 \texttt{IndexScan} on
 \texttt{c\ =\ \textquotesingle{}b\textquotesingle{}} can look in this
@@ -427,14 +406,12 @@ Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } 
 
 In simpler terms,
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   \texttt{{[}2,\ null{]}} -\textgreater{} \texttt{true}
 \item
   \texttt{{[}null,\ false{]}} -\textgreater{} \texttt{false}
-\end{enumerate}
+\end{nparts}
 
 \texttt{IndexScan} on \texttt{i\ =\ 2} can look in this index for
 \texttt{{[}2{]}} prefix, get the value \texttt{true}, then look up
@@ -445,13 +422,11 @@ In simpler terms,
 
 You can represent each GIN operator using the primitives:
 
-\begin{itemize}
-\tightlist
+\begin{oparts}
 \item
   \texttt{tsvector\ @@\ tsquery\ →\ boolean}: (custom)
 
-  \begin{itemize}
-  \tightlist
+  \begin{oparts}
   \item
     tsquery \texttt{a\ \textbar{}\ b}: (set \texttt{LHS} contains
     element \texttt{a}) OR (set \texttt{LHS} contains element
@@ -465,7 +440,7 @@ You can represent each GIN operator using the primitives:
   \item
     tsquery \texttt{a:*\textquotesingle{}}: (set \texttt{LHS} contains
     element \textbf{with prefix} \texttt{a})
-  \end{itemize}
+  \end{oparts}
 \item
   \texttt{anyarray\ \&\&\ anyarray\ →\ boolean}: OR(set \texttt{LHS}
   contains element \texttt{RHS{[}*{]}})
@@ -495,8 +470,7 @@ You can represent each GIN operator using the primitives:
 \item
   \texttt{jsonb\ @@\ jsonpath\ →\ boolean}: (custom)
 
-  \begin{itemize}
-  \tightlist
+  \begin{oparts}
   \item
     jsonpath \texttt{\$.a\ ==\ 7}: set \texttt{LHS} contains element
     \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7}
@@ -545,8 +519,8 @@ You can represent each GIN operator using the primitives:
     AND (set \texttt{LHS} contains element \textbf{with prefix}
     \texttt{\textless{}key\textgreater{}c.\textless{}num\textgreater{}})
     + recheck
-  \end{itemize}
-\end{itemize}
+  \end{oparts}
+\end{oparts}
 
 \hypertarget{example-tsvector}{%
 \subsection{Example: tsvector}\label{example-tsvector}}
@@ -649,9 +623,7 @@ extended}\label{read-and-write-path-extended}}
 \texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
 does
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   insert to main table (\texttt{ExecInsert},
   \texttt{table\_tuple\_insert})
@@ -659,9 +631,7 @@ does
   insert to gin index (\texttt{ExecInsert},
   \texttt{ExecInsertIndexTuples})
 
-  \begin{enumerate}
-  \def\labelenumii{\arabic{enumii}.}
-  \tightlist
+  \begin{nparts}
   \item
     if fast update is enabled, write index tuples to pending list
     (\texttt{gininsert}, \texttt{ginHeapTupleFastInsert})
@@ -669,9 +639,7 @@ does
     otherwise, write index tuples to disk (\texttt{gininsert},
     \texttt{ginHeapTupleInsert})
 
-    \begin{enumerate}
-    \def\labelenumiii{\arabic{enumiii}.}
-    \tightlist
+    \begin{nparts}
     \item
       prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
       (\texttt{ginHeapTupleInsert}, \texttt{ginExtractEntries})
@@ -682,9 +650,9 @@ does
     \item
       otherwise, create a posting list containing just the indexed table
       ctid (\texttt{ginEntryInsert}, \texttt{buildFreshLeafTuple})
-    \end{enumerate}
-  \end{enumerate}
-\end{enumerate}
+    \end{nparts}
+  \end{nparts}
+\end{nparts}
 
 \hypertarget{read-path-extended}{%
 \subsubsection{Read path extended}\label{read-path-extended}}
@@ -692,9 +660,7 @@ does
 \texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
 does
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{nparts}
 \item
   create scan key: \texttt{the} (\texttt{gingetbitmap},
   \texttt{ginNewScanKey})
@@ -709,7 +675,7 @@ does
 \item
   recheck tuple if needed (\texttt{BitmapHeapNext},
   \texttt{ExecQualAndReset})
-\end{enumerate}
+\end{nparts}
 
 \hypertarget{execution-trees}{%
 \subsection{Execution trees}\label{execution-trees}}
@@ -793,7 +759,7 @@ efe0) at pquery.c:756
 \hypertarget{misc}{%
 \subsection{Misc}\label{misc}}
 
-\begin{itemize}
+\begin{oparts}
 \item
   At \texttt{ginbeginscan},
 
@@ -934,6 +900,6 @@ $32 = {
   supportCollation = {100, 0 <repeats 31 times>}
 }
 \end{textcode}
-\end{itemize}
+\end{oparts}
 
 \end{document}
