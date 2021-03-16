@@ -154,24 +154,39 @@ All the operators boil down to a combination of these primitives:
 
 \begin{oparts}
 \item
-  set \textinline{a} contains element \textinline{b}? (\sqlinline{@>})
-
+  \textbf{getkey}:
+  given index $I$, get list of tuples $T = \braces{(ik, pk) \in I : f(ik)}$ for
+  $f$ a simple predicate like
   \begin{oparts}
   \item
-    contains element greater than
+    $ik < c$
   \item
-    contains element greater than or equal to
+    $ik = c$
   \item
-    contains element less than
+    $ik > c$
   \item
-    contains element less than or equal to
+    $ik \geq c$
   \item
-    contains element with prefix
+    $ik \leq c$
+  \item
+    $ik~\textnormal{starts with}~c$
   \end{oparts}
 \item
-  logical and, not, or
+  \textbf{and}:
+  given list of tuples $T_1$, $T_2$, get $T = T_1 \cap T_2$
 \item
-  recheck
+  \textbf{or}:
+  given list of tuples $T_1$, $T_2$, get $T = T_1 \cup T_2$
+\item
+  \textbf{recheck}:
+  given list of tuples $T_1$, get list of tuples $T = \braces{(ik, pk) \in T_1
+  : g(pk)}$ for $g$ any predicate like
+  \begin{oparts}
+  \item
+    \sqlinline{pk @@ '$.a.b.c.ceiling() == 5'}
+  \item
+    \sqlinline{pk @@ '$.d.e.f like_regex "^foo.*bar"'}
+  \end{oparts}
 \end{oparts}
 
 For example, the \sqlinline{=} operator for arrays makes sure that the indexed
