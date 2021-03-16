@@ -24,14 +24,19 @@
         label=##2,
     }
 }
-\newcommand{\setnewmintedboth}[1]{%
+\newcommand{\setnewmintinline}[1]{%
+    \newmintinline{#1}{%
+    }
+}
+\newcommand{\setnewmintall}[1]{%
     \setnewminted{#1}
     \setnewmintedfile{#1}
+    \setnewmintinline{#1}
 }
-\setnewmintedboth{bash}
-\setnewmintedboth{c}
-\setnewmintedboth{sql}
-\setnewmintedboth{text}
+\setnewmintall{bash}
+\setnewmintall{c}
+\setnewmintall{sql}
+\setnewmintall{text}
 
 \DeclarePairedDelimiter{\braces}{\lbrace}{\rbrace}
 \DeclarePairedDelimiter{\parens}{\lparen}{\rparen}
