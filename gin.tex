@@ -154,33 +154,33 @@ All the operators boil down to a combination of these primitives:
 
 \begin{oparts}
 \item
-  \textbf{getkey}:
-  given index $I$, get list of tuples $T = \braces{(ik, pk) \in I : f(ik)}$ for
-  $f$ a simple predicate like
+  $\opget(I, f)$:
+  given index $I$, get list of tuples $T = \braces{(\ik, \pk) \in I : f(\ik)}$
+  for $f$ a simple predicate like
   \begin{oparts}
   \item
-    $ik < c$
+    $\ik < c$
   \item
-    $ik = c$
+    $\ik = c$
   \item
-    $ik > c$
+    $\ik > c$
   \item
-    $ik \geq c$
+    $\ik \geq c$
   \item
-    $ik \leq c$
+    $\ik \leq c$
   \item
-    $ik~\textnormal{starts with}~c$
+    $\ik~\textnormal{starts with}~c$
   \end{oparts}
 \item
-  \textbf{and}:
+  $\opand(T_1, T_2)$:
   given list of tuples $T_1$, $T_2$, get $T = T_1 \cap T_2$
 \item
-  \textbf{or}:
+  $\opor(T_1, T_2)$:
   given list of tuples $T_1$, $T_2$, get $T = T_1 \cup T_2$
 \item
-  \textbf{recheck}:
-  given list of tuples $T_1$, get list of tuples $T = \braces{(ik, pk) \in T_1
-  : g(pk)}$ for $g$ any predicate like
+  $\oprecheck(T_1, g)$:
+  given list of tuples $T_1$, get list of tuples $T = \braces{(\ik, \pk) \in
+  T_1 : g(\pk)}$ for $g$ any predicate like
   \begin{oparts}
   \item
     \sqlinline{pk @@ '$.a.b.c.ceiling() == 5'}
