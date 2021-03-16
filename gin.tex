@@ -31,7 +31,7 @@
 CREATE TABLE book (page int PRIMARY KEY, word text, position int);
 \end{sqlcode}
 
-creates a DocDB table with key \texttt{page\ HASH}. I can easily ask for
+creates a DocDB table with key \sqlinline{page HASH}. I can easily ask for
 pages 5-12 using this primary key:
 
 \begin{sqlcode}
@@ -43,8 +43,8 @@ CREATE INDEX ON book (word);
 \end{sqlcode}
 
 creates a secondary DocDB table with key
-\texttt{word\ HASH,\ page\ ASC}. This is like the index at the back of a
-book. I can easily ask what pages have the word \texttt{foo} using this
+\textinline{word HASH, page ASC}. This is like the index at the back of a
+book. I can easily ask what pages have the word \textinline{foo} using this
 index:
 
 \begin{sqlcode}
@@ -57,14 +57,14 @@ What if the table were structured instead like
 CREATE TABLE book (page int PRIMARY KEY, words text[]);
 \end{sqlcode}
 
-Now, looking for the specific word \texttt{foo} is time-consuming:
+Now, looking for the specific word \textinline{foo} is time-consuming:
 
 \begin{sqlcode}
 select * from book where '{foo}' && words;
 \end{sqlcode}
 
 Creating a regular index won't help since you still need to search
-\texttt{words} for \texttt{foo}.
+\textinline{words} for \textinline{foo}.
 
 \hypertarget{overview}{%
 \subsection{Overview}\label{overview}}
@@ -77,8 +77,8 @@ CREATE INDEX ON book USING gin (words);
 \end{sqlcode}
 
 should create a secondary DocDB table with key
-\texttt{word\ HASH,\ pages\ ASC}, where \texttt{word} is a word in
-\texttt{words}. If I insert a page with 300 unique words and 500 total
+\textinline{word HASH, pages ASC}, where \textinline{word} is a word in
+\textinline{words}. If I insert a page with 300 unique words and 500 total
 words, I add 300 records to the index, all referencing the same page.
 
 \hypertarget{limitations}{%
@@ -86,8 +86,8 @@ words, I add 300 records to the index, all referencing the same page.
 
 \begin{oparts}
 \item
-  GIN indexes can only be used on column types \texttt{tsvector},
-  \texttt{anyarray}, \texttt{jsonb}
+  GIN indexes can only be used on column types \sqlinline{tsvector},
+  \sqlinline{anyarray}, \sqlinline{jsonb}
 \item
   GIN indexes cannot be unique
 \item
@@ -108,28 +108,28 @@ key format!} Here are the opclasses that can be used with GIN
         \toprule
         opclass & type & supported operators \\
         \midrule
-        \texttt{tsvector\_ops} & \texttt{tsvector} & \texttt{@@},
-        \texttt{@@@} \\
-        \texttt{array\_ops} & \texttt{anyarray} & \texttt{\&\&},
-        \texttt{\textless{}@}, \texttt{=}, \texttt{@\textgreater{}} \\
-        \texttt{jsonb\_ops} & \texttt{jsonb} & \texttt{?}, \texttt{?\&},
-        \texttt{?\textbar{}}, \texttt{@\textgreater{}}, \texttt{@?},
-        \texttt{@@} \\
-        \texttt{jsonb\_path\_ops} & \texttt{jsonb} & \texttt{@\textgreater{}},
-        \texttt{@?}, \texttt{@@} \\
+        \sqlinline{tsvector_ops} & \sqlinline{tsvector} & \sqlinline{@@},
+        \sqlinline{@@@} \\
+        \sqlinline{array_ops} & \sqlinline{anyarray} & \sqlinline{&&},
+        \sqlinline{@}, \sqlinline{=}, \sqlinline{@>} \\
+        \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?}, \sqlinline{?&},
+        \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
+        \sqlinline{@@} \\
+        \sqlinline{jsonb_path_ops} & \sqlinline{jsonb} & \sqlinline{@>},
+        \sqlinline{@?}, \sqlinline{@@} \\
         \bottomrule
     \end{tabular}
 \end{center}
 
-If I \texttt{CREATE\ INDEX\ ON\ bar\ USING\ gin\ (jsonb\_col)}, I
-implicitly use opclass \texttt{jsonb\_ops}. To use
-\texttt{jsonb\_path\_ops}, I need to
-\texttt{CREATE\ INDEX\ ON\ bar\ USING\ gin\ (jsonb\_col\ jsonb\_path\_ops)}.
+If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I
+implicitly use opclass \sqlinline{jsonb_ops}. To use
+\sqlinline{jsonb_path_ops}, I need to
+\sqlinline{CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops)}.
 
-\texttt{jsonb\_ops} forms an index key for each individual piece (key or
+\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
 value) of the jsonb.
 
-\texttt{jsonb\_path\_ops} forms an index key for each path from root to
+\sqlinline{jsonb_path_ops} forms an index key for each path from root to
 leaf.
 
 We could create our own opclass to form the keys in a way that fits with
@@ -157,7 +157,7 @@ All the operators boil down to a combination of these primitives:
 
 \begin{oparts}
 \item
-  set \texttt{a} contains element \texttt{b}? (\texttt{@\textgreater{}})
+  set \textinline{a} contains element \textinline{b}? (\sqlinline{@>})
 
   \begin{oparts}
   \item
@@ -177,7 +177,7 @@ All the operators boil down to a combination of these primitives:
   recheck
 \end{oparts}
 
-For example, the \texttt{=} operator for arrays makes sure that the
+For example, the \sqlinline{=} operator for arrays makes sure that the
 indexed array column equals the query array. This can be done by
 
 \begin{nparts}
@@ -187,7 +187,7 @@ indexed array column equals the query array. This can be done by
 \item
   Intersect the sets of row ids (\emph{logical and}) to obtain a set of
   row ids whose array column contains the query array
-  (\texttt{@\textgreater{}})
+  (\sqlinline{@>})
 \item
   \emph{recheck} each row to make sure its array has the same number of
   (distinct) elements as the query array
@@ -206,12 +206,12 @@ See translations of all operators to primitives in
 \subsubsection{Write path}\label{write-path}}
 
 For postgres,
-\texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
+\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))}
 does
 
 \begin{nparts}
 \item
-  prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
+  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
 \item
   for each index key, append the indexed table ctid to the key's posting
   list
@@ -221,7 +221,7 @@ For Yugabyte, we should
 
 \begin{nparts}
 \item
-  prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
+  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
 \item
   \textbf{for each index key, write (key, ctid) pair to DocDB}
 \end{nparts}
@@ -230,12 +230,12 @@ For Yugabyte, we should
 \subsubsection{Read path}\label{read-path}}
 
 For postgres,
-\texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
+\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')}
 does
 
 \begin{nparts}
 \item
-  create scan key: \texttt{the}
+  create scan key: \textinline{the}
 \item
   get tuples matching scan key
 \item
@@ -246,7 +246,7 @@ For Yugabyte, we should
 
 \begin{nparts}
 \item
-  create scan key: \texttt{the}
+  create scan key: \textinline{the}
 \item
   \textbf{fetch tuples from DocDB matching scan key}
 \item
@@ -258,17 +258,19 @@ For Yugabyte, we should
 
 In general, GIN index records should be encoded like
 
-\texttt{{[}\textless{}gin\_index\_keys\textgreater{},\ \textless{}primary\_keys\textgreater{}{]}}
+\begin{textcode*}{frame=none}
+[<gin_index_keys>, <primary_keys>]
+\end{textcode*}
 
 \hypertarget{tsvector}{%
 \subsubsection{tsvector}\label{tsvector}}
 
-The GIN index key should be words, like \texttt{the}, \texttt{quick},
-\texttt{brown}. To support prefix search, serialization of the words
+The GIN index key should be words, like \textinline{the}, \textinline{quick},
+\textinline{brown}. To support prefix search, serialization of the words
 should be done carefully.
 
-TODO: look into DocDB encoding for \texttt{kString}. TODO: look into
-\texttt{tsvector} \textbf{weights}
+TODO: look into DocDB encoding for \cppinline{kString}. TODO: look into
+\textinline{tsvector} \textbf{weights}
 
 \hypertarget{jsonb}{%
 \subsubsection{jsonb}\label{jsonb}}
@@ -277,64 +279,64 @@ The GIN index key should be paths, like
 
 \begin{oparts}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
+  \textinline{<JSON>, a, 1}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{},\ c,\ d}
+  \textinline{<JSON>, b, <JSON>, c, d}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{},\ c,\ e}
+  \textinline{<JSON>, b, <JSON>, c, e}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ 1}
+  \textinline{<JSON>, b, <ARRAY>, 1}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ \textless{}ARRAY\textgreater{},\ 2}
+  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 2}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ \textless{}ARRAY\textgreater{},\ 3}
+  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 3}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARRAY\textgreater{},\ 4}
+  \textinline{<JSON>, b, <ARRAY>, 4}
 \item
-  \texttt{\textless{}JSON\textgreater{},\ c,\ f}
+  \textinline{<JSON>, c, f}
 \end{oparts}
 
 (This is inspired by
 \href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
 inverted index RFC}.)
 
-Contains (\texttt{@\textgreater{}}) searches can have corresponding scan
+Contains (\sqlinline{@>}) searches can have corresponding scan
 keys
 
 \begin{oparts}
 \item
-  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"a":\ 1\}\textquotesingle{}}
-  scans for \texttt{\textless{}JSON\textgreater{},\ a,\ 1}
+  \sqlinline{j @> '{"a": 1}'}
+  scans for \textinline{<JSON>, a, 1}
 \item
-  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ \{\}\}\textquotesingle{}}
+  \sqlinline{j @> '{"b": {}}'}
   scans for
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}JSON\textgreater{}}
+  \textinline{<JSON>, b, <JSON>}
 \item
-  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}{]}\}\textquotesingle{}}
+  \sqlinline{j @> '{"b": []}'}
   scans for
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{}}
+  \textinline{<JSON>, b, <ARR>}
 \item
-  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}{[}{]}{]}\}\textquotesingle{}}
+  \sqlinline{j @> '{"b": [[]]}'}
   scans for
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{},\ \textless{}ARR\textgreater{}}
+  \textinline{<JSON>, b, <ARR>, <ARR>}
 \item
-  \texttt{j\ @\textgreater{}\ \textquotesingle{}\{"b":\ {[}4{]}\}\textquotesingle{}}
+  \sqlinline{j @> '{"b": [4]}'}
   scans for
-  \texttt{\textless{}JSON\textgreater{},\ b,\ \textless{}ARR\textgreater{},\ 4}
+  \textinline{<JSON>, b, <ARR>, 4}
 \end{oparts}
 
 Concerns
 
 \begin{oparts}
 \item
-  \texttt{25.0} and \texttt{25} match should equally match--what will
+  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will
   the number format be like?
 \item
   What will the text encoding be like, especially for weird unicode, and
   how does prefix matching work, then?
 \item
   How will the end of the JSON document be marked? (Same question for
-  marking array end on array GIN index.) \texttt{kGroupEnd}? But doesn't
+  marking array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't
   this mean the contents of the JSON GIN key have to be encoded in some
   way to make exclamation marks unambiguous?
 \end{oparts}
@@ -379,15 +381,15 @@ In simpler terms,
 
 \begin{nparts}
 \item
-  \texttt{{[}"b",\ true{]}}
+  \textinline{["b", true]}
 \item
-  \texttt{{[}null,\ false{]}}
+  \textinline{[null, false]}
 \end{nparts}
 
-\texttt{IndexScan} on
-\texttt{c\ =\ \textquotesingle{}b\textquotesingle{}} can look in this
-index for \texttt{{[}"b"{]}} prefix, get the next key component
-\texttt{true}, then look up \texttt{true} in the indexed table.
+\textinline{IndexScan} on
+\sqlinline{c = 'b'} can look in this
+index for \textinline{["b"]} prefix, get the next key component
+\textinline{true}, then look up \textinline{true} in the indexed table.
 
 \begin{sqlcode}
 CREATE UNIQUE INDEX ON t (i);
@@ -408,14 +410,14 @@ In simpler terms,
 
 \begin{nparts}
 \item
-  \texttt{{[}2,\ null{]}} -\textgreater{} \texttt{true}
+  \textinline{[2, null]} -\textgreater{} \textinline{true}
 \item
-  \texttt{{[}null,\ false{]}} -\textgreater{} \texttt{false}
+  \textinline{[null, false]} -\textgreater{} \textinline{false}
 \end{nparts}
 
-\texttt{IndexScan} on \texttt{i\ =\ 2} can look in this index for
-\texttt{{[}2{]}} prefix, get the value \texttt{true}, then look up
-\texttt{true} in the indexed table.
+\textinline{IndexScan} on \sqlinline{i = 2} can look in this index for
+\textinline{[2]} prefix, get the value \textinline{true}, then look up
+\textinline{true} in the indexed table.
 
 \hypertarget{operators-to-primitives}{%
 \subsection{Operators to primitives}\label{operators-to-primitives}}
@@ -620,36 +622,36 @@ extended}\label{read-and-write-path-extended}}
 \hypertarget{write-path-extended}{%
 \subsubsection{Write path extended}\label{write-path-extended}}
 
-\texttt{INSERT\ INTO\ table\_with\_gin\_index\ (to\_tsvector(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\ quick\ brown\textquotesingle{}))}
+\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))}
 does
 
 \begin{nparts}
 \item
-  insert to main table (\texttt{ExecInsert},
-  \texttt{table\_tuple\_insert})
+  insert to main table (\cinline{ExecInsert},
+  \cinline{table_tuple_insert})
 \item
-  insert to gin index (\texttt{ExecInsert},
-  \texttt{ExecInsertIndexTuples})
+  insert to gin index (\cinline{ExecInsert},
+  \cinline{ExecInsertIndexTuples})
 
   \begin{qparts}
   \item
     if fast update is enabled, write index tuples to pending list
-    (\texttt{gininsert}, \texttt{ginHeapTupleFastInsert})
+    (\cinline{gininsert}, \cinline{ginHeapTupleFastInsert})
   \item
-    otherwise, write index tuples to disk (\texttt{gininsert},
-    \texttt{ginHeapTupleInsert})
+    otherwise, write index tuples to disk (\cinline{gininsert},
+    \cinline{ginHeapTupleInsert})
 
     \begin{iparts}
     \item
-      prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
-      (\texttt{ginHeapTupleInsert}, \texttt{ginExtractEntries})
+      prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
+      (\cinline{ginHeapTupleInsert}, \cinline{ginExtractEntries})
     \item
       if tuple with key already exists, append the indexed table ctid to
-      the posting list (\texttt{ginEntryInsert},
-      \texttt{addItemPointersToLeafTuple})
+      the posting list (\cinline{ginEntryInsert},
+      \cinline{addItemPointersToLeafTuple})
     \item
       otherwise, create a posting list containing just the indexed table
-      ctid (\texttt{ginEntryInsert}, \texttt{buildFreshLeafTuple})
+      ctid (\cinline{ginEntryInsert}, \cinline{buildFreshLeafTuple})
     \end{iparts}
   \end{qparts}
 \end{nparts}
@@ -657,24 +659,24 @@ does
 \hypertarget{read-path-extended}{%
 \subsubsection{Read path extended}\label{read-path-extended}}
 
-\texttt{SELECT\ *\ FROM\ table\_with\_gin\_index\ WHERE\ tscol\ @@\ to\_tsquery(\textquotesingle{}simple\textquotesingle{},\ \textquotesingle{}the\textquotesingle{})}
+\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')}
 does
 
 \begin{nparts}
 \item
-  create scan key: \texttt{the} (\texttt{gingetbitmap},
-  \texttt{ginNewScanKey})
+  create scan key: \textinline{the} (\cinline{gingetbitmap},
+  \cinline{ginNewScanKey})
 \item
-  get blocks from pending list (\texttt{gingetbitmap},
-  \texttt{scanPendingInsert})
+  get blocks from pending list (\cinline{gingetbitmap},
+  \cinline{scanPendingInsert})
 \item
-  get blocks from disk (\texttt{gingetbitmap}, \texttt{startScan})
+  get blocks from disk (\cinline{gingetbitmap}, \cinline{startScan})
 \item
-  get tuples from blocks (\texttt{BitmapHeapNext},
-  \texttt{table\_scan\_bitmap\_next\_tuple})
+  get tuples from blocks (\cinline{BitmapHeapNext},
+  \cinline{table_scan_bitmap_next_tuple})
 \item
-  recheck tuple if needed (\texttt{BitmapHeapNext},
-  \texttt{ExecQualAndReset})
+  recheck tuple if needed (\cinline{BitmapHeapNext},
+  \cinline{ExecQualAndReset})
 \end{nparts}
 
 \hypertarget{execution-trees}{%
@@ -761,7 +763,7 @@ efe0) at pquery.c:756
 
 \begin{oparts}
 \item
-  At \texttt{ginbeginscan},
+  At \cinline{ginbeginscan},
 
 \begin{textcode}
 (gdb) p so->ginstate
