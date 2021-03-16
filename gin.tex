@@ -17,11 +17,11 @@
   \textbf{indexed table}: indexes are on \emph{indexed tables}
 \item
   \textbf{pending list}: in postgres, to avoid having each GIN index insert hit
-  disk, write to a linear list of tuples (\emph{pending list}) first,
-  and flush it later in bulk
+  disk, write to a linear list of tuples (\emph{pending list}) first, and flush
+  it later in bulk
 \item
-  \textbf{posting list}: in postgres, a GIN index tuple maps key to \emph{posting
-  list}, a list of ctids corresponding to the indexed table rows
+  \textbf{posting list}: in postgres, a GIN index tuple maps key to
+  \emph{posting list}, a list of ctids corresponding to the indexed table rows
 \end{oparts}
 
 \hypertarget{background}{%
@@ -42,10 +42,9 @@ SELECT * FROM book WHERE page >= 5 and page <= 12;
 CREATE INDEX ON book (word);
 \end{sqlcode}
 
-creates a secondary DocDB table with key
-\textinline{word HASH, page ASC}. This is like the index at the back of a
-book. I can easily ask what pages have the word \textinline{foo} using this
-index:
+creates a secondary DocDB table with key \textinline{word HASH, page ASC}. This
+is like the index at the back of a book. I can easily ask what pages have the
+word \textinline{foo} using this index:
 
 \begin{sqlcode}
 SELECT page FROM book WHERE word = 'foo';
@@ -69,17 +68,16 @@ Creating a regular index won't help since you still need to search
 \hypertarget{overview}{%
 \subsection{Overview}\label{overview}}
 
-GIN indexes map values \emph{inside a column} rather than the whole
-column.
+GIN indexes map values \emph{inside a column} rather than the whole column.
 
 \begin{sqlcode}
 CREATE INDEX ON book USING gin (words);
 \end{sqlcode}
 
-should create a secondary DocDB table with key
-\textinline{word HASH, pages ASC}, where \textinline{word} is a word in
-\textinline{words}. If I insert a page with 300 unique words and 500 total
-words, I add 300 records to the index, all referencing the same page.
+should create a secondary DocDB table with key \textinline{word HASH, pages
+ASC}, where \textinline{word} is a word in \textinline{words}. If I insert a
+page with 300 unique words and 500 total words, I add 300 records to the index,
+all referencing the same page.
 
 \hypertarget{limitations}{%
 \subsection{Limitations}\label{limitations}}
@@ -113,8 +111,8 @@ Here are the opclasses that can be used with GIN
         \sqlinline{@@@} \\
         \sqlinline{array_ops} & \sqlinline{anyarray} & \sqlinline{&&},
         \sqlinline{@}, \sqlinline{=}, \sqlinline{@>} \\
-        \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?}, \sqlinline{?&},
-        \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
+        \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?},
+        \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
         \sqlinline{@@} \\
         \sqlinline{jsonb_path_ops} & \sqlinline{jsonb} & \sqlinline{@>},
         \sqlinline{@?}, \sqlinline{@@} \\
@@ -122,20 +120,18 @@ Here are the opclasses that can be used with GIN
     \end{tabular}
 \end{center}
 
-If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I
-implicitly use opclass \sqlinline{jsonb_ops}. To use
-\sqlinline{jsonb_path_ops}, I need to
+If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I implicitly use
+opclass \sqlinline{jsonb_ops}. To use \sqlinline{jsonb_path_ops}, I need to
 \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops)}.
 
 \sqlinline{jsonb_ops} forms an index key for each individual piece (key or
 value) of the jsonb.
 
-\sqlinline{jsonb_path_ops} forms an index key for each path from root to
-leaf.
+\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
 
-We could create our own opclass to form the keys in a way that fits with
-DocDB, or we could instead have a translation layer that takes these
-postgres-derived keys and converts them to DocDB format and vice versa.
+We could create our own opclass to form the keys in a way that fits with DocDB,
+or we could instead have a translation layer that takes these postgres-derived
+keys and converts them to DocDB format and vice versa.
 
 \hypertarget{operators}{%
 \subsection{Operators}\label{operators}}
@@ -178,24 +174,23 @@ All the operators boil down to a combination of these primitives:
   recheck
 \end{oparts}
 
-For example, the \sqlinline{=} operator for arrays makes sure that the
-indexed array column equals the query array. This can be done by
+For example, the \sqlinline{=} operator for arrays makes sure that the indexed
+array column equals the query array. This can be done by
 
 \begin{nparts}
 \item
-  For each element in the query array, get a set of row ids whose array
-  column \emph{contains} the element
+  For each element in the query array, get a set of row ids whose array column
+  \emph{contains} the element
 \item
-  Intersect the sets of row ids (\emph{logical and}) to obtain a set of
-  row ids whose array column contains the query array
-  (\sqlinline{@>})
+  Intersect the sets of row ids (\emph{logical and}) to obtain a set of row ids
+  whose array column contains the query array (\sqlinline{@>})
 \item
   \emph{recheck} each row to make sure its array has the same number of
   (distinct) elements as the query array
 \end{nparts}
 
-Recheck is the fallback we can rely on for complicated queries. We can
-slowly phase out the need to use recheck as DocDB becomes more capable.
+Recheck is the fallback we can rely on for complicated queries. We can slowly
+phase out the need to use recheck as DocDB becomes more capable.
 
 See translations of all operators to primitives in
 \protect\hyperlink{operators-to-primitives}{the appendix}.
@@ -206,16 +201,14 @@ See translations of all operators to primitives in
 \hypertarget{write-path}{%
 \subsubsection{Write path}\label{write-path}}
 
-For postgres,
-\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))}
-does
+For postgres, \sqlinline{INSERT INTO table_with_gin_index
+(to_tsvector('simple', 'the quick brown'))} does
 
 \begin{nparts}
 \item
   prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
 \item
-  for each index key, append the indexed table ctid to the key's posting
-  list
+  for each index key, append the indexed table ctid to the key's posting list
 \end{nparts}
 
 For Yugabyte, we should
@@ -230,9 +223,8 @@ For Yugabyte, we should
 \hypertarget{read-path}{%
 \subsubsection{Read path}\label{read-path}}
 
-For postgres,
-\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')}
-does
+For postgres, \sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
+to_tsquery('simple', 'the')} does
 
 \begin{nparts}
 \item
@@ -267,8 +259,8 @@ In general, GIN index records should be encoded like
 \subsubsection{tsvector}\label{tsvector}}
 
 The GIN index key should be words, like \textinline{the}, \textinline{quick},
-\textinline{brown}. To support prefix search, serialization of the words
-should be done carefully.
+\textinline{brown}. To support prefix search, serialization of the words should
+be done carefully.
 
 TODO: look into DocDB encoding for \cppinline{kString}. TODO: look into
 \textinline{tsvector} \textbf{weights}
@@ -301,8 +293,7 @@ The GIN index key should be paths, like
 \href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
 inverted index RFC}.)
 
-Contains (\sqlinline{@>}) searches can have corresponding scan
-keys
+Contains (\sqlinline{@>}) searches can have corresponding scan keys
 
 \begin{oparts}
 \item
@@ -330,16 +321,16 @@ Concerns
 
 \begin{oparts}
 \item
-  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will
-  the number format be like?
+  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will the
+  number format be like?
 \item
-  What will the text encoding be like, especially for weird unicode, and
-  how does prefix matching work, then?
+  What will the text encoding be like, especially for weird unicode, and how
+  does prefix matching work, then?
 \item
-  How will the end of the JSON document be marked? (Same question for
-  marking array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't
-  this mean the contents of the JSON GIN key have to be encoded in some
-  way to make exclamation marks unambiguous?
+  How will the end of the JSON document be marked? (Same question for marking
+  array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't this mean
+  the contents of the JSON GIN key have to be encoded in some way to make
+  exclamation marks unambiguous?
 \end{oparts}
 
 \hypertarget{appendix}{%
@@ -349,8 +340,8 @@ Concerns
 \subsection{Key format for normal
 index}\label{key-format-for-normal-index}}
 
-Here is a step-by-step guide to see how normal indexes are represented
-in DocDB.
+Here is a step-by-step guide to see how normal indexes are represented in
+DocDB.
 
 \begin{bashcode}
 ./bin/yb-ctl create \
@@ -387,10 +378,9 @@ In simpler terms,
   \textinline{[null, false]}
 \end{nparts}
 
-\textinline{IndexScan} on
-\sqlinline{c = 'b'} can look in this
-index for \textinline{["b"]} prefix, get the next key component
-\textinline{true}, then look up \textinline{true} in the indexed table.
+\textinline{IndexScan} on \sqlinline{c = 'b'} can look in this index for
+\textinline{["b"]} prefix, get the next key component \textinline{true}, then
+look up \textinline{true} in the indexed table.
 
 \begin{sqlcode}
 CREATE UNIQUE INDEX ON t (i);
@@ -529,8 +519,8 @@ You can represent each GIN operator using the primitives:
 \subsection{Example: tsvector}\label{example-tsvector}}
 
 Here is an example of using a tsvector GIN index. It is inspired by a
-\href{https://habr.com/en/company/postgrespro/blog/448746/}{habr blog}.
-Run on upstream postgres.
+\href{https://habr.com/en/company/postgrespro/blog/448746/}{habr blog}.  Run on
+upstream postgres.
 
 \begin{sqlcode}
 CREATE TABLE docs (
@@ -623,16 +613,14 @@ extended}\label{read-and-write-path-extended}}
 \hypertarget{write-path-extended}{%
 \subsubsection{Write path extended}\label{write-path-extended}}
 
-\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick brown'))}
-does
+\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick
+brown'))} does
 
 \begin{nparts}
 \item
-  insert to main table (\cinline{ExecInsert},
-  \cinline{table_tuple_insert})
+  insert to main table (\cinline{ExecInsert}, \cinline{table_tuple_insert})
 \item
-  insert to gin index (\cinline{ExecInsert},
-  \cinline{ExecInsertIndexTuples})
+  insert to gin index (\cinline{ExecInsert}, \cinline{ExecInsertIndexTuples})
 
   \begin{qparts}
   \item
@@ -644,15 +632,16 @@ does
 
     \begin{iparts}
     \item
-      prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
-      (\cinline{ginHeapTupleInsert}, \cinline{ginExtractEntries})
+      prepare index keys: \textinline{the}, \textinline{quick},
+      \textinline{brown} (\cinline{ginHeapTupleInsert},
+      \cinline{ginExtractEntries})
     \item
-      if tuple with key already exists, append the indexed table ctid to
-      the posting list (\cinline{ginEntryInsert},
+      if tuple with key already exists, append the indexed table ctid to the
+      posting list (\cinline{ginEntryInsert},
       \cinline{addItemPointersToLeafTuple})
     \item
-      otherwise, create a posting list containing just the indexed table
-      ctid (\cinline{ginEntryInsert}, \cinline{buildFreshLeafTuple})
+      otherwise, create a posting list containing just the indexed table ctid
+      (\cinline{ginEntryInsert}, \cinline{buildFreshLeafTuple})
     \end{iparts}
   \end{qparts}
 \end{nparts}
@@ -660,8 +649,8 @@ does
 \hypertarget{read-path-extended}{%
 \subsubsection{Read path extended}\label{read-path-extended}}
 
-\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@ to_tsquery('simple', 'the')}
-does
+\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
+to_tsquery('simple', 'the')} does
 
 \begin{nparts}
 \item
