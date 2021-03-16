@@ -98,9 +98,10 @@ words, I add 300 records to the index, all referencing the same page.
 \hypertarget{gin-opclasses}{%
 \subsection{GIN opclasses}\label{gin-opclasses}}
 
-Indexes have an access method (e.g.~btree, lsm, gin) and an opclass
-(e.g. char\_ops, numeric\_ops). \textbf{The opclass determines the index
-key format!} Here are the opclasses that can be used with GIN
+Indexes have an access method (e.g. \sqlinline{btree}, \sqlinline{lsm},
+\sqlinline{gin}) and an opclass (e.g. \sqlinline{char_ops},
+\sqlinline{numeric_ops}). \textbf{The opclass determines the index key format!}
+Here are the opclasses that can be used with GIN
 (\href{https://www.postgresql.org/docs/current/gin-builtin-opclasses.html}{source}):
 
 \begin{center}
