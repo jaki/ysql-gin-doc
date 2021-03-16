@@ -631,7 +631,7 @@ does
   insert to gin index (\texttt{ExecInsert},
   \texttt{ExecInsertIndexTuples})
 
-  \begin{nparts}
+  \begin{qparts}
   \item
     if fast update is enabled, write index tuples to pending list
     (\texttt{gininsert}, \texttt{ginHeapTupleFastInsert})
@@ -639,7 +639,7 @@ does
     otherwise, write index tuples to disk (\texttt{gininsert},
     \texttt{ginHeapTupleInsert})
 
-    \begin{nparts}
+    \begin{iparts}
     \item
       prepare index keys: \texttt{the}, \texttt{quick}, \texttt{brown}
       (\texttt{ginHeapTupleInsert}, \texttt{ginExtractEntries})
@@ -650,8 +650,8 @@ does
     \item
       otherwise, create a posting list containing just the indexed table
       ctid (\texttt{ginEntryInsert}, \texttt{buildFreshLeafTuple})
-    \end{nparts}
-  \end{nparts}
+    \end{iparts}
+  \end{qparts}
 \end{nparts}
 
 \hypertarget{read-path-extended}{%
