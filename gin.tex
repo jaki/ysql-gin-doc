@@ -210,8 +210,8 @@ array column equals the query array. This can be done by
 
 \begin{nparts}
 \item
-  For each element in the query array, get a set of row ids whose array column
-  \emph{contains} the element
+  For each distinct element in the query array $A$, get a set of tuples whose
+  row's array contains the element:
   \[
     \forall c \in A, T_c = \opget(I, f)
   \]
@@ -220,14 +220,14 @@ array column equals the query array. This can be done by
     f(\ik) = \parens{\ik \overset{?}{=} c}
   \]
 \item
-  Intersect the sets of row ids (\emph{logical and}) to obtain a set of row ids
-  whose array column contains the query array (\sqlinline{@>})
+  Intersect the tuples to filter out any tuples whose row's array doesn't
+  contain \textbf{all} of the query array's elements:
   \[
     T = \opand_{c \in A}(T_c)
   \]
 \item
-  \emph{recheck} each row to make sure its array has the same number of
-  (distinct) elements as the query array
+  Recheck each row to make sure its array has the same number of (distinct)
+  elements as the query array:
   \[
     T' = \oprecheck(T, g)
   \]
