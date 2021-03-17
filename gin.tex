@@ -154,7 +154,7 @@ All the operators boil down to a combination of these primitives:
 
 \begin{oparts}
 \item
-  $\opget(I, f)$:
+  $\opget_I(f)$:
   given index $I$ and predicate $f$, return list of tuples
   \[
     T = \braces{(\ik, \pk) \in I : f(\ik)}
@@ -213,7 +213,7 @@ array column equals the query array. This can be done by
   For each distinct element $e$ in the query array $A_q$, get a set of tuples
   $T_e$ where the tuple's row's array contains the element $e$:
   \[
-    \forall e \in A_q, T_e = \opget(I, f)
+    \forall e \in A_q, T_e = \opget_I(f)
   \]
   where
   \[
