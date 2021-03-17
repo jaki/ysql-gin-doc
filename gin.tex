@@ -217,7 +217,7 @@ array column equals the query array. This can be done by
   \]
   where
   \[
-    f(\ik) = \parens{\ik \overset{?}{=} e}
+    f(\ik) = \parens{\ik \qeq e}
   \]
 \item
   Intersect the tuples $T_e$ to filter out any tuples whose row's array doesn't
@@ -233,8 +233,7 @@ array column equals the query array. This can be done by
   \]
   where
   \[
-    g(\pk) = \parens{\verts{\braces{(i, p) \in T : p = \pk}} \overset{?}{=}
-    \verts{A_q}}
+    g(\pk) = \parens{\verts{\braces{(i, p) \in T : p = \pk}} \qeq \verts{A_q}}
   \]
 \end{nparts}
 
