@@ -1,0 +1,73 @@
+\hypertarget{key-format-for-normal-index}{%
+\subsection{Key format for normal
+index}\label{key-format-for-normal-index}}
+
+Here is a step-by-step guide to see how normal indexes are represented in
+DocDB.
+
+\begin{bashcode}
+./bin/yb-ctl create \
+  --master_flags "ysql_disable_index_backfill=true" \
+  --tserver_flags "TEST_docdb_log_write_batches=true,ysql_disable_index_backfill=true,ysql_num_shards_per_tserver=1"
+tail -F ~/yugabyte-data/node-1/disk-1/yb-data/tserver/logs/yb-tserver.INFO
+\end{bashcode}
+
+\begin{sqlcode}
+CREATE TABLE t (p bool PRIMARY KEY, c char, i int);
+INSERT INTO t VALUES (true, 'b', 2);
+INSERT INTO t VALUES (false, null, null);
+\end{sqlcode}
+
+\begin{sqlcode}
+CREATE INDEX ON t (c);
+\end{sqlcode}
+
+Observe logs for \emph{regular} DocDB writes
+
+\begin{textcode}
+I0216 18:08:50.375550 31976 tablet.cc:1235] T dfc95b4d53b44afebc4827b29bcc6769 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 2 key/value pairs to kRegular RocksDB:
+Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527730374840 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
+1. PutCF(SubDocKey(DocKey(0xebd4, ["b"], ["G\x8f\xf7T!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80J$' (23800198BF43F5D5AB804A24))
+2. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527730370761 w: 1 }]), '#\x80\x01\x98\xbfC\xf5\xd5\xab\x80?\xab$' (23800198BF43F5D5AB803FAB24))
+\end{textcode}
+
+In simpler terms,
+
+\begin{nparts}
+\item
+  \textinline{["b", true]}
+\item
+  \textinline{[null, false]}
+\end{nparts}
+
+\textinline{IndexScan} on \sqlinline{c = 'b'} can look in this index for
+\textinline{["b"]} prefix, get the next key component \textinline{true}, then
+look up \textinline{true} in the indexed table.
+
+\begin{sqlcode}
+CREATE UNIQUE INDEX ON t (i);
+\end{sqlcode}
+
+Observe logs for \emph{regular} DocDB writes
+
+\begin{textcode}
+I0216 18:10:06.280701 31753 tablet.cc:1235] T bb21a24b24eb421b8b7a84fb03422271 P 5fb87e8c88ea477ab7ebb4b9a3bb4bdc: Wrote 4 key/value pairs to kRegular RocksDB:
+Frontiers: { smallest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } largest: { op_id: 1.3 hybrid_time: { physical: 1613527806280035 } history_cutoff: <invalid> hybrid_time_filter: <invalid> } }
+1. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [SystemColumnId(0); HT{ physical: 1613527806278239 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80J$' (23800198BF3F6F8E93804A24))
+2. PutCF(SubDocKey(DocKey(0xc0c4, [2], [null]), [ColumnId(12); HT{ physical: 1613527806278239 w: 1 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\xabSG\x8f\xf7T!!' (23800198BF3F6F8E93803FAB53478FF7542121))
+3. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [SystemColumnId(0); HT{ physical: 1613527806278239 w: 2 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?\x8b$' (23800198BF3F6F8E93803F8B24))
+4. PutCF(SubDocKey(DocKey(0x4d44, [null], ["G\xdc@F!!"]), [ColumnId(12); HT{ physical: 1613527806278239 w: 3 }]), '#\x80\x01\x98\xbf?o\x8e\x93\x80?kSG\xdc@F!!' (23800198BF3F6F8E93803F6B5347DC40462121))
+\end{textcode}
+
+In simpler terms,
+
+\begin{nparts}
+\item
+  \textinline{[2, null]} -\textgreater{} \textinline{true}
+\item
+  \textinline{[null, false]} -\textgreater{} \textinline{false}
+\end{nparts}
+
+\textinline{IndexScan} on \sqlinline{i = 2} can look in this index for
+\textinline{[2]} prefix, get the value \textinline{true}, then look up
+\textinline{true} in the indexed table.

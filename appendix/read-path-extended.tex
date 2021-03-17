@@ -1,0 +1,22 @@
+\hypertarget{read-path-extended}{%
+\subsubsection{Read path extended}\label{read-path-extended}}
+
+\sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
+to_tsquery('simple', 'the')} does
+
+\begin{nparts}
+\item
+  create scan key: \textinline{the} (\cinline{gingetbitmap},
+  \cinline{ginNewScanKey})
+\item
+  get blocks from pending list (\cinline{gingetbitmap},
+  \cinline{scanPendingInsert})
+\item
+  get blocks from disk (\cinline{gingetbitmap}, \cinline{startScan})
+\item
+  get tuples from blocks (\cinline{BitmapHeapNext},
+  \cinline{table_scan_bitmap_next_tuple})
+\item
+  recheck tuple if needed (\cinline{BitmapHeapNext},
+  \cinline{ExecQualAndReset})
+\end{nparts}

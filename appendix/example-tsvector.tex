@@ -1,0 +1,42 @@
+\hypertarget{example-tsvector}{%
+\subsection{Example: tsvector}\label{example-tsvector}}
+
+Here is an example of using a tsvector GIN index. It is inspired by a
+\href{https://habr.com/en/company/postgrespro/blog/448746/}{habr blog}.  Run on
+upstream postgres.
+
+\begin{sqlcode}
+CREATE TABLE docs (
+    doc text,
+    ts tsvector GENERATED ALWAYS AS (to_tsvector('simple', doc)) STORED);
+INSERT INTO docs (doc) VALUES
+  ('Can a sheet slitter slit sheets?'),
+  ('How many sheets could a sheet slitter slit?'),
+  ('I slit a sheet, a sheet I slit.'),
+  ('Upon a slitted sheet I sit.'),
+  ('Whoever slit the sheets is a good sheet slitter.'),
+  ('I am a sheet slitter.'),
+  ('I slit sheets.'),
+  ('I am the sleekest sheet slitter that ever slit sheets.'),
+  ('She slits the sheet she sits on.');
+SELECT * FROM docs; -- what tsvector looks like
+\end{sqlcode}
+
+\begin{sqlcode}
+CREATE INDEX ON docs USING GIN (ts);
+SET enable_seqscan = OFF;
+EXPLAIN SELECT * FROM docs
+    WHERE ts @@ to_tsquery('simple', 'many'); -- this is index scan
+\end{sqlcode}
+
+Example of what can be done, all using the index:
+
+\begin{sqlcode}
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many | slitter');
+SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'slit:* & !slit');
+SELECT ts_rank(ts, to_tsquery('simple', 'i & sheet:* & slit:*')) as rank, doc
+    FROM docs
+    WHERE ts @@ to_tsquery('simple', 'i & sheet:* & slit:*')
+    ORDER BY rank DESC;
+\end{sqlcode}

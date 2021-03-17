@@ -1,0 +1,35 @@
+\hypertarget{write-path-extended}{%
+\subsubsection{Write path extended}\label{write-path-extended}}
+
+\sqlinline{INSERT INTO table_with_gin_index (to_tsvector('simple', 'the quick
+brown'))} does
+
+\begin{nparts}
+\item
+  insert to main table (\cinline{ExecInsert}, \cinline{table_tuple_insert})
+\item
+  insert to gin index (\cinline{ExecInsert}, \cinline{ExecInsertIndexTuples})
+
+  \begin{qparts}
+  \item
+    if fast update is enabled, write index tuples to pending list
+    (\cinline{gininsert}, \cinline{ginHeapTupleFastInsert})
+  \item
+    otherwise, write index tuples to disk (\cinline{gininsert},
+    \cinline{ginHeapTupleInsert})
+
+    \begin{iparts}
+    \item
+      prepare index keys: \textinline{the}, \textinline{quick},
+      \textinline{brown} (\cinline{ginHeapTupleInsert},
+      \cinline{ginExtractEntries})
+    \item
+      if tuple with key already exists, append the indexed table ctid to the
+      posting list (\cinline{ginEntryInsert},
+      \cinline{addItemPointersToLeafTuple})
+    \item
+      otherwise, create a posting list containing just the indexed table ctid
+      (\cinline{ginEntryInsert}, \cinline{buildFreshLeafTuple})
+    \end{iparts}
+  \end{qparts}
+\end{nparts}

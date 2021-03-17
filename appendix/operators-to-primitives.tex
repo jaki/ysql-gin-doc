@@ -1,0 +1,104 @@
+\hypertarget{operators-to-primitives}{%
+\subsection{Operators to primitives}\label{operators-to-primitives}}
+
+You can represent each GIN operator using the primitives:
+
+\begin{oparts}
+\item
+  \texttt{tsvector\ @@\ tsquery\ →\ boolean}: (custom)
+
+  \begin{oparts}
+  \item
+    tsquery \texttt{a\ \textbar{}\ b}: (set \texttt{LHS} contains
+    element \texttt{a}) OR (set \texttt{LHS} contains element
+    \texttt{b})
+  \item
+    tsquery \texttt{a\ \&\ b}: (set \texttt{LHS} contains element
+    \texttt{a}) AND (set \texttt{LHS} contains element \texttt{b})
+  \item
+    tsquery \texttt{!a}: NOT(set \texttt{LHS} contains element
+    \texttt{a})
+  \item
+    tsquery \texttt{a:*\textquotesingle{}}: (set \texttt{LHS} contains
+    element \textbf{with prefix} \texttt{a})
+  \end{oparts}
+\item
+  \texttt{anyarray\ \&\&\ anyarray\ →\ boolean}: OR(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{anyarray\ \textless{}@\ anyarray\ →\ boolean}: OR(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}}) + recheck
+\item
+  \texttt{anyarray\ =\ anyarray\ →\ boolean}: AND(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}}) + recheck
+\item
+  \texttt{anyarray\ @\textgreater{}\ anyarray\ →\ boolean}: AND(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ ?\ text\ →\ boolean}: set \texttt{LHS} contains element
+  \texttt{RHS}
+\item
+  \texttt{jsonb\ ?\&\ text{[}{]}\ →\ boolean}: AND(set \texttt{LHS}
+  contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ ?\textbar{}\ text{[}{]}\ →\ boolean}: OR(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ @\textgreater{}\ jsonb\ →\ boolean}: AND(set
+  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\item
+  \texttt{jsonb\ @?\ jsonpath\ →\ boolean}: (custom)
+\item
+  \texttt{jsonb\ @@\ jsonpath\ →\ boolean}: (custom)
+
+  \begin{oparts}
+  \item
+    jsonpath \texttt{\$.a\ ==\ 7}: set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7}
+  \item
+    jsonpath \texttt{\$.a\ \textgreater{}\ 7}: (set \texttt{LHS}
+    contains element \textbf{greater than}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+  \item
+    jsonpath \texttt{\$.a\ !=\ 7}: (set \texttt{LHS} contains element
+    \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+    AND NOT(set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+  \item
+    jsonpath \texttt{(\$.a\ ==\ 7)\ \&\&\ !\ (\$.b\ ==\ 8)}: (set
+    \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
+    AND NOT(set \texttt{LHS} contains element
+    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}8})
+  \item
+    jsonpath \texttt{\$.a\ like\_regex\ "\^{}foo.*bar"}: set
+    \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}}
+    + recheck
+  \item
+    jsonpath \texttt{\$.a\ starts\ with\ "bar"}: set \texttt{LHS}
+    contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}bar}
+  \item
+    jsonpath \texttt{\$.a.ceiling()\ ==\ 5}: set \texttt{LHS} contains
+    element
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
+    + recheck
+  \item
+    jsonpath \texttt{\$.a.type()\ ==\ "number"}: set \texttt{LHS}
+    contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
+  \item
+    jsonpath \texttt{\$.a\ +\ (\$.b\ \%\ \$.c)\ ==\ 7}: (set
+    \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}})
+    AND (set \texttt{LHS} contains element \textbf{with prefix}
+    \texttt{\textless{}key\textgreater{}c.\textless{}num\textgreater{}})
+    + recheck
+  \end{oparts}
+\end{oparts}

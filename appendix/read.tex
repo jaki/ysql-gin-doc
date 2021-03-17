@@ -1,0 +1,63 @@
+\hypertarget{read}{%
+\subsubsection{Read}\label{read}}
+
+\begin{textcode}
+exec_simple_query
+  PortalStart
+    ExecutorStart
+      standard_ExecutorStart
+        InitPlan
+          ExecInitNode
+            ExecInitBitmapHeapScan
+              ExecInitNode
+                ExecInitBitmapIndexScan
+                  index_beginscan_bitmap
+                    index_beginscan_internal
+                      ambeginscan
+  PortalRun
+    PortalRunSelect
+      ExecutorRun
+        standard_ExecutorRun
+          ExecutePlan
+            ... ExecBitmapHeapScan
+              ExecScanFetch
+                BitmapHeapNext
+                  MultiExecProcNode
+                    MultiExecBitmapIndexScan
+                      index_getbitmap
+                        gingetbitmap
+                    MultiExecBitmapAnd
+                    MultiExecBitmapOr
+\end{textcode}
+
+Entry point for using text search functions:
+
+\begin{textcode}
+(gdb) bt
+#0  TS_execute (curitem=0x1749d90, arg=arg@entry=0x7ffdf8c8ea50, flags=flags@entry=2, chkcond=chkcond@entry=0x842ad0 <checkcondition_gin>) at tsvector_op.c:1848
+#1  0x00000000008430c3 in gin_tsquery_triconsistent (fcinfo=<optimized out>) at tsginidx.c:287
+#2  0x0000000000881fdd in FunctionCall7Coll (flinfo=0x17ffe98, collation=<optimized out>, arg1=<optimized out>, arg2=<optimized out>, arg3=<optimized out>, arg4=<optimized out>, arg5=25151648, arg6=25151592, arg7=25151768) at fmgr.c:1311
+#3  0x000000000049dc10 in directTriConsistentFn (key=<optimized out>) at ginlogic.c:97
+#4  0x000000000049c39f in startScanKey (ginstate=0x17fe580, so=0x17fe578, so=0x17fe578, key=0x17fc648) at ginget.c:566
+#5  startScan (scan=0x17e73f0, scan=0x17e73f0) at ginget.c:642
+#6  gingetbitmap (scan=0x17e73f0, tbm=0x18053d8) at ginget.c:1951
+#7  0x00000000004d3d9a in index_getbitmap (scan=scan@entry=0x17e73f0, bitmap=bitmap@entry=0x18053d8) at indexam.c:671
+#8  0x0000000000632882 in MultiExecBitmapIndexScan (node=0x17e7100) at nodeBitmapIndexscan.c:105
+#9  0x00000000006220e1 in MultiExecProcNode (node=<optimized out>) at execProcnode.c:510
+#10 0x0000000000631f50 in BitmapHeapNext (node=node@entry=0x17e6e10) at nodeBitmapHeapscan.c:113
+#11 0x00000000006245fa in ExecScanFetch (recheckMtd=0x6321c0 <BitmapHeapRecheck>, accessMtd=0x631820 <BitmapHeapNext>, node=0x17e6e10) at execScan.c:133
+#12 ExecScan (node=0x17e6e10, accessMtd=0x631820 <BitmapHeapNext>, recheckMtd=0x6321c0 <BitmapHeapRecheck>) at execScan.c:199
+#13 0x000000000061af52 in ExecProcNode (node=0x17e6e10) at ../../../src/include/executor/executor.h:248
+#14 ExecutePlan (execute_once=<optimized out>, dest=0x17f5ba8, direction=<optimized out>, numberTuples=0, sendTuples=true, operation=CMD_SELECT, use_parallel_mode=<optimized out>, planstate=0x17e6e10, estate=0x17e6be8) at execMain.c:1646
+#15 standard_ExecutorRun (queryDesc=0x17f9738, direction=<optimized out>, count=0, execute_once=<optimized out>) at execMain.c:364
+#16 0x0000000000770afb in PortalRunSelect (portal=portal@entry=0x178b008, forward=forward@entry=true, count=0, count@entry=9223372036854775807, dest=dest@entry=0x17f5ba8) at pquery.c:912
+#17 0x0000000000771d68 in PortalRun (portal=portal@entry=0x178b008, count=count@entry=9223372036854775807, isTopLevel=isTopLevel@entry=true, run_once=run_once@entry=true, dest=dest@entry=0x17f5ba8, altdest=altdest@entry=0x17f5ba8, qc=qc@entry=0x7ffdf8c8
+efe0) at pquery.c:756
+#18 0x000000000076dabe in exec_simple_query (query_string=0x1724c68 "SELECT doc FROM docs WHERE ts @@ to_tsquery('simple', 'many & slitter');") at postgres.c:1239
+#19 0x000000000076ee37 in PostgresMain (argc=<optimized out>, argv=argv@entry=0x174f0b8, dbname=0x174f000 "testupdatejoin", username=<optimized out>) at postgres.c:4315
+#20 0x0000000000481e23 in BackendRun (port=<optimized out>, port=<optimized out>) at postmaster.c:4536
+#21 BackendStartup (port=0x1748270) at postmaster.c:4220
+#22 ServerLoop () at postmaster.c:1739
+#23 0x00000000006fc793 in PostmasterMain (argc=argc@entry=3, argv=argv@entry=0x171f980) at postmaster.c:1412
+#24 0x0000000000482a6e in main (argc=3, argv=0x171f980) at main.c:210
+\end{textcode}

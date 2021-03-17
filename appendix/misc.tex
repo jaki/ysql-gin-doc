@@ -1,0 +1,145 @@
+\hypertarget{misc}{%
+\subsection{Misc}\label{misc}}
+
+\begin{oparts}
+\item
+  At \cinline{ginbeginscan},
+
+\begin{textcode}
+(gdb) p so->ginstate
+$32 = {
+  index = 0x7fbef38c56f0,
+  oneCol = true,
+  origTupdesc = 0x7fbef38c5a10,
+  tupdesc = {0x7fbef38c5a10, 0x0 <repeats 31 times>},
+  compareFn = {{
+      fn_addr = 0x842b30 <gin_cmp_tslexeme>,
+      fn_oid = 3724,
+      fn_nargs = 2,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17ee788
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  extractValueFn = {{
+      fn_addr = 0x842d90 <gin_extract_tsvector>,
+      fn_oid = 3656,
+      fn_nargs = 3,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eea70
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  extractQueryFn = {{
+      fn_addr = 0x842e30 <gin_extract_tsquery>,
+      fn_oid = 3657,
+      fn_nargs = 7,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeac0
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  consistentFn = {{
+      fn_addr = 0x843000 <gin_tsquery_consistent>,
+      fn_oid = 3658,
+      fn_nargs = 8,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeb60
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  triConsistentFn = {{
+      fn_addr = 0x843070 <gin_tsquery_triconsistent>,
+      fn_oid = 3921,
+      fn_nargs = 7,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17eeb10
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  comparePartialFn = {{
+      fn_addr = 0x842c50 <gin_cmp_prefix>,
+      fn_oid = 2700,
+      fn_nargs = 4,
+      fn_strict = true,
+      fn_retset = false,
+      fn_stats = 2 '\002',
+      fn_extra = 0x0,
+      fn_mcxt = 0x17e5760,
+      fn_expr = 0x17ff748
+    }, {
+      fn_addr = 0x0,
+      fn_oid = 0,
+      fn_nargs = 0,
+      fn_strict = false,
+      fn_retset = false,
+      fn_stats = 0 '\000',
+      fn_extra = 0x0,
+      fn_mcxt = 0x0,
+      fn_expr = 0x0
+    } <repeats 31 times>},
+  canPartialMatch = {true, false <repeats 31 times>},
+  supportCollation = {100, 0 <repeats 31 times>}
+}
+\end{textcode}
+\end{oparts}
