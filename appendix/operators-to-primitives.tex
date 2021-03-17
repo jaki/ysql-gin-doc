@@ -77,16 +77,16 @@ You can represent each GIN operator using the primitives:
     \midrule
     \sqlinline{jsonb ? text}
         & Given \sqlinline{col ? 'foo'}, \\
-      & $T = \opget_I(i \qeq \mathtt{foo})$ \\
+      & $T = \opget_I(i \qsw \mathtt{Jfoo})$ \\
     \sqlinline{jsonb ?& text}
         & Given \sqlinline{col ?& ['foo', 'bar']}, \\
-      & $T_l = \opget_I(i \qeq \mathtt{foo})$ \\
-      & $T_r = \opget_I(i \qeq \mathtt{bar})$ \\
+      & $T_l = \opget_I(i \qsw \mathtt{Jfoo})$ \\
+      & $T_r = \opget_I(i \qsw \mathtt{Jbar})$ \\
       & $T = \opand(T_l, T_r)$ \\
     \sqlinline{jsonb ?| text}
         & Given \sqlinline{col ?| ['foo', 'bar']}, \\
-      & $T_l = \opget_I(i \qeq \mathtt{foo})$ \\
-      & $T_r = \opget_I(i \qeq \mathtt{bar})$ \\
+      & $T_l = \opget_I(i \qsw \mathtt{Jfoo})$ \\
+      & $T_r = \opget_I(i \qsw \mathtt{Jbar})$ \\
       & $T = \opor(T_l, T_r)$ \\
     \sqlinline{jsonb @> jsonb}
         & Given \sqlinline{col @> '{"foo": 3, "bar": {"baz": "qux"}}'}, \\
