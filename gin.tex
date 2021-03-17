@@ -181,7 +181,13 @@ All the operators boil down to a combination of these primitives:
   given list of tuples $T_1$, $T_2$, return
 
   \[
-    T = T_1 \cap T_2
+    T = \braces{(\ik, \pk) \in T_1 \cup T_2 : \pk \in K}
+  \]
+
+  where
+
+  \[
+    K = T_1[\pk] \cap T_2[\pk]
   \]
 
 \item
