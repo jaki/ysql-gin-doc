@@ -27,7 +27,8 @@ You can represent each GIN operator using the primitives:
       & seqscan tuples where pkey $p \not\in T[\pk]$ \\
     $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{:*}
         & Given \sqlinline{col @@ 'foo:*'}, \\
-      & $T = \opget_I(i~\overset{?}{\textnormal{starts with}}~\mathtt{foo})$ \\
+      & $T = \opget_I(i~\overset{?}{\textnormal{starts with}}~\mathtt{foo})$
+        & need range-partition \\
     \bottomrule
   \end{tabular}
 \end{center}
