@@ -3,37 +3,73 @@
 
 You can represent each GIN operator using the primitives:
 
-\begin{oparts}
-\item
-  \texttt{tsvector\ @@\ tsquery\ →\ boolean}: (custom)
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    signature & translation & notes \\
+    \midrule
+    \sqlinline{tsvector @@ tsquery} \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{|}
+        & Given \sqlinline{col @@ 'foo | bar'}, \\
+      & $T_l = \opget_I(i \qeq \mathtt{foo})$ \\
+      & $T_r = \opget_I(i \qeq \mathtt{bar})$ \\
+      & $T = \opor(T_l, T_r)$ \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{&}
+        & Given \sqlinline{col @@ 'foo & bar'}, \\
+      & $T_l = \opget_I(i \qeq \mathtt{foo})$ \\
+      & $T_r = \opget_I(i \qeq \mathtt{bar})$ \\
+      & $T = \opand(T_l, T_r)$ \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{!}
+        & Given \sqlinline{col @@ '!foo'},
+        & expensive; \\
+      & $T = \opget_I(i \qeq \mathtt{foo})$
+        & mem grows with commonness of RHS \\
+      & seqscan tuples where pkey $p \not\in T[\pk]$ \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{:*}
+        & Given \sqlinline{col @@ 'foo:*'}, \\
+      & $T = \opget_I(i~\overset{?}{\textnormal{starts with}}~\mathtt{foo})$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
 
-  \begin{oparts}
-  \item
-    tsquery \texttt{a\ \textbar{}\ b}: (set \texttt{LHS} contains
-    element \texttt{a}) OR (set \texttt{LHS} contains element
-    \texttt{b})
-  \item
-    tsquery \texttt{a\ \&\ b}: (set \texttt{LHS} contains element
-    \texttt{a}) AND (set \texttt{LHS} contains element \texttt{b})
-  \item
-    tsquery \texttt{!a}: NOT(set \texttt{LHS} contains element
-    \texttt{a})
-  \item
-    tsquery \texttt{a:*\textquotesingle{}}: (set \texttt{LHS} contains
-    element \textbf{with prefix} \texttt{a})
-  \end{oparts}
-\item
-  \texttt{anyarray\ \&\&\ anyarray\ →\ boolean}: OR(set \texttt{LHS}
-  contains element \texttt{RHS{[}*{]}})
-\item
-  \texttt{anyarray\ \textless{}@\ anyarray\ →\ boolean}: OR(set
-  \texttt{LHS} contains element \texttt{RHS{[}*{]}}) + recheck
-\item
-  \texttt{anyarray\ =\ anyarray\ →\ boolean}: AND(set \texttt{LHS}
-  contains element \texttt{RHS{[}*{]}}) + recheck
-\item
-  \texttt{anyarray\ @\textgreater{}\ anyarray\ →\ boolean}: AND(set
-  \texttt{LHS} contains element \texttt{RHS{[}*{]}})
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    signature & translation & notes \\
+    \midrule
+    \sqlinline{anyarray && anyarray}
+        & Given \sqlinline{col && [3, 7]}, \\
+      & $T_3 = \opget_I(i \qeq \mathtt{3})$ \\
+      & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
+      & $T = \opor(T_3, T_7)$ \\
+    \sqlinline{anyarray <@ anyarray}
+        & Given \sqlinline{col <@ [3, 7]},
+        & likely cheap: \\
+      & $T_3 = \opget_I(i \qeq \mathtt{3})$
+        & cost grows with size of RHS \\
+      & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
+      & $T = \opor(T_3, T_7)$ \\
+      & seqscan tuples where pkey $p \in T[\pk]$ \\
+      & and recheck \sqlinline{<@} \\
+    \sqlinline{anyarray = anyarray}
+        & Given \sqlinline{col = [3, 7]},
+        & cheap; \\
+      & $T_3 = \opget_I(i \qeq \mathtt{3})$
+        & mem grows with size of RHS \\
+      & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
+      & $T = \opand(T_3, T_7)$ \\
+      & $T' = \oprecheck(T, \verts{\braces{(i', p') \in T : p' = p}} \qeq 2)$
+          \\
+    \sqlinline{anyarray @> anyarray}
+        & Given \sqlinline{col @> [3, 7]}, \\
+      & $T_3 = \opget_I(i \qeq \mathtt{3})$ \\
+      & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
+      & $T = \opand(T_3, T_7)$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{oparts}
 \item
   \texttt{jsonb\ ?\ text\ →\ boolean}: set \texttt{LHS} contains element
   \texttt{RHS}
