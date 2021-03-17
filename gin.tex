@@ -156,11 +156,9 @@ All the operators boil down to a combination of these primitives:
 \item
   $\opget(I, f)$:
   given index $I$ and predicate $f$, return list of tuples
-
   \[
     T = \braces{(\ik, \pk) \in I : f(\ik)}
   \]
-
   $f$ should be a simple predicate like
   \begin{oparts}
   \item
@@ -179,33 +177,25 @@ All the operators boil down to a combination of these primitives:
 \item
   $\opand(T_1, T_2)$:
   given list of tuples $T_1$, $T_2$, return
-
   \[
     T = \braces{(\ik, \pk) \in T_1 \cup T_2 : \pk \in K}
   \]
-
   where
-
   \[
     K = T_1[\pk] \cap T_2[\pk]
   \]
-
 \item
   $\opor(T_1, T_2)$:
   given list of tuples $T_1$, $T_2$, return
-
   \[
     T = T_1 \cup T_2
   \]
-
 \item
   $\oprecheck(T, g)$:
   given list of tuples $T$ and predicate $g$, return list of tuples
-
   \[
     T' = \braces{(\ik, \pk) \in T : g(\pk)}
   \]
-
   $g$ may be any predicate like
   \begin{oparts}
   \item
@@ -222,40 +212,30 @@ array column equals the query array. This can be done by
 \item
   For each element in the query array, get a set of row ids whose array column
   \emph{contains} the element
-
   \[
     \forall c \in A, T_c = \opget(I, f)
   \]
-
   where
-
   \[
     f(\ik) = \parens{\ik \overset{?}{=} c}
   \]
-
 \item
   Intersect the sets of row ids (\emph{logical and}) to obtain a set of row ids
   whose array column contains the query array (\sqlinline{@>})
-
   \[
     T = \opand_{c \in A}(T_c)
   \]
-
 \item
   \emph{recheck} each row to make sure its array has the same number of
   (distinct) elements as the query array
-
   \[
     T' = \oprecheck(T, g)
   \]
-
   where
-
   \[
     g(\pk) = \parens{\verts{\braces{(i, p) \in T : p = \pk}} \overset{?}{=}
     \verts{A}}
   \]
-
 \end{nparts}
 
 Recheck is the fallback we can rely on for complicated queries. We can slowly
