@@ -23,7 +23,7 @@ You can represent each GIN operator using the primitives:
         & Given \sqlinline{col @@ '!foo'},
         & expensive; \\
       & $T = \opget_I(i \qeq \mathtt{foo})$
-        & mem grows with commonness of RHS \\
+        & mem $\propto$ commonness of RHS \\
       & seqscan tuples where pkey $p \not\in T[\pk]$ \\
     $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{:*}
         & Given \sqlinline{col @@ 'foo:*'}, \\
@@ -47,7 +47,7 @@ You can represent each GIN operator using the primitives:
         & Given \sqlinline{col <@ [3, 7]},
         & likely cheap: \\
       & $T_3 = \opget_I(i \qeq \mathtt{3})$
-        & cost grows with size of RHS \\
+        & cost $\propto$ size of RHS \\
       & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
       & $T = \opor(T_3, T_7)$ \\
       & seqscan tuples where pkey $p \in T[\pk]$ \\
@@ -56,7 +56,7 @@ You can represent each GIN operator using the primitives:
         & Given \sqlinline{col = [3, 7]},
         & cheap; \\
       & $T_3 = \opget_I(i \qeq \mathtt{3})$
-        & mem grows with size of RHS \\
+        & mem $\propto$ size of RHS \\
       & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
       & $T = \opand(T_3, T_7)$ \\
       & $T' = \oprecheck(T, \verts{\braces{(i', p') \in T : p' = p}} \qeq 2)$
