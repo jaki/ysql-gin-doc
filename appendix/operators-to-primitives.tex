@@ -78,13 +78,13 @@ You can represent each GIN operator using the primitives:
     \sqlinline{jsonb ? text}
         & Given \sqlinline{col ? 'foo'}, \\
       & $T = \opget_I(i \qsw \mathtt{Jfoo})$ \\
-    \sqlinline{jsonb ?& text}
-        & Given \sqlinline{col ?& ['foo', 'bar']}, \\
+    \sqlinline{jsonb ?& text[]}
+        & Given \sqlinline{col ?& ARRAY['foo', 'bar']}, \\
       & $T_l = \opget_I(i \qsw \mathtt{Jfoo})$ \\
       & $T_r = \opget_I(i \qsw \mathtt{Jbar})$ \\
       & $T = \opand(T_l, T_r)$ \\
-    \sqlinline{jsonb ?| text}
-        & Given \sqlinline{col ?| ['foo', 'bar']}, \\
+    \sqlinline{jsonb ?| text[]}
+        & Given \sqlinline{col ?| ARRAY['foo', 'bar']}, \\
       & $T_l = \opget_I(i \qsw \mathtt{Jfoo})$ \\
       & $T_r = \opget_I(i \qsw \mathtt{Jbar})$ \\
       & $T = \opor(T_l, T_r)$ \\
