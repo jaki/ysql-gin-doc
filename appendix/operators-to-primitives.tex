@@ -89,9 +89,9 @@ You can represent each GIN operator using the primitives:
       & $T_r = \opget_I(i \qsw \mathtt{Jbar})$ \\
       & $T = \opor(T_l, T_r)$ \\
     \sqlinline{jsonb @> jsonb}
-        & Given \sqlinline{col @> '{"foo": 3, "bar": {"baz": "qux"}}'}, \\
-      & $T_1 = \opget_I(i \qeq \mathtt{JfooN3})$ \\
-      & $T_2 = \opget_I(i \qeq \mathtt{JbarJbazSqux})$ \\
+        & Given \sqlinline{col @> '{"a":3, "b":{"c":["d"]}}'}, \\
+      & $T_1 = \opget_I(i \qeq \mathtt{JaN3})$ \\
+      & $T_2 = \opget_I(i \qeq \mathtt{JbJcASd})$ \\
       & $T = \opor(T_1, T_2)$ \\
     \bottomrule
   \end{tabular}
