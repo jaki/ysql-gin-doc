@@ -1,0 +1,10 @@
+GIN indexes map values \emph{inside a column} rather than the whole column.
+
+\begin{sqlcode}
+CREATE INDEX ON book USING gin (words);
+\end{sqlcode}
+
+should create a secondary DocDB table with key \textinline{word HASH, pages
+ASC}, where \textinline{word} is a word in \textinline{words}. If I insert a
+page with 300 unique words and 500 total words, I add 300 records to the index,
+all referencing the same page.

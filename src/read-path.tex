@@ -1,0 +1,22 @@
+For postgres, \sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
+to_tsquery('simple', 'the')} does
+
+\begin{nparts}
+\item
+  create scan key: \textinline{the}
+\item
+  get tuples matching scan key
+\item
+  recheck each tuple if needed
+\end{nparts}
+
+For Yugabyte, we should
+
+\begin{nparts}
+\item
+  create scan key: \textinline{the}
+\item
+  \textbf{fetch tuples from DocDB matching scan key}
+\item
+  recheck each tuple if needed
+\end{nparts}

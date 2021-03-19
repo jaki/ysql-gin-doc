@@ -1,0 +1,10 @@
+\begin{oparts}
+\item
+  GIN indexes can only be used on column types \sqlinline{tsvector},
+  \sqlinline{anyarray}, \sqlinline{jsonb}
+\item
+  GIN indexes cannot be unique
+\item
+  GIN indexes can be on more than one column, but all columns must be
+  GINable
+\end{oparts}

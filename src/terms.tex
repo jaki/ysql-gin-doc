@@ -1,0 +1,11 @@
+\begin{oparts}
+\item
+  \textbf{indexed table}: indexes are on \emph{indexed tables}
+\item
+  \textbf{pending list}: in postgres, to avoid having each GIN index insert hit
+  disk, write to a linear list of tuples (\emph{pending list}) first, and flush
+  it later in bulk
+\item
+  \textbf{posting list}: in postgres, a GIN index tuple maps key to
+  \emph{posting list}, a list of ctids corresponding to the indexed table rows
+\end{oparts}

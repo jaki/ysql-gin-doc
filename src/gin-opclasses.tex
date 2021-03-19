@@ -1,0 +1,36 @@
+Indexes have an access method (e.g. \sqlinline{btree}, \sqlinline{lsm},
+\sqlinline{gin}) and an opclass (e.g. \sqlinline{char_ops},
+\sqlinline{numeric_ops}). \textbf{The opclass determines the index key format!}
+Here are the opclasses that can be used with GIN
+(\href{https://www.postgresql.org/docs/current/gin-builtin-opclasses.html}{source}):
+
+\begin{center}
+    \begin{tabular}{lll}
+        \toprule
+        opclass & type & supported operators \\
+        \midrule
+        \sqlinline{tsvector_ops} & \sqlinline{tsvector} & \sqlinline{@@},
+        \sqlinline{@@@} \\
+        \sqlinline{array_ops} & \sqlinline{anyarray} & \sqlinline{&&},
+        \sqlinline{@}, \sqlinline{=}, \sqlinline{@>} \\
+        \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?},
+        \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
+        \sqlinline{@@} \\
+        \sqlinline{jsonb_path_ops} & \sqlinline{jsonb} & \sqlinline{@>},
+        \sqlinline{@?}, \sqlinline{@@} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I implicitly use
+opclass \sqlinline{jsonb_ops}. To use \sqlinline{jsonb_path_ops}, I need to
+\sqlinline{CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops)}.
+
+\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
+value) of the jsonb.
+
+\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
+
+We could create our own opclass to form the keys in a way that fits with DocDB,
+or we could instead have a translation layer that takes these postgres-derived
+keys and converts them to DocDB format and vice versa.

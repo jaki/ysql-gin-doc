@@ -1,0 +1,37 @@
+\begin{sqlcode}
+CREATE TABLE book (page int PRIMARY KEY, word text, position int);
+\end{sqlcode}
+
+creates a DocDB table with key \sqlinline{page HASH}. I can easily ask for
+pages 5-12 using this primary key:
+
+\begin{sqlcode}
+SELECT * FROM book WHERE page >= 5 and page <= 12;
+\end{sqlcode}
+
+\begin{sqlcode}
+CREATE INDEX ON book (word);
+\end{sqlcode}
+
+creates a secondary DocDB table with key \textinline{word HASH, page ASC}. This
+is like the index at the back of a book. I can easily ask what pages have the
+word \textinline{foo} using this index:
+
+\begin{sqlcode}
+SELECT page FROM book WHERE word = 'foo';
+\end{sqlcode}
+
+What if the table were structured instead like
+
+\begin{sqlcode}
+CREATE TABLE book (page int PRIMARY KEY, words text[]);
+\end{sqlcode}
+
+Now, looking for the specific word \textinline{foo} is time-consuming:
+
+\begin{sqlcode}
+select * from book where '{foo}' && words;
+\end{sqlcode}
+
+Creating a regular index won't help since you still need to search
+\textinline{words} for \textinline{foo}.

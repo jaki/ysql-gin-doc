@@ -1,0 +1,18 @@
+For postgres, \sqlinline{INSERT INTO table_with_gin_index
+(to_tsvector('simple', 'the quick brown'))} does
+
+\begin{nparts}
+\item
+  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
+\item
+  for each index key, append the indexed table ctid to the key's posting list
+\end{nparts}
+
+For Yugabyte, we should
+
+\begin{nparts}
+\item
+  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
+\item
+  \textbf{for each index key, write (key, ctid) pair to DocDB}
+\end{nparts}

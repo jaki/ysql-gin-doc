@@ -1,0 +1,64 @@
+The GIN index key should be paths, like
+
+\begin{oparts}
+\item
+  \textinline{<JSON>, a, 1}
+\item
+  \textinline{<JSON>, b, <JSON>, c, d}
+\item
+  \textinline{<JSON>, b, <JSON>, c, e}
+\item
+  \textinline{<JSON>, b, <ARRAY>, 1}
+\item
+  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 2}
+\item
+  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 3}
+\item
+  \textinline{<JSON>, b, <ARRAY>, 4}
+\item
+  \textinline{<JSON>, c, f}
+\end{oparts}
+
+(This is inspired by
+\href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
+inverted index RFC}.)
+
+Contains (\sqlinline{@>}) searches can have corresponding scan keys
+
+\begin{oparts}
+\item
+  \sqlinline{j @> '{"a": 1}'}
+  scans for \textinline{<JSON>, a, 1}
+\item
+  \sqlinline{j @> '{"b": {}}'}
+  scans for
+  \textinline{<JSON>, b, <JSON>}
+\item
+  \sqlinline{j @> '{"b": []}'}
+  scans for
+  \textinline{<JSON>, b, <ARR>}
+\item
+  \sqlinline{j @> '{"b": [[]]}'}
+  scans for
+  \textinline{<JSON>, b, <ARR>, <ARR>}
+\item
+  \sqlinline{j @> '{"b": [4]}'}
+  scans for
+  \textinline{<JSON>, b, <ARR>, 4}
+\end{oparts}
+
+Concerns
+
+\begin{oparts}
+\item
+  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will the
+  number format be like?
+\item
+  What will the text encoding be like, especially for weird unicode, and how
+  does prefix matching work, then?
+\item
+  How will the end of the JSON document be marked? (Same question for marking
+  array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't this mean
+  the contents of the JSON GIN key have to be encoded in some way to make
+  exclamation marks unambiguous?
+\end{oparts}

@@ -12,236 +12,44 @@
 \hypertarget{terms}{%
 \subsection{Terms}\label{terms}}
 
-\begin{oparts}
-\item
-  \textbf{indexed table}: indexes are on \emph{indexed tables}
-\item
-  \textbf{pending list}: in postgres, to avoid having each GIN index insert hit
-  disk, write to a linear list of tuples (\emph{pending list}) first, and flush
-  it later in bulk
-\item
-  \textbf{posting list}: in postgres, a GIN index tuple maps key to
-  \emph{posting list}, a list of ctids corresponding to the indexed table rows
-\end{oparts}
+\IfFileExists{./src/terms.tex}{%
+\input{src/terms.tex}}{%
+TODO}
 
 \hypertarget{background}{%
 \subsection{Background}\label{background}}
 
-\begin{sqlcode}
-CREATE TABLE book (page int PRIMARY KEY, word text, position int);
-\end{sqlcode}
-
-creates a DocDB table with key \sqlinline{page HASH}. I can easily ask for
-pages 5-12 using this primary key:
-
-\begin{sqlcode}
-SELECT * FROM book WHERE page >= 5 and page <= 12;
-\end{sqlcode}
-
-\begin{sqlcode}
-CREATE INDEX ON book (word);
-\end{sqlcode}
-
-creates a secondary DocDB table with key \textinline{word HASH, page ASC}. This
-is like the index at the back of a book. I can easily ask what pages have the
-word \textinline{foo} using this index:
-
-\begin{sqlcode}
-SELECT page FROM book WHERE word = 'foo';
-\end{sqlcode}
-
-What if the table were structured instead like
-
-\begin{sqlcode}
-CREATE TABLE book (page int PRIMARY KEY, words text[]);
-\end{sqlcode}
-
-Now, looking for the specific word \textinline{foo} is time-consuming:
-
-\begin{sqlcode}
-select * from book where '{foo}' && words;
-\end{sqlcode}
-
-Creating a regular index won't help since you still need to search
-\textinline{words} for \textinline{foo}.
+\IfFileExists{./src/background.tex}{%
+\input{src/background.tex}}{%
+TODO}
 
 \hypertarget{overview}{%
 \subsection{Overview}\label{overview}}
 
-GIN indexes map values \emph{inside a column} rather than the whole column.
-
-\begin{sqlcode}
-CREATE INDEX ON book USING gin (words);
-\end{sqlcode}
-
-should create a secondary DocDB table with key \textinline{word HASH, pages
-ASC}, where \textinline{word} is a word in \textinline{words}. If I insert a
-page with 300 unique words and 500 total words, I add 300 records to the index,
-all referencing the same page.
+\IfFileExists{./src/overview.tex}{%
+\input{src/overview.tex}}{%
+TODO}
 
 \hypertarget{limitations}{%
 \subsection{Limitations}\label{limitations}}
 
-\begin{oparts}
-\item
-  GIN indexes can only be used on column types \sqlinline{tsvector},
-  \sqlinline{anyarray}, \sqlinline{jsonb}
-\item
-  GIN indexes cannot be unique
-\item
-  GIN indexes can be on more than one column, but all columns must be
-  GINable
-\end{oparts}
+\IfFileExists{./src/limitations.tex}{%
+\input{src/limitations.tex}}{%
+TODO}
 
 \hypertarget{gin-opclasses}{%
 \subsection{GIN opclasses}\label{gin-opclasses}}
 
-Indexes have an access method (e.g. \sqlinline{btree}, \sqlinline{lsm},
-\sqlinline{gin}) and an opclass (e.g. \sqlinline{char_ops},
-\sqlinline{numeric_ops}). \textbf{The opclass determines the index key format!}
-Here are the opclasses that can be used with GIN
-(\href{https://www.postgresql.org/docs/current/gin-builtin-opclasses.html}{source}):
-
-\begin{center}
-    \begin{tabular}{lll}
-        \toprule
-        opclass & type & supported operators \\
-        \midrule
-        \sqlinline{tsvector_ops} & \sqlinline{tsvector} & \sqlinline{@@},
-        \sqlinline{@@@} \\
-        \sqlinline{array_ops} & \sqlinline{anyarray} & \sqlinline{&&},
-        \sqlinline{@}, \sqlinline{=}, \sqlinline{@>} \\
-        \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?},
-        \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
-        \sqlinline{@@} \\
-        \sqlinline{jsonb_path_ops} & \sqlinline{jsonb} & \sqlinline{@>},
-        \sqlinline{@?}, \sqlinline{@@} \\
-        \bottomrule
-    \end{tabular}
-\end{center}
-
-If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I implicitly use
-opclass \sqlinline{jsonb_ops}. To use \sqlinline{jsonb_path_ops}, I need to
-\sqlinline{CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops)}.
-
-\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
-value) of the jsonb.
-
-\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
-
-We could create our own opclass to form the keys in a way that fits with DocDB,
-or we could instead have a translation layer that takes these postgres-derived
-keys and converts them to DocDB format and vice versa.
+\IfFileExists{./src/gin-opclasses.tex}{%
+\input{src/gin-opclasses.tex}}{%
+TODO}
 
 \hypertarget{operators}{%
 \subsection{Operators}\label{operators}}
 
-See the operators in postgresql docs:
-
-\begin{oparts}
-\item
-  \href{https://www.postgresql.org/docs/current/functions-textsearch.html}{tsvector
-  operators}
-\item
-  \href{https://www.postgresql.org/docs/current/functions-array.html}{anyarray
-  operators}
-\item
-  \href{https://www.postgresql.org/docs/current/functions-json.html}{jsonb
-  operators}
-\end{oparts}
-
-All the operators boil down to a combination of these primitives:
-
-\begin{oparts}
-\item
-  $\opget_I(f)$:
-  given index $I$ and predicate $f$, return list of tuples
-  \[
-    T = \braces{(\ik, \pk) \in I : f(\ik)}
-  \]
-  $f$ should be a simple predicate like
-  \begin{oparts}
-  \item
-    $\ik < c$
-  \item
-    $\ik = c$
-  \item
-    $\ik > c$
-  \item
-    $\ik \geq c$
-  \item
-    $\ik \leq c$
-  \item
-    $\ik~\textnormal{starts with}~c$
-  \end{oparts}
-\item
-  $\opand(T_1, T_2)$:
-  given list of tuples $T_1$, $T_2$, return
-  \[
-    T = \braces{(\ik, \pk) \in T_1 \cup T_2 : \pk \in K}
-  \]
-  where
-  \[
-    K = T_1[\pk] \cap T_2[\pk]
-  \]
-\item
-  $\opor(T_1, T_2)$:
-  given list of tuples $T_1$, $T_2$, return
-  \[
-    T = T_1 \cup T_2
-  \]
-\item
-  $\oprecheck(T, g)$:
-  given list of tuples $T$ and predicate $g$, return list of tuples
-  \[
-    T' = \braces{(\ik, \pk) \in T : g(\pk)}
-  \]
-  $g$ may be any predicate like
-  \begin{oparts}
-  \item
-    \sqlinline{pk @@ '$.a.b.c.ceiling() == 5'}
-  \item
-    \sqlinline{pk @@ '$.d.e.f like_regex "^foo.*bar"'}
-  \end{oparts}
-\end{oparts}
-
-For example, the \sqlinline{=} operator for arrays makes sure that the indexed
-array column equals the query array. This can be done by
-
-\begin{nparts}
-\item
-  For each distinct element $e$ in the query array $A_q$, get a set of tuples
-  $T_e$ where the tuple's row's array contains the element $e$:
-  \[
-    \forall e \in A_q, T_e = \opget_I(f)
-  \]
-  where
-  \[
-    f(\ik) = \parens{\ik \qeq e}
-  \]
-\item
-  Intersect the tuples $T_e$ to filter out any tuples whose row's array doesn't
-  contain \textbf{all} of the query array's elements:
-  \[
-    T = \opand_{e \in A_q}(T_e)
-  \]
-\item
-  Recheck each row to make sure its array has the same number of (distinct)
-  elements as the query array:
-  \[
-    T' = \oprecheck(T, g)
-  \]
-  where
-  \[
-    g(\pk) = \parens{\verts{\braces{(i, p) \in T : p = \pk}} \qeq \verts{A_q}}
-  \]
-\end{nparts}
-
-Recheck is the fallback we can rely on for complicated queries. We can slowly
-phase out the need to use recheck as DocDB becomes more capable.
-
-See translations of all operators to primitives in
-\protect\hyperlink{operators-to-primitives}{the appendix}.
+\IfFileExists{./src/operators.tex}{%
+\input{src/operators.tex}}{%
+TODO}
 
 \hypertarget{read-and-write-path}{%
 \subsection{Read and write path}\label{read-and-write-path}}
@@ -249,137 +57,37 @@ See translations of all operators to primitives in
 \hypertarget{write-path}{%
 \subsubsection{Write path}\label{write-path}}
 
-For postgres, \sqlinline{INSERT INTO table_with_gin_index
-(to_tsvector('simple', 'the quick brown'))} does
-
-\begin{nparts}
-\item
-  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
-\item
-  for each index key, append the indexed table ctid to the key's posting list
-\end{nparts}
-
-For Yugabyte, we should
-
-\begin{nparts}
-\item
-  prepare index keys: \textinline{the}, \textinline{quick}, \textinline{brown}
-\item
-  \textbf{for each index key, write (key, ctid) pair to DocDB}
-\end{nparts}
+\IfFileExists{./src/write-path.tex}{%
+\input{src/write-path.tex}}{%
+TODO}
 
 \hypertarget{read-path}{%
 \subsubsection{Read path}\label{read-path}}
 
-For postgres, \sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
-to_tsquery('simple', 'the')} does
-
-\begin{nparts}
-\item
-  create scan key: \textinline{the}
-\item
-  get tuples matching scan key
-\item
-  recheck each tuple if needed
-\end{nparts}
-
-For Yugabyte, we should
-
-\begin{nparts}
-\item
-  create scan key: \textinline{the}
-\item
-  \textbf{fetch tuples from DocDB matching scan key}
-\item
-  recheck each tuple if needed
-\end{nparts}
+\IfFileExists{./src/read-path.tex}{%
+\input{src/read-path.tex}}{%
+TODO}
 
 \hypertarget{docdb-encoding}{%
 \subsection{DocDB encoding}\label{docdb-encoding}}
 
-In general, GIN index records should be encoded like
-
-\begin{textcode*}{frame=none}
-[<gin_index_keys>, <primary_keys>]
-\end{textcode*}
+\IfFileExists{./src/docdb-encoding.tex}{%
+\input{src/docdb-encoding.tex}}{%
+TODO}
 
 \hypertarget{tsvector}{%
 \subsubsection{tsvector}\label{tsvector}}
 
-The GIN index key should be words, like \textinline{the}, \textinline{quick},
-\textinline{brown}. To support prefix search, serialization of the words should
-be done carefully.
-
-TODO: look into DocDB encoding for \cppinline{kString}. TODO: look into
-\textinline{tsvector} \textbf{weights}
+\IfFileExists{./src/tsvector.tex}{%
+\input{src/tsvector.tex}}{%
+TODO}
 
 \hypertarget{jsonb}{%
 \subsubsection{jsonb}\label{jsonb}}
 
-The GIN index key should be paths, like
-
-\begin{oparts}
-\item
-  \textinline{<JSON>, a, 1}
-\item
-  \textinline{<JSON>, b, <JSON>, c, d}
-\item
-  \textinline{<JSON>, b, <JSON>, c, e}
-\item
-  \textinline{<JSON>, b, <ARRAY>, 1}
-\item
-  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 2}
-\item
-  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 3}
-\item
-  \textinline{<JSON>, b, <ARRAY>, 4}
-\item
-  \textinline{<JSON>, c, f}
-\end{oparts}
-
-(This is inspired by
-\href{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{CockroachDB's
-inverted index RFC}.)
-
-Contains (\sqlinline{@>}) searches can have corresponding scan keys
-
-\begin{oparts}
-\item
-  \sqlinline{j @> '{"a": 1}'}
-  scans for \textinline{<JSON>, a, 1}
-\item
-  \sqlinline{j @> '{"b": {}}'}
-  scans for
-  \textinline{<JSON>, b, <JSON>}
-\item
-  \sqlinline{j @> '{"b": []}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>}
-\item
-  \sqlinline{j @> '{"b": [[]]}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>, <ARR>}
-\item
-  \sqlinline{j @> '{"b": [4]}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>, 4}
-\end{oparts}
-
-Concerns
-
-\begin{oparts}
-\item
-  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will the
-  number format be like?
-\item
-  What will the text encoding be like, especially for weird unicode, and how
-  does prefix matching work, then?
-\item
-  How will the end of the JSON document be marked? (Same question for marking
-  array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't this mean
-  the contents of the JSON GIN key have to be encoded in some way to make
-  exclamation marks unambiguous?
-\end{oparts}
+\IfFileExists{./src/jsonb.tex}{%
+\input{src/jsonb.tex}}{%
+TODO}
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
