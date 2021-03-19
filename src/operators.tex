@@ -2,14 +2,17 @@ See the operators in postgresql docs:
 
 \begin{oparts}
 \item
-  \href{https://www.postgresql.org/docs/current/functions-textsearch.html}{tsvector
-  operators}
+  \href{%
+    https://www.postgresql.org/docs/current/functions-textsearch.html}{%
+    tsvector operators}
 \item
-  \href{https://www.postgresql.org/docs/current/functions-array.html}{anyarray
-  operators}
+  \href{%
+    https://www.postgresql.org/docs/current/functions-array.html}{%
+    anyarray operators}
 \item
-  \href{https://www.postgresql.org/docs/current/functions-json.html}{jsonb
-  operators}
+  \href{%
+    https://www.postgresql.org/docs/current/functions-json.html}{%
+    jsonb operators}
 \end{oparts}
 
 All the operators boil down to a combination of these primitives:
@@ -102,5 +105,6 @@ array column equals the query array. This can be done by
 Recheck is the fallback we can rely on for complicated queries. We can slowly
 phase out the need to use recheck as DocDB becomes more capable.
 
-See translations of all operators to primitives in
-\protect\hyperlink{operators-to-primitives}{the appendix}.
+See translations of all operators to primitives in \protect\hyperlink{%
+  operators-to-primitives}{%
+  the appendix}.
