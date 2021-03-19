@@ -93,64 +93,49 @@ You can represent each GIN operator using the primitives:
       & $T_1 = \opget_I(i \qeq \mathtt{JaN3})$ \\
       & $T_2 = \opget_I(i \qeq \mathtt{JbJcASd})$ \\
       & $T = \opor(T_1, T_2)$ \\
+    \sqlinline{jsonb @? jsonpath} \\
+    \sqlinline{jsonb @@ jsonpath} \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{==}
+        & Given \sqlinline{col @@ '$.foo == 7'}, \\
+      & $T = \opget_I(i \qeq \mathtt{JfooN7})$ \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{>}
+        & Given \sqlinline{col @@ '$.foo > 7'},
+        & need simple pushdown; \\
+      & $T = \opget_I((i \qsw \mathtt{JfooN}) \wedge
+          (\textnormal{val}(i) \overset{?}{>} 7))$
+        & need range-partition \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{!=}
+        & Given \sqlinline{col @@ '$.foo != 7'},
+        & need range-partition \\
+      & $T = \opget_I(i \qsw \mathtt{JfooN})$ \\
+      & seqscan tuples where pkey $p \in T[\pk]$ \\
+      & and recheck the operator \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{!}
+        & Given \sqlinline{col @@ '! ($.foo == 7)'},
+        & expensive; \\
+      & $T = \opget_I(i \qeq \mathtt{JfooN7})$
+        & mem $\propto$ prevalence of RHS \\
+      & seqscan tuples where pkey $p \not\in T[\pk]$ \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{like_regex}
+        & Given \sqlinline{col @@ '$.foo like_regex "bar$"'},
+        & need range-partition \\
+      & $T = \opget_I(i \qsw \mathtt{JfooS})$ \\
+      & seqscan tuples where pkey $p \in T[\pk]$ \\
+      & and recheck the operator \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{starts with}
+        & Given \sqlinline{col @@ '$.foo starts with "b"'},
+        & need range-partition \\
+      & $T = \opget_I(i \qsw \mathtt{JfooSb})$ \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{ceiling}
+        & Given \sqlinline{col @@ '$.foo.ceiling() == 5'},
+        & need simple pushdown; \\
+      & $T = \opget_I((i \qsw \mathtt{JfooN}) \wedge
+          (\ceils{\textnormal{val}(i)} \qeq 5))$
+        & need range-partition \\
+    $\hookrightarrow$ \sqlinline{jsonpath}: \sqlinline{type}
+        & Given \sqlinline{col @@ '$.foo.type() == "number"'},
+        & need range-partition \\
+      & $T = \opget_I(i \qsw \mathtt{JfooN})$ \\
     \bottomrule
   \end{tabular}
 \end{center}
-
-\begin{oparts}
-\item
-  \texttt{jsonb\ @?\ jsonpath\ →\ boolean}: (custom)
-\item
-  \texttt{jsonb\ @@\ jsonpath\ →\ boolean}: (custom)
-
-  \begin{oparts}
-  \item
-    jsonpath \texttt{\$.a\ ==\ 7}: set \texttt{LHS} contains element
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7}
-  \item
-    jsonpath \texttt{\$.a\ \textgreater{}\ 7}: (set \texttt{LHS}
-    contains element \textbf{greater than}
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
-    AND (set \texttt{LHS} contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
-  \item
-    jsonpath \texttt{\$.a\ !=\ 7}: (set \texttt{LHS} contains element
-    \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
-    AND NOT(set \texttt{LHS} contains element
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
-  \item
-    jsonpath \texttt{(\$.a\ ==\ 7)\ \&\&\ !\ (\$.b\ ==\ 8)}: (set
-    \texttt{LHS} contains element
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}7})
-    AND NOT(set \texttt{LHS} contains element
-    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}8})
-  \item
-    jsonpath \texttt{\$.a\ like\_regex\ "\^{}foo.*bar"}: set
-    \texttt{LHS} contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}}
-    + recheck
-  \item
-    jsonpath \texttt{\$.a\ starts\ with\ "bar"}: set \texttt{LHS}
-    contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}str\textgreater{}bar}
-  \item
-    jsonpath \texttt{\$.a.ceiling()\ ==\ 5}: set \texttt{LHS} contains
-    element
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
-    + recheck
-  \item
-    jsonpath \texttt{\$.a.type()\ ==\ "number"}: set \texttt{LHS}
-    contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}}
-  \item
-    jsonpath \texttt{\$.a\ +\ (\$.b\ \%\ \$.c)\ ==\ 7}: (set
-    \texttt{LHS} contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}a.\textless{}num\textgreater{}})
-    AND (set \texttt{LHS} contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}b.\textless{}num\textgreater{}})
-    AND (set \texttt{LHS} contains element \textbf{with prefix}
-    \texttt{\textless{}key\textgreater{}c.\textless{}num\textgreater{}})
-    + recheck
-  \end{oparts}
-\end{oparts}
