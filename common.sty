@@ -45,6 +45,17 @@
 \setnewmintall{sql}
 \setnewmintall{text}
 
+% User-defined options.
+\newif\ifdark
+\IfFileExists{./options.tex}{\input{options}}
+
+% dark option.
+\ifdark
+    \usepackage{pagecolor}
+    \color{white}
+    \pagecolor{black}
+\fi
+
 \DeclarePairedDelimiter{\braces}{\lbrace}{\rbrace}
 \DeclarePairedDelimiter{\ceils}{\lceil}{\rceil}
 \DeclarePairedDelimiter{\parens}{\lparen}{\rparen}
