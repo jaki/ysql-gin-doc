@@ -5,28 +5,28 @@ All the operators boil down to a combination of these primitives:
   $\opget_I(f)$:
   given index $I$ and predicate $f$, return list of tuples
   \[
-    T = \braces{(\ik, \pk) \in I : f(\ik)}
+    T = \braces{(i, p) \in I : f(i)}
   \]
   $f$ should be a simple predicate like
   \begin{oparts}
   \item
-    $\ik < c$
+    $i < c$
   \item
-    $\ik = c$
+    $i = c$
   \item
-    $\ik > c$
+    $i > c$
   \item
-    $\ik \geq c$
+    $i \geq c$
   \item
-    $\ik \leq c$
+    $i \leq c$
   \item
-    $\ik~\textnormal{starts with}~c$
+    $i~\textnormal{starts with}~c$
   \end{oparts}
 \item
   $\opand(T_1, T_2)$:
   given list of tuples $T_1$, $T_2$, return
   \[
-    T = \braces{(\ik, \pk) \in T_1 \cup T_2 : \pk \in K}
+    T = \braces{(i, p) \in T_1 \cup T_2 : p \in K}
   \]
   where
   \[
@@ -54,7 +54,7 @@ array column equals the query array. This can be done by
   \]
   where
   \[
-    f(\ik) = \parens{\ik \qeq e}
+    f(i) = \parens{i \qeq e}
   \]
 \item
   Intersect the tuples $T_e$ to filter out any tuples whose row's array doesn't
