@@ -3,7 +3,7 @@ All the operators boil down to a combination of these primitives:
 \begin{oparts}
 \item
   $\opget_I(f)$:
-  given index $I$ and predicate $f$, return list of tuples
+  given index $I$ and predicate $f$, return set of tuples
   \[
     T = \braces{(i, p) \in I : f(i)}
   \]
@@ -24,7 +24,7 @@ All the operators boil down to a combination of these primitives:
   \end{oparts}
 \item
   $\opand(T_1, T_2)$:
-  given list of tuples $T_1$, $T_2$, return
+  given sets of tuples $T_1$, $T_2$, return
   \[
     T = \braces{(i, p) \in T_1 \cup T_2 : p \in K}
   \]
@@ -34,7 +34,7 @@ All the operators boil down to a combination of these primitives:
   \]
 \item
   $\opor(T_1, T_2)$:
-  given list of tuples $T_1$, $T_2$, return
+  given sets of tuples $T_1$, $T_2$, return
   \[
     T = T_1 \cup T_2
   \]
