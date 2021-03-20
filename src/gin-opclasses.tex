@@ -23,9 +23,18 @@ Here are the opclasses that can be used with GIN (\href{%
     \end{tabular}
 \end{center}
 
-If I \sqlinline{CREATE INDEX ON bar USING gin (jsonb_col)}, I implicitly use
-opclass \sqlinline{jsonb_ops}. To use \sqlinline{jsonb_path_ops}, I need to
-\sqlinline{CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops)}.
+Notice that \sqlinline{jsonb} has two opclasses.
+
+\begin{sqlcode}
+CREATE INDEX ON bar USING gin (jsonb_col);
+\end{sqlcode}
+
+implicitly uses opclass \sqlinline{jsonb_ops}. To use
+\sqlinline{jsonb_path_ops}, it must be explicitly stated:
+
+\begin{sqlcode}
+CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops);
+\end{sqlcode}
 
 \sqlinline{jsonb_ops} forms an index key for each individual piece (key or
 value) of the jsonb.
