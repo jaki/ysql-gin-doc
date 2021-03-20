@@ -56,18 +56,7 @@ All the operators boil down to a combination of these primitives:
     T = T_1 \cup T_2
   \]
 \item
-  $\oprecheck(T, g)$:
-  given list of tuples $T$ and predicate $g$, return list of tuples
-  \[
-    T' = \braces{(\ik, \pk) \in T : g(\pk)}
-  \]
-  $g$ may be any predicate like
-  \begin{oparts}
-  \item
-    \sqlinline{pk @@ '$.a.b.c.ceiling() == 5'}
-  \item
-    \sqlinline{pk @@ '$.d.e.f like_regex "^foo.*bar"'}
-  \end{oparts}
+  recheck: a catchall for additional operations
 \end{oparts}
 
 For example, the \sqlinline{=} operator for arrays makes sure that the indexed
@@ -92,18 +81,8 @@ array column equals the query array. This can be done by
   \]
 \item
   Recheck each row to make sure its array has the same number of (distinct)
-  elements as the query array:
-  \[
-    T' = \oprecheck(T, g)
-  \]
-  where
-  \[
-    g(\pk) = \parens{\verts{\braces{(i, p) \in T : p = \pk}} \qeq \verts{A_q}}
-  \]
+  elements as the query array.
 \end{nparts}
-
-Recheck is the fallback we can rely on for complicated queries. We can slowly
-phase out the need to use recheck as DocDB becomes more capable.
 
 See translations of all operators to primitives in \protect\hyperlink{%
   operators-to-primitives}{%
