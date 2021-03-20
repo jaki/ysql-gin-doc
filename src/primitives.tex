@@ -1,0 +1,72 @@
+All the operators boil down to a combination of these primitives:
+
+\begin{oparts}
+\item
+  $\opget_I(f)$:
+  given index $I$ and predicate $f$, return list of tuples
+  \[
+    T = \braces{(\ik, \pk) \in I : f(\ik)}
+  \]
+  $f$ should be a simple predicate like
+  \begin{oparts}
+  \item
+    $\ik < c$
+  \item
+    $\ik = c$
+  \item
+    $\ik > c$
+  \item
+    $\ik \geq c$
+  \item
+    $\ik \leq c$
+  \item
+    $\ik~\textnormal{starts with}~c$
+  \end{oparts}
+\item
+  $\opand(T_1, T_2)$:
+  given list of tuples $T_1$, $T_2$, return
+  \[
+    T = \braces{(\ik, \pk) \in T_1 \cup T_2 : \pk \in K}
+  \]
+  where
+  \[
+    K = T_1[\pk] \cap T_2[\pk]
+  \]
+\item
+  $\opor(T_1, T_2)$:
+  given list of tuples $T_1$, $T_2$, return
+  \[
+    T = T_1 \cup T_2
+  \]
+\item
+  recheck: a catchall for additional operations
+\end{oparts}
+
+For example, the \sqlinline{=} operator for arrays makes sure that the indexed
+array column equals the query array. This can be done by
+
+\begin{nparts}
+\item
+  For each distinct element $e$ in the query array $A_q$, get a set of tuples
+  $T_e$ where the tuple's row's array contains the element $e$:
+  \[
+    \forall e \in A_q, T_e = \opget_I(f)
+  \]
+  where
+  \[
+    f(\ik) = \parens{\ik \qeq e}
+  \]
+\item
+  Intersect the tuples $T_e$ to filter out any tuples whose row's array doesn't
+  contain \textbf{all} of the query array's elements:
+  \[
+    T = \opand_{e \in A_q}(T_e)
+  \]
+\item
+  Recheck each row to make sure its array has the same number of (distinct)
+  elements as the query array.
+\end{nparts}
+
+See translations of all operators to primitives in \protect\hyperlink{%
+  operators-to-primitives}{%
+  the appendix}.
