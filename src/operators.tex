@@ -109,3 +109,65 @@ See the operators in postgresql docs:
     \bottomrule
   \end{tabular}
 \end{center}
+
+\sqlinline{jsonpath} expression operators:
+
+Given \sqlinline{j jsonb := '{"a":[2,4,"b",2,"c",0.5], "d":["ef","gh"]}'},
+
+\begin{center}
+  \begin{tabular}{llll}
+    \toprule
+    operator
+        & description
+        & example: \sqlinline{jsonb_path_query(j, } $\cdot$ \sqlinline{)}
+        & result \\
+    \midrule
+    \sqlinline{value == value}
+        & equality
+        & \sqlinline{'$.a[*] ? (@ == 2)'}
+        & \sqlinline{2, 2} \\
+    \sqlinline{value > value}
+        & greater-than
+        & \sqlinline{'$.a[*] ? (@ > 1)'}
+        & \sqlinline{2, 4, 2} \\
+    \sqlinline{value != value}
+        & non-equality
+        & \sqlinline{'$.a[*] ? (@ != 4)'}
+        & \sqlinline{2, 2, 0.5} \\
+      && \sqlinline{'$.a[*] ? (@ != 3)'}
+        & \sqlinline{2, 4, 2, 0.5} \\
+      && \sqlinline{'$.a[*] ? (@ != "b")'}
+        & \sqlinline{"c"} \\
+      && \sqlinline{'$.e ? (@ != 3)'}
+        & none \\
+      && \sqlinline{'$.e != 3'}
+        & \sqlinline{false} \\
+    \sqlinline{! boolean}
+        & boolean NOT
+        & \sqlinline{'$.a[*] ? (!(@ == 4))'}
+        & \sqlinline{2, 2, 0.5} \\
+      && \sqlinline{'$.a[*] ? (!(@ == 3))'}
+        & \sqlinline{2, 4, 2, 0.5} \\
+      && \sqlinline{'$.a[*] ? (!(@ == "b"))'}
+        & \sqlinline{"c"} \\
+      && \sqlinline{'!($.e == 3)'}
+        & \sqlinline{true} \\
+    \sqlinline{string like_regex string}
+        & regex match
+        & \sqlinline{'$.d[*] ? (@ like_regex "[hi]$")'}
+        & \sqlinline{"gh"} \\
+    \sqlinline{string starts with string}
+        & prefix match
+        & \sqlinline{'$.d[*] ? (@ starts with "e")'}
+        & \sqlinline{"ef"} \\
+    \sqlinline{number . ceiling()}
+        & math ceiling
+        & \sqlinline{'$.a[*] ? (@.ceiling())'}
+        & \sqlinline{2, 4, 2, 1} \\
+    \sqlinline{value . type()}
+        & JSON type
+        & \sqlinline{'$.a[*] ? (@.type() == "string")'}
+        & \sqlinline{"b", "c"} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
