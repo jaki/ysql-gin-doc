@@ -14,3 +14,82 @@ See the operators in postgresql docs:
     https://www.postgresql.org/docs/current/functions-json.html}{%
     jsonb operators}
 \end{oparts}
+
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    signature & description & example \\
+    \midrule
+    \sqlinline{tsvector @@ tsquery}
+        & match \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{|}
+        & logical or
+        & \sqlinline{to_tsvector('foo qux') @@ to_tsquery('foo | bar')} \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{&}
+        & logical and
+        & \sqlinline{to_tsvector('bar baz foo') @@ to_tsquery('foo & bar')} \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{!}
+        & logical not
+        & \sqlinline{to_tsvector('bar baz qux') @@ to_tsquery('! foo')} \\
+    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{:*}
+        & prefix match
+        & \sqlinline{to_tsvector('bar foo baz') @@ to_tsquery('fo:*')} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    signature & description & example \\
+    \midrule
+    \sqlinline{anyarray && anyarray}
+        & overlap
+        & \sqlinline{ARRAY[1, 4, 3] && ARRAY[2, 1]} \\
+    \sqlinline{anyarray <@ anyarray}
+        & is contained by
+        & \sqlinline{ARRAY[2, 2, 7] <@ ARRAY[1, 7, 4, 2, 6]} \\
+    \sqlinline{anyarray = anyarray}
+        & equal
+        & \sqlinline{ARRAY[1.1,2.1,3.1]::int[] = ARRAY[1,2,3]} \\
+    \sqlinline{anyarray @> anyarray}
+        & contains
+        & \sqlinline{ARRAY[1,4,3] @> ARRAY[3,1,3]} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    signature & description & example \\
+    \midrule
+    \sqlinline{jsonb ? text}
+        & Is string \sqlinline{text} a top-level key in \sqlinline{jsonb}?
+        & \sqlinline{'{"a":1, "b":2}'::jsonb ? 'b'} \\
+    \sqlinline{jsonb ?& text[]}
+        & Are all strings in \sqlinline{text[]} a top-level key
+        & \sqlinline{'{"a":1, "b":2, "c":3}'::jsonb} \\
+      & in \sqlinline{jsonb}?
+        & \sqlinline{?& ARRAY['b', 'c']} \\
+    \sqlinline{jsonb ?| text[]}
+        & Are any strings in \sqlinline{text[]} a top-level key
+        & \sqlinline{'{"a":1, "b":2}'::jsonb} \\
+      & in \sqlinline{jsonb}?
+        & \sqlinline{?| ARRAY['b', 'c']} \\
+    \sqlinline{jsonb @> jsonb}
+        & Does the left \sqlinline{jsonb} contain the
+        & \sqlinline{'{"a":1, "b":2}'::jsonb} \\
+      & right \sqlinline{jsonb} at the top level?
+        & \sqlinline{@> '{"b":2}'::jsonb} \\
+    \sqlinline{jsonb @? jsonpath}
+        & Does \sqlinline{jsonpath} for \sqlinline{jsonb} return any item?
+        & \sqlinline{'{"a":[1,2,3,4]}'::jsonb} \\
+      && \sqlinline{@? '$.a[*] ? (@ > 2)'} \\
+    \sqlinline{jsonb @@ jsonpath}
+        & Is the first item of \sqlinline{jsonpath} for \sqlinline{jsonb} true?
+        & \sqlinline{'{"a":[1,2,3,4]}'::jsonb} \\
+      && \sqlinline{@? '$.a[*] > 2'} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
