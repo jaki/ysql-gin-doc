@@ -34,16 +34,16 @@ See the operators in postgresql docs:
   \begin{tabular}{lll}
     \toprule
     operator & description & example \\
-    \sqlinline{|}
-        & logical or
+    \sqlinline{expr | expr}
+        & boolean OR
         & \sqlinline{to_tsvector('foo qux') @@ to_tsquery('foo | bar')} \\
-    \sqlinline{&}
-        & logical and
+    \sqlinline{expr & expr}
+        & boolean AND
         & \sqlinline{to_tsvector('bar baz foo') @@ to_tsquery('foo & bar')} \\
-    \sqlinline{!}
-        & logical not
+    \sqlinline{! expr}
+        & boolean NOT
         & \sqlinline{to_tsvector('bar baz qux') @@ to_tsquery('! foo')} \\
-    \sqlinline{:*}
+    \sqlinline{string:*}
         & prefix match
         & \sqlinline{to_tsvector('bar foo baz') @@ to_tsquery('fo:*')} \\
     \bottomrule
