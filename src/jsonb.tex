@@ -1,3 +1,21 @@
+\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
+value) of the jsonb.
+
+TODO: elaborate
+
+\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
+
+TODO: elaborate
+
+For both of those opclasses, we could have a translation layer that takes the
+postgres-derived keys and converts them to DocDB format, and vice versa.
+
+We could also create our own opclass.  Here is an example inspired by \href{%
+  https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{%
+  CockroachDB's inverted index RFC}.
+
+TODO: fix and clean this up
+
 The GIN index key should be paths, like
 
 \begin{oparts}
@@ -19,9 +37,6 @@ The GIN index key should be paths, like
   \textinline{<JSON>, c, f}
 \end{oparts}
 
-(This is inspired by \href{%
-  https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{%
-  CockroachDB's inverted index RFC}.)
 
 Contains (\sqlinline{@>}) searches can have corresponding scan keys
 

@@ -35,12 +35,3 @@ implicitly uses opclass \sqlinline{jsonb_ops}. To use
 \begin{sqlcode}
 CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops);
 \end{sqlcode}
-
-\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
-value) of the jsonb.
-
-\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
-
-We could create our own opclass to form the keys in a way that fits with DocDB,
-or we could instead have a translation layer that takes these postgres-derived
-keys and converts them to DocDB format and vice versa.
