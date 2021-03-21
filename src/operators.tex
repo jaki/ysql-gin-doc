@@ -24,16 +24,26 @@ See the operators in postgresql docs:
     \midrule
     \sqlinline{tsvector @@ tsquery}
         & match \\
-    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{|}
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\sqlinline{tsquery} expression operators:
+
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    operator & description & example \\
+    \sqlinline{|}
         & logical or
         & \sqlinline{to_tsvector('foo qux') @@ to_tsquery('foo | bar')} \\
-    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{&}
+    \sqlinline{&}
         & logical and
         & \sqlinline{to_tsvector('bar baz foo') @@ to_tsquery('foo & bar')} \\
-    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{!}
+    \sqlinline{!}
         & logical not
         & \sqlinline{to_tsvector('bar baz qux') @@ to_tsquery('! foo')} \\
-    $\hookrightarrow$ \sqlinline{tsquery}: \sqlinline{:*}
+    \sqlinline{:*}
         & prefix match
         & \sqlinline{to_tsvector('bar foo baz') @@ to_tsquery('fo:*')} \\
     \bottomrule
