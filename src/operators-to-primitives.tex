@@ -51,13 +51,13 @@ You can represent each GIN operator using the primitives:
       & and recheck the operator \\
     \sqlinline{anyarray = anyarray}
         & Given \sqlinline{col = ARRAY[3, 7]},
-        & cheap; \\
+        & likely cheap; \\
       & $T_3 = \opget_I(i \qeq \mathtt{3})$
         & mem $\propto$ size of RHS \\
       & $T_7 = \opget_I(i \qeq \mathtt{7})$ \\
       & $T = \opand(T_3, T_7)$ \\
-      & $T' = \oprecheck(T, \verts{\braces{(i', p') \in T : p' = p}} \qeq 2)$
-          \\
+      & seqscan tuples where pkey $p \in T[\pk]$ \\
+      & and recheck the operator \\
     \sqlinline{anyarray @> anyarray}
         & Given \sqlinline{col @> ARRAY[3, 7]}, \\
       & $T_3 = \opget_I(i \qeq \mathtt{3})$ \\
