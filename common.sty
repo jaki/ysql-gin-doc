@@ -7,11 +7,6 @@
 \usepackage{minted}
 \usepackage{parskip}
 
-% Package: hyperref.
-\hypersetup{
-    colorlinks = true,
-}
-
 % Package: minted.
 \setminted{%
     breakanywhere=true,
@@ -47,6 +42,7 @@
 
 % User-defined options.
 \newif\ifdark
+\newif\iflinkcolor
 \IfFileExists{./options.tex}{\input{options}}
 
 % dark option.
@@ -54,6 +50,13 @@
     \usepackage{pagecolor}
     \color{white}
     \pagecolor{black}
+\fi
+
+% link color option.
+\iflinkcolor
+    \hypersetup{
+        colorlinks = true,
+    }
 \fi
 
 \DeclarePairedDelimiter{\braces}{\lbrace}{\rbrace}
