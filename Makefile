@@ -1,5 +1,5 @@
-MAIN = gin.tex
+NAME = gin
 TC = xelatex
 
-gin.pdf: $(MAIN) common.sty src/*
-	$(TC) -shell-escape $(MAIN)
+gin.pdf: $(NAME).tex common.sty src/*
+	$(TC) -shell-escape $(NAME).tex
