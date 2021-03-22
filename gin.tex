@@ -1,5 +1,4 @@
 \documentclass[11pt]{article}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 
 \usepackage{common}
 
@@ -11,6 +10,11 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+
+\newpage
+\hypertarget{intro}{%
+\section{Intro}\label{intro}}
 
 \hypertarget{background}{%
 \subsection{Background}\label{background}}
@@ -28,6 +32,10 @@
 \subsection{Limitations}\label{limitations}}
 \input{src/limitations.tex}
 
+\newpage
+\hypertarget{components}{%
+\section{Components}\label{components}}
+
 \hypertarget{gin-opclasses}{%
 \subsection{GIN opclasses}\label{gin-opclasses}}
 \input{src/gin-opclasses.tex}
@@ -40,36 +48,44 @@
 \subsection{Primitives}\label{primitives}}
 \input{src/primitives.tex}
 
+\newpage
 \hypertarget{read-and-write-path}{%
-\subsection{Read and write path}\label{read-and-write-path}}
+\section{Read and write path}\label{read-and-write-path}}
 
 \hypertarget{write-path}{%
-\subsubsection{Write path}\label{write-path}}
+\subsection{Write path}\label{write-path}}
 \input{src/write-path.tex}
 
 \hypertarget{read-path}{%
-\subsubsection{Read path}\label{read-path}}
+\subsection{Read path}\label{read-path}}
 \input{src/read-path.tex}
 
+\newpage
 \hypertarget{docdb-encoding}{%
-\subsection{DocDB encoding}\label{docdb-encoding}}
+\section{DocDB encoding}\label{docdb-encoding}}
 \input{src/docdb-encoding.tex}
 
 \hypertarget{tsvector}{%
-\subsubsection{tsvector}\label{tsvector}}
+\subsection{tsvector}\label{tsvector}}
 \input{src/tsvector.tex}
 
 \hypertarget{jsonb}{%
-\subsubsection{jsonb}\label{jsonb}}
+\subsection{jsonb}\label{jsonb}}
 \input{src/jsonb.tex}
 
 \newpage
+\appendix
+\addcontentsline{toc}{section}{Appendix}
 \hypertarget{appendix}{%
-\section{Appendix}\label{appendix}}
+\section*{Appendix}\label{appendix}}
 
 \hypertarget{key-format-for-normal-index}{%
-\subsection{Key format for normal index}\label{key-format-for-normal-index}}
+\section{Key format for normal index}\label{key-format-for-normal-index}}
 \input{src/key-format-for-normal-index.tex}
+
+\newpage
+\hypertarget{tables}{%
+\section{Tables}\label{tables}}
 
 \hypertarget{operator-definitions}{%
 \subsection{Operator definitions}\label{operator-definitions}}
@@ -78,6 +94,10 @@
 \hypertarget{operators-to-primitives}{%
 \subsection{Operators to primitives}\label{operators-to-primitives}}
 \input{src/operators-to-primitives.tex}
+
+\newpage
+\hypertarget{examples}{%
+\section{Examples}\label{examples}}
 
 \hypertarget{example-tsvector}{%
 \subsection{Example: tsvector}\label{example-tsvector}}
