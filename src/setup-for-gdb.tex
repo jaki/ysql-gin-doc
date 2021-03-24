@@ -1,0 +1,34 @@
+First, clone the upstream postgres repository
+\textinline{git://git.postgresql.org/git/postgresql.git}.  I checkout the
+\textinline{REL_13_2} tag.
+
+Build the code.
+
+\begin{bashcode}
+./configure --enable-debug --prefix=/path/to/postgres/build
+make
+make install
+\end{bashcode}
+
+Start a postgres cluster.
+
+\begin{bashcode}
+cd /path/to/postgres/build
+bin/pg_ctl -D data -l logfile initdb
+bin/pg_ctl -D data -l logfile start
+bin/psql -d postgres
+\end{bashcode}
+
+Connect GDB to the postgres backend.
+
+\begin{bashcode}
+ps -fC postgres # look for line like "postgres: username postgres [local] idle"
+gdb -p <pid>
+\end{bashcode}
+
+To avoid cost optimizations choosing sequential scan over index scan, turn off
+sequential scan:
+
+\begin{sqlcode}
+SET enable_seqscan = off;
+\end{sqlcode}
