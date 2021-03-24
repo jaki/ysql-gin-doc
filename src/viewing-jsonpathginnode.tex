@@ -1,0 +1,37 @@
+When running queries that have jsonpath in the condition, a
+\cinline{JsonPathGinNode} is internally formed.  You can see it by setting a
+breakpoint after extracting it:
+
+\begin{textcode}
+b jsonb_gin.c:775
+\end{textcode}
+
+Run some query with jsonpath.
+
+\begin{sqlcode}
+CREATE TABLE jpdemo (jb jsonb);
+CREATE INDEX ON jpdemo USING gin (jb);
+SELECT * FROM jpdemo WHERE jb @@ 'strict $.abc == "foo"';
+\end{sqlcode}
+
+Generally, you want to look at
+
+\begin{textcode}
+p node->type
+p node->val.nargs
+p *((text*)node->args[i]->val.entryDatum)
+\end{textcode}
+
+where \textinline{i} should vary accordingly.  In this case, there's a top node
+of type \cinline{JSP_GIN_AND} with two arguments, both of type
+\cinline{JSP_GIN_ENTRY}.  The first has value \textinline{\001abc}, and the
+second has value \textinline{\005foo}.
+
+When doing a lax query, notice a change in the structure.  The second argument
+becomes a \cinline{JSP_GIN_OR} with two arguments \textinline{\001foo} and
+\textinline{\005foo}.  This is to handle arrays, illustrated as follows:
+
+\begin{sqlcode}
+INSERT INTO jpdemo VALUES ('{"abc": ["bar", "foo"]}');
+SELECT * FROM jpdemo WHERE jb @@ 'lax $.abc == "foo"';
+\end{sqlcode}
