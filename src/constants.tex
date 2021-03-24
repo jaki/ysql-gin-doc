@@ -6,3 +6,16 @@
 #define JsonbJsonpathExistsStrategyNumber   15
 #define JsonbJsonpathPredicateStrategyNumber  16
 \end{ccode}
+
+For \sqlinline{jsonb_ops} GIN opclass, the one-byte flag at the beginning of
+each GIN key:
+
+\begin{ccode}
+#define JGINFLAG_KEY    0x01    /* key (or string array element) */
+#define JGINFLAG_NULL   0x02    /* null value */
+#define JGINFLAG_BOOL   0x03    /* boolean value */
+#define JGINFLAG_NUM    0x04    /* numeric value */
+#define JGINFLAG_STR    0x05    /* string value (if not an array element) */
+#define JGINFLAG_HASHED 0x10    /* OR'd into flag if value was hashed */
+#define JGIN_MAXLENGTH  125     /* max length of text part before hashing */
+\end{ccode}
