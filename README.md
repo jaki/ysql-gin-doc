@@ -8,6 +8,7 @@ Install `xelatex` and run `make`.  Specify custom options in a file
 `options.tex`:
 
 - `\darktrue`: turn on dark mode
+- `\linkcolortrue`: turn on link coloring
 
 ## License
 
