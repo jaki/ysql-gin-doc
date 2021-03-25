@@ -2,5 +2,6 @@
 *.log
 *.out
 *.pdf
+*.toc
 _minted-*/
 options.tex
