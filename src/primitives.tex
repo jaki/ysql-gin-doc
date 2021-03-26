@@ -41,32 +41,3 @@ All the operators boil down to a combination of these primitives:
 \item
   recheck: a catchall for additional operations
 \end{oparts}
-
-For example, the \sqlinline{=} operator for arrays makes sure that the indexed
-array column equals the query array. This can be done by
-
-\begin{nparts}
-\item
-  For each distinct element $e$ in the query array $A_q$, get a set of tuples
-  $T_e$ where the tuple's row's array contains the element $e$:
-  \[
-    \forall e \in A_q, T_e = \opget_I(f)
-  \]
-  where
-  \[
-    f(i) = \parens{i \qeq e}
-  \]
-\item
-  Intersect the tuples $T_e$ to filter out any tuples whose row's array doesn't
-  contain \textbf{all} of the query array's elements:
-  \[
-    T = \opand_{e \in A_q}(T_e)
-  \]
-\item
-  Recheck each row to make sure its array has the same number of (distinct)
-  elements as the query array.
-\end{nparts}
-
-See translations of all operators to primitives in \protect\hyperlink{%
-  operators-to-primitives}{%
-  the appendix}.
