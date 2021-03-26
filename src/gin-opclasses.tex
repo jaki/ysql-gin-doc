@@ -10,15 +10,19 @@ Here are the opclasses that can be used with GIN (\href{%
     \toprule
     opclass & type & supported operators \\
     \midrule
-    \sqlinline{tsvector_ops} & \sqlinline{tsvector} & \sqlinline{@@},
-    \sqlinline{@@@} \\
-    \sqlinline{array_ops} & \sqlinline{anyarray} & \sqlinline{&&},
-    \sqlinline{<@}, \sqlinline{=}, \sqlinline{@>} \\
-    \sqlinline{jsonb_ops} & \sqlinline{jsonb} & \sqlinline{?},
-    \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>}, \sqlinline{@?},
-    \sqlinline{@@} \\
-    \sqlinline{jsonb_path_ops} & \sqlinline{jsonb} & \sqlinline{@>},
-    \sqlinline{@?}, \sqlinline{@@} \\
+    \sqlinline{tsvector_ops}
+        & \sqlinline{tsvector}
+        & \sqlinline{@@}, \sqlinline{@@@} \\
+    \sqlinline{array_ops}
+        & \sqlinline{anyarray}
+        & \sqlinline{&&}, \sqlinline{<@}, \sqlinline{=}, \sqlinline{@>} \\
+    \sqlinline{jsonb_ops}
+        & \sqlinline{jsonb}
+        & \sqlinline{?}, \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>},
+          \sqlinline{@?}, \sqlinline{@@} \\
+    \sqlinline{jsonb_path_ops}
+        & \sqlinline{jsonb}
+        & \sqlinline{@>}, \sqlinline{@?}, \sqlinline{@@} \\
     \bottomrule
   \end{tabular}
 \end{center}
