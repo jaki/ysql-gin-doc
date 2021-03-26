@@ -1,0 +1,35 @@
+First, it helps to know the following:
+
+\begin{oparts}
+\item
+access method\footnote{%
+\url{https://www.postgresql.org/docs/13/catalog-pg-am.html}%
+}: storage interface (e.g. \sqlinline{btree}, \sqlinline{lsm}, \sqlinline{gin})
+\item
+operator\footnote{%
+\url{https://www.postgresql.org/docs/13/catalog-pg-operator.html}%
+}: (e.g. \sqlinline{int4 >= int8} $\rightarrow$ \sqlinline{bool}, \sqlinline{-
+int8} $\rightarrow$ \sqlinline{int8})
+\item
+operator family\footnote{%
+\url{https://www.postgresql.org/docs/13/catalog-pg-opfamily.html}%
+}: collection of operators + access method
+\item
+operator class\footnote{%
+\url{https://www.postgresql.org/docs/13/catalog-pg-opclass.html}%
+}: operator family + in type + key type
+\end{oparts}
+
+We only need to concern ourselves with things related to the GIN access method.
+The components to cover are
+
+\begin{nparts}
+\item
+operators
+\item
+operator classes
+\item
+primitives
+\item
+translations of operators to primitives
+\end{nparts}
