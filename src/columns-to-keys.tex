@@ -1,0 +1,25 @@
+For each GIN opclass, I give examples of converting the column I'm indexing to
+the index key(s) I'm storing.
+
+\begin{center}
+  \begin{tabular}{lll}
+    \toprule
+    opclass & column & keys \\
+    \midrule
+    \sqlinline{tsvector_ops}
+        & \sqlinline{to_tsvector('simple', 'fo qu ba fo ba')}
+        & \sqlinline{"fo"}, \sqlinline{"qu"}, \sqlinline{"ba"} \\
+    \sqlinline{array_ops}
+        & \sqlinline{ARRAY[1, 2, 3, 2]}
+        & \sqlinline{1}, \sqlinline{2}, \sqlinline{3} \\
+    \sqlinline{jsonb_ops}
+        & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
+        & \sqlinline{"\001a"}, \sqlinline{"\005b"}, \sqlinline{"\001c"}, \\
+      && \sqlinline{"\001d"}, \sqlinline{"\004-1"}, \sqlinline{"\0045.2"} \\
+    \sqlinline{jsonb_path_ops}
+        & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
+        & \sqlinline{2076393154}, \sqlinline{3631049813}, \\
+      && \sqlinline{3671652104}, \sqlinline{3705026877} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
