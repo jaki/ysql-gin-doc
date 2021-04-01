@@ -1,6 +1,13 @@
-The GIN index key should be words, like \textinline{the}, \textinline{quick},
-\textinline{brown}. To support prefix search, serialization of the words should
-be done carefully.
+The GIN key is of type \sqlinline{text}.  We can encode them to DocDB
+\cppinline{kString}.  For example, \sqlinline{"the"} is encoded to
+\cppinline{"the\x00\x00"} for ascending and \cppinline{"\x8b\x97\x9a\xff\xff"}
+for descending.  Since UTF-8 strings are guaranteed to not have bytes
+\cppinline{"\x00"}, \cppinline{"\xfe"}, or \cppinline{"\xff"}, it should be
+simple to create bounds for prefix search.  In fact, this is already happening
+for queries like \sqlinline{col LIKE 'foo\%'}, which turn into a
+\cinline{QL_OP_BETWEEN} of \cinline{"foo"} and \cinline{"fop"}.
 
-TODO: look into DocDB encoding for \cppinline{kString}. TODO: look into
-\textinline{tsvector} \textbf{weights}
+Range partition is needed for efficient prefix queries.  Otherwise, hash
+partition is fine.
+
+TODO: look into \textinline{tsvector} \textbf{weights}
