@@ -40,3 +40,8 @@ implicitly uses opclass \sqlinline{jsonb_ops}. To use
 \begin{sqlcode}
 CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops);
 \end{sqlcode}
+
+See \protect\hyperlink{%
+  columns-to-keys}{%
+  the appendix} for examples of translating columns (in type) to keys (key
+  type).
