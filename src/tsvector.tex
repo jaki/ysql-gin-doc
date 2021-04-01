@@ -1,12 +1,12 @@
 The GIN key is of type \sqlinline{text}.  We can encode them to DocDB
 \cppinline{kString}.  For example, \sqlinline{"the"} is encoded to
-\cppinline{"the\x00\x00"} for ascending and \cppinline{"\x8b\x97\x9a\xff\xff"}
-for descending.\footnote{see \cppinline{AppendEncodedStrToKey}}  Since UTF-8
-strings are guaranteed to not have bytes \cppinline{"\x00"},
-\cppinline{"\xfe"}, or \cppinline{"\xff"}, it should be simple to create bounds
-for prefix search.  In fact, this is already happening for queries like
-\sqlinline{col LIKE 'foo\%'}, which turn into a \cinline{QL_OP_BETWEEN} of
-\cinline{"foo"} and \cinline{"fop"}.
+\cppinline{"Sthe\x00\x00"} for ascending and
+\cppinline{"a\x8b\x97\x9a\xff\xff"} for descending.\footnote{see
+\cppinline{AppendEncodedStrToKey}}  Since UTF-8 strings are guaranteed to not
+have bytes \cppinline{"\x00"}, \cppinline{"\xfe"}, or \cppinline{"\xff"}, it
+should be simple to create bounds for prefix search.  In fact, this is already
+happening for queries like \sqlinline{col LIKE 'foo\%'}, which turn into a
+\cinline{QL_OP_BETWEEN} of \cinline{"foo"} and \cinline{"fop"}.
 
 Range partition is needed for efficient prefix queries.  Otherwise, hash
 partition is fine.
