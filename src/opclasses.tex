@@ -28,13 +28,7 @@ Here are the opclasses that can be used with GIN\footnote{%
   \end{tabular}
 \end{center}
 
-Notice that \sqlinline{jsonb} has two opclasses.
-
-\begin{sqlcode}
-CREATE INDEX ON bar USING gin (jsonb_col);
-\end{sqlcode}
-
-implicitly uses opclass \sqlinline{jsonb_ops}. To use
+Notice that \sqlinline{jsonb} has two opclasses.  To use
 \sqlinline{jsonb_path_ops}, it must be explicitly stated:
 
 \begin{sqlcode}
