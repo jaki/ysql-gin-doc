@@ -1,9 +1,9 @@
 \sqlinline{SELECT * FROM table_with_gin_index WHERE tscol @@
-to_tsquery('simple', 'the')} does
+to_tsquery('simple', 'the | fox')} does
 
 \begin{nparts}
 \item
-  create scan key: \textinline{the} (\cinline{gingetbitmap},
+  extract scan keys: \textinline{the} (\cinline{gingetbitmap},
   \cinline{ginNewScanKey})
 \item
   get blocks from pending list (\cinline{gingetbitmap},
