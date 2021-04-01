@@ -19,3 +19,10 @@ each GIN key:
 #define JGINFLAG_HASHED 0x10    /* OR'd into flag if value was hashed */
 #define JGIN_MAXLENGTH  125     /* max length of text part before hashing */
 \end{ccode}
+
+\begin{ccode}
+#define GIN_SEARCH_MODE_DEFAULT         0
+#define GIN_SEARCH_MODE_INCLUDE_EMPTY   1
+#define GIN_SEARCH_MODE_ALL             2
+#define GIN_SEARCH_MODE_EVERYTHING      3   /* for internal use only */
+\end{ccode}
