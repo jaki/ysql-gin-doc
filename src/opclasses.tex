@@ -24,24 +24,28 @@ Here are the opclasses that can be used with GIN\footnote{%
         & \sqlinline{jsonb}
         & \sqlinline{int4}
         & \sqlinline{@>}, \sqlinline{@?}, \sqlinline{@@} \\
+    \sqlinline{jsonb_full_path_ops}
+        & \sqlinline{jsonb}
+        & \sqlinline{text}
+        & \sqlinline{?}, \sqlinline{?&}, \sqlinline{?|}, \sqlinline{@>},
+          \sqlinline{@?}, \sqlinline{@@} \\
     \bottomrule
   \end{tabular}
 \end{center}
 
-Notice that \sqlinline{jsonb} has two opclasses.  To use
-\sqlinline{jsonb_path_ops}, it must be explicitly stated:
-
-\begin{sqlcode}
-CREATE INDEX ON bar USING gin (jsonb_col jsonb_path_ops);
-\end{sqlcode}
+Notice that \sqlinline{jsonb} has three opclasses.  The first two are in
+upstream postgres; the third is inspired by CockroachDB's inverted index
+RFC\footnote{%
+  \url{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}%
+  }.
 
 Opclasses are per-column, so you can have multiple on a single index:
-
-\begin{sqlcode}
-CREATE INDEX ON bar USING gin (jsonb_col jsonb_ops, jsonb_col jsonb_path_ops);
-\end{sqlcode}
 
 See \protect\hyperlink{%
   columns-to-keys}{%
   the appendix} for examples of translating columns (in type) to keys (key
   type).
+
+\begin{sqlcode}
+CREATE INDEX ON bar USING gin (jsonb_col jsonb_ops, jsonb_col jsonb_path_ops);
+\end{sqlcode}

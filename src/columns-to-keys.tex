@@ -20,6 +20,12 @@ the index key(s) I'm storing.
         & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
         & \sqlinline{2076393154}, \sqlinline{3631049813}, \\
       && \sqlinline{3671652104}, \sqlinline{3705026877} \\
+    \sqlinline{jsonb_full_path_ops}
+        & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
+        & \sqlinline{"\001a\005b"}, \\
+      && \sqlinline{"\001c\001d\006\004-1"}, \\
+      && \sqlinline{"\001c\001d\006\006\0045.2"}, \\
+      && \sqlinline{"\001c\001c\005b"} \\
     \bottomrule
   \end{tabular}
 \end{center}
