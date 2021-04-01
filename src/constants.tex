@@ -1,14 +1,3 @@
-\cinline{GinScanKeyData.strategy}:
-
-\begin{ccode}
-#define JsonbContainsStrategyNumber   7
-#define JsonbExistsStrategyNumber   9
-#define JsonbExistsAnyStrategyNumber  10
-#define JsonbExistsAllStrategyNumber  11
-#define JsonbJsonpathExistsStrategyNumber   15
-#define JsonbJsonpathPredicateStrategyNumber  16
-\end{ccode}
-
 For \sqlinline{jsonb_ops} GIN opclass, the one-byte flag at the beginning of
 each GIN key:
 
@@ -20,6 +9,17 @@ each GIN key:
 #define JGINFLAG_STR    0x05    /* string value (if not an array element) */
 #define JGINFLAG_HASHED 0x10    /* OR'd into flag if value was hashed */
 #define JGIN_MAXLENGTH  125     /* max length of text part before hashing */
+\end{ccode}
+
+\cinline{GinScanKeyData.strategy}:
+
+\begin{ccode}
+#define JsonbContainsStrategyNumber   7
+#define JsonbExistsStrategyNumber   9
+#define JsonbExistsAnyStrategyNumber  10
+#define JsonbExistsAllStrategyNumber  11
+#define JsonbJsonpathExistsStrategyNumber   15
+#define JsonbJsonpathPredicateStrategyNumber  16
 \end{ccode}
 
 \cinline{GinScanKeyData.searchMode}:
