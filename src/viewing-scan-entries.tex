@@ -18,7 +18,7 @@ the scan entries.  Three key things to observe are
 
 \begin{textcode}
 p ((GinScanOpaque)scan->opaque)->nkeys
-p ((GinScanOpaque)scan->opaque)->keys[0].nentries
+p ((GinScanOpaque)scan->opaque)->keys[0].nuserentries
 p *(text*)((GinScanOpaque)scan->opaque)->keys[i].scanEntry[j]->queryKey
 \end{textcode}
 
