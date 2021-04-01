@@ -147,7 +147,7 @@ Given \sqlinline{j jsonb := '{"a":[2,4,"b",2,"c",0.5], "d":["ef","gh"]}'},
       && \sqlinline{'$.a[*] ? (@ != "b")'}
         & \sqlinline{"c"} \\
       && \sqlinline{'$.e ? (@ != 3)'}
-        & none \\
+        & (none) \\
       && \sqlinline{'$.e != 3'}
         & \sqlinline{false} \\
     \sqlinline{! boolean}
