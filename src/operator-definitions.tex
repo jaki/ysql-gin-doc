@@ -112,7 +112,7 @@ For convenience, they are also organized below.
         & Is the first item of \sqlinline{jsonpath} for \sqlinline{jsonb} true?
         & \sqlinline{'{"a":[1,2,3,4]}'::jsonb} \\
       & \sqlinline{SELECT jsonb_path_match(}
-        & \sqlinline{@? '$.a[*] > 2'} \\
+        & \sqlinline{@@ '$.a[*] > 2'} \\
       & \sqlinline{    <jsonb>, <jsonpath>, '{}', true);} \\
     \bottomrule
   \end{tabular}
