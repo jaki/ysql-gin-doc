@@ -18,12 +18,16 @@ the index key(s) I'm storing.
       && \sqlinline{"\001d"}, \sqlinline{"\004-1"}, \sqlinline{"\0045.2"} \\
       & \sqlinline{'{"a":{}, "b":[]}'}
         & \sqlinline{"\001a"}, \sqlinline{"\001b"} \\
+      & \sqlinline{'[20, 20.0, 20.000]'}
+        & \sqlinline{"\00420"} \\
     \sqlinline{jsonb_path_ops}
         & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
         & \sqlinline{2076393154}, \sqlinline{3631049813}, \\
       && \sqlinline{3671652104}, \sqlinline{3705026877} \\
       & \sqlinline{'{"a":{}, "b":[]}'}
         & (none) \\
+      & \sqlinline{'[20, 20.0, 20.000]'}
+        & \sqlinline{805562689} \\
     \sqlinline{jsonb_full_ops}
         & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
         & \sqlinline{"\001a\005b"}, \\
@@ -32,6 +36,8 @@ the index key(s) I'm storing.
       && \sqlinline{"\001c\001c\005b"} \\
       & \sqlinline{'{"a":{}, "b":[]}'}
         & \sqlinline{"\001a\001"}, \sqlinline{"\001b\006"} \\
+      & \sqlinline{'[20, 20.0, 20.000]'}
+        & \sqlinline{"\006\00420"} \\
     \bottomrule
   \end{tabular}
 \end{center}
