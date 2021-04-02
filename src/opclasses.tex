@@ -1,6 +1,6 @@
-Here are the opclasses that can be used with GIN\footnote{%
+Here are the opclasses that can be used with GIN:\footnote{%
   \url{https://www.postgresql.org/docs/13/gin-builtin-opclasses.html}%
-  }:
+  }
 
 \begin{center}
   \begin{tabular}{llll}
@@ -35,9 +35,9 @@ Here are the opclasses that can be used with GIN\footnote{%
 
 Notice that \sqlinline{jsonb} has three opclasses.  The first two are in
 upstream postgres; the third is inspired by CockroachDB's inverted index
-RFC\footnote{%
+RFC.\footnote{%
   \url{https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}%
-  }.
+  }
 
 Opclasses are per-column, so you can have multiple on a single index:
 
