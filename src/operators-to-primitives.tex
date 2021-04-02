@@ -71,7 +71,7 @@ anyarray operators to primitives:
   \end{tabular}
 \end{center}
 
-jsonb operators to primitives:
+jsonb operators to primitives (using \sqlinline{jsonb_full_ops} opclass):
 
 \begin{center}
   \begin{tabular}{lll}
@@ -142,3 +142,13 @@ jsonb operators to primitives:
     \bottomrule
   \end{tabular}
 \end{center}
+
+Notes:
+
+\begin{oparts}
+\item
+  For lax jsonpath, more scans may be needed to handle array nest levels
+\item
+  I make GIN flags ASCII readable: A for array, K for key, N for number, S for
+  string
+\end{oparts}
