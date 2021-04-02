@@ -1,79 +1,18 @@
-\sqlinline{jsonb_ops} forms an index key for each individual piece (key or
-value) of the jsonb.
+For \sqlinline{jsonb_ops}, the GIN key is of type \sqlinline{text}.  Like
+tsvector, we can encode to DocDB \cppinline{kString}.  For example,
+\sqlinline{"\001abc"} can be encoded to \cppinline{"S\x01abc\x00\x00"} for
+ascending.  There may be prefix operations on strings using the
+\sqlinline{starts with} jsonpath operator, but since \sqlinline{jsonb_ops}
+isn't geared towards solving those queries, it should stay largely hash
+partitioned.
 
-TODO: elaborate
+For \sqlinline{jsonb_path_ops}, the GIN key is of type \sqlinline{int4}.
+Internally, it seems to be unsigned 4-byte int, so let's go with that: we can
+encode to DocDB \cppinline{kUInt32}.  For example, \sqlinline{2147483648} can
+be encoded to \cppinline{"O\x00\x00\x00\x80"} for ascending and
+\cppinline{"g\xff\xff\xff\x4f"} for descending.\footnote{see
+\cppinline{AppendUInt32ToKey}}  There is no advantage of using range
+partitioning since the ints are hashes.
 
-\sqlinline{jsonb_path_ops} forms an index key for each path from root to leaf.
-
-TODO: elaborate
-
-For both of those opclasses, we could have a translation layer that takes the
-postgres-derived keys and converts them to DocDB format, and vice versa.
-
-We could also create our own opclass.  Here is an example inspired by \href{%
-  https://github.com/cockroachdb/cockroach/blob/master/docs/RFCS/20171020_inverted_indexes.md}{%
-  CockroachDB's inverted index RFC}.
-
-TODO: fix and clean this up
-
-The GIN index key should be paths, like
-
-\begin{oparts}
-\item
-  \textinline{<JSON>, a, 1}
-\item
-  \textinline{<JSON>, b, <JSON>, c, d}
-\item
-  \textinline{<JSON>, b, <JSON>, c, e}
-\item
-  \textinline{<JSON>, b, <ARRAY>, 1}
-\item
-  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 2}
-\item
-  \textinline{<JSON>, b, <ARRAY>, <ARRAY>, 3}
-\item
-  \textinline{<JSON>, b, <ARRAY>, 4}
-\item
-  \textinline{<JSON>, c, f}
-\end{oparts}
-
-
-Contains (\sqlinline{@>}) searches can have corresponding scan keys
-
-\begin{oparts}
-\item
-  \sqlinline{j @> '{"a": 1}'}
-  scans for \textinline{<JSON>, a, 1}
-\item
-  \sqlinline{j @> '{"b": {}}'}
-  scans for
-  \textinline{<JSON>, b, <JSON>}
-\item
-  \sqlinline{j @> '{"b": []}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>}
-\item
-  \sqlinline{j @> '{"b": [[]]}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>, <ARR>}
-\item
-  \sqlinline{j @> '{"b": [4]}'}
-  scans for
-  \textinline{<JSON>, b, <ARR>, 4}
-\end{oparts}
-
-Concerns
-
-\begin{oparts}
-\item
-  \sqlinline{25.0} and \sqlinline{25} match should equally match--what will the
-  number format be like?
-\item
-  What will the text encoding be like, especially for weird unicode, and how
-  does prefix matching work, then?
-\item
-  How will the end of the JSON document be marked? (Same question for marking
-  array end on array GIN index.) \cppinline{kGroupEnd}? But doesn't this mean
-  the contents of the JSON GIN key have to be encoded in some way to make
-  exclamation marks unambiguous?
-\end{oparts}
+For \sqlinline{jsonb_full_ops}, the GIN key is of type \sqlinline{text}.  Like
+before, encode as DocDB \cppinline{kString}.
