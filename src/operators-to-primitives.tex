@@ -94,7 +94,7 @@ jsonb operators to primitives:
     \sqlinline{jsonb @> jsonb}
         & Given \sqlinline{col @> '{"a":3, "b":{"c":["d"]}}'}, \\
       & $T_1 = \opget_I(i \qeq \mathtt{KaN3})$ \\
-      & $T_2 = \opget_I(i \qeq \mathtt{KbKcASd})$ \\
+      & $T_2 = \opget_I(i \qeq \mathtt{KbKcAKd})$ \\
       & $T = \opor(T_1, T_2)$ \\
     \sqlinline{jsonb @? jsonpath} \\
     \sqlinline{jsonb @@ jsonpath} \\
