@@ -3,3 +3,10 @@ In general, GIN index records should be encoded like
 \begin{textcode*}{frame=none,xleftmargin=10pt}
 [<gin_index_keys>, <primary_keys>]
 \end{textcode*}
+
+If there's more than one column in the GIN index, it should also be part of the
+record:
+
+\begin{textcode*}{frame=none,xleftmargin=10pt}
+[<gin_column_attnum>, <gin_index_keys>, <primary_keys>]
+\end{textcode*}
