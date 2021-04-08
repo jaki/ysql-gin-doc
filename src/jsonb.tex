@@ -1,6 +1,6 @@
 For \sqlinline{jsonb_ops}, the GIN key is of type \sqlinline{text}.  Like
 tsvector, we can encode to DocDB \cppinline{kString}.  For example,
-\sqlinline{"\001abc"} can be encoded to \cppinline{"S\x01abc\x00\x00"} for
+\sqlinline{"\001abc"} can be encoded to \cppinline{"S\x01abc\x00\x00"} if
 ascending.  There may be prefix operations on strings using the
 \sqlinline{starts with} jsonpath operator, but since \sqlinline{jsonb_ops}
 isn't geared towards solving those queries, it should stay largely hash
@@ -9,8 +9,8 @@ partitioned.
 For \sqlinline{jsonb_path_ops}, the GIN key is of type \sqlinline{int4}.
 Internally, it seems to be unsigned 4-byte int, so let's go with that: we can
 encode to DocDB \cppinline{kUInt32}.  For example, \sqlinline{2147483648} can
-be encoded to \cppinline{"O\x00\x00\x00\x80"} for ascending and
-\cppinline{"g\xff\xff\xff\x4f"} for descending.\footnote{see
+be encoded to \cppinline{"O\x00\x00\x00\x80"} if ascending and
+\cppinline{"g\xff\xff\xff\x4f"} if descending.\footnote{see
 \cppinline{AppendUInt32ToKey}}  There is no advantage of using range
 partitioning since the ints are hashes.
 
