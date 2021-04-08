@@ -23,17 +23,17 @@ The index should contain
 
 \begin{oparts}
 \item
-  \textinline{H\x80\x00\x00\x01},
+  \textinline{H\x80\x00\x00\x02},
   \textinline{Sabc\x00\x00},
   \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
   \textinline{J\x80}, \textinline{#...}
 \item
-  \textinline{H\x80\x00\x00\x02},
+  \textinline{H\x80\x00\x00\x03},
   \textinline{a\x9b\x9a\x99\xff\xff},
   \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
   \textinline{J\x80}, \textinline{#...}
 \item
-  \textinline{H\x80\x00\x00\x02},
+  \textinline{H\x80\x00\x00\x03},
   \textinline{a\x98\x97\x96\xff\xff},
   \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
   \textinline{J\x80}, \textinline{#...}
@@ -50,9 +50,9 @@ should look for
 
 \begin{oparts}
 \item
-  $\geq$ \textinline{H\x80\x00\x00\x01Sab\x00\x00}
+  $\geq$ \textinline{H\x80\x00\x00\x02Sab\x00\x00}
 \item
-  $<$ \textinline{H\x80\x00\x00\x01Sac\x00\x00}
+  $<$ \textinline{H\x80\x00\x00\x02Sac\x00\x00}
 \end{oparts}
 
 \begin{sqlcode}
@@ -63,9 +63,9 @@ should look for
 
 \begin{oparts}
 \item
-  $>$ \textinline{H\x80\x00\x00\x02a\x9b\x99\xff\xff}
+  $>$ \textinline{H\x80\x00\x00\x03a\x9b\x99\xff\xff}
 \item
-  $\leq$ \textinline{H\x80\x00\x00\x02a\x9b\x9a\xff\xff}
+  $\leq$ \textinline{H\x80\x00\x00\x03a\x9b\x9a\xff\xff}
 \end{oparts}
 
 TODO: look into \textinline{tsvector} \textbf{weights}
