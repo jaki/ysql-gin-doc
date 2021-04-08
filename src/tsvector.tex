@@ -39,6 +39,9 @@ The index should contain
   \textinline{J\x80}, \textinline{#...}
 \end{oparts}
 
+This assumes the column attnum will be encoded using \cppinline{kInt32}.  This
+can likely be optimized because it's constrained as a 2-byte int.
+
 \begin{sqlcode}
 SELECT * FROM tsvtab WHERE ts1 @@ 'ab:*';
 \end{sqlcode}
