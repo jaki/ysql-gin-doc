@@ -15,4 +15,8 @@ be encoded to \cppinline{"O\x00\x00\x00\x80"} if ascending and
 partitioning since the ints are hashes.
 
 For \sqlinline{jsonb_full_ops}, the GIN key is of type \sqlinline{text}.  Like
-before, encode as DocDB \cppinline{kString}.
+before, encode as DocDB \cppinline{kString}.  For this, DocDB will need to
+interpret the path to push down queries that operate on certain parts of the
+path, like \sqlinline{'$.a.b.c.ceiling() == 3'}.  An alternative is to encode
+each path part as a separate DocKey component, but then DocDB will need to
+support flexible schemas.
