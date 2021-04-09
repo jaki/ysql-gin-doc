@@ -30,19 +30,26 @@ the index key(s) I'm storing.
         & \sqlinline{805562689} \\
     \sqlinline{jsonb_full_ops}
         & \sqlinline{'{"a":"b", "c":{"d":[-1,[5.2]], "c":"b"}}'}
-        & \sqlinline{"\001a\005b"}, \\
-      && \sqlinline{"\001c\001d\006\004-1"}, \\
-      && \sqlinline{"\001c\001d\006\006\0045.2"}, \\
-      && \sqlinline{"\001c\001c\005b"} \\
+        & \sqlinline{"\Ka\Sb"}, \\
+      && \sqlinline{"\Kc\Kd\A\N-1"}, \\
+      && \sqlinline{"\Kc\Kd\A\A\N5.2"}, \\
+      && \sqlinline{"\Kc\Kc\Sb"} \\
       & \sqlinline{'{"a":{}, "b":[]}'}
-        & \sqlinline{"\001a\001"}, \sqlinline{"\001b\006"} \\
+        & \sqlinline{"\Ka\K"}, \sqlinline{"\Kb\A"} \\
       & \sqlinline{'[20, 20.0, 20.000]'}
-        & \sqlinline{"\006\00420"} \\
+        & \sqlinline{"\A\N20"} \\
     \bottomrule
   \end{tabular}
 \end{center}
 
-To interpret \sqlinline{"\001"} characters, see \protect\hyperlink{%
+To interpret \sqlinline{"\001"} characters, see gin flags in
+\protect\hyperlink{%
   constants}{%
-  the constants section}.  \sqlinline{"\006"} is meant to represent an array
-nest level.
+  the constants section}.  \sqlinline{"\A"} characters are similar, but they
+map to bytes not found in any valid UTF-8 string so that there are no
+ambiguities.  For example, if \sqlinline{"\K"} mapped to \sqlinline{"\001"}, it
+would be ambiguous whether, upon seeing \sqlinline{"\001"}, the string ends or
+continues with a literal \sqlinline{"\001"} character.  Since numbers are
+always values, there are no ambiguity issues with them, thankfully.
+\sqlinline{"\A"} represents an array nest level; \sqlinline{"\K"}, a key;
+\sqlinline{"\N"}, a number; \sqlinline{"\S"}, a string.
