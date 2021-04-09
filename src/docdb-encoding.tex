@@ -25,8 +25,9 @@ several solutions:
   is active while the rest are null.}  Problem is that it's a waste of space,
   and the code needs to be careful not to violate the constraint.
 \item
-  \emph{Force all GIN index columns to map to text.}  Problem is that there may
-  need to be some extra processing done to translate between types.
+  \emph{Force all GIN index columns to map to text.}  Problem is that you're
+  still forced to do all ASC or all DESC.  Also, some extra processing needs to
+  be done to translate between types.
 \item
   \emph{Relax the requirement for columns to have a fixed schema.}  This may
   also take work.
