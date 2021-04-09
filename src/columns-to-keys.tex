@@ -48,7 +48,7 @@ To interpret \sqlinline{"\001"} characters, see gin flags in
   the constants section}.  \sqlinline{"\A"} characters are similar, but they
 map to bytes not found in any valid UTF-8 string so that there are no
 ambiguities.  For example, if \sqlinline{"\K"} mapped to \sqlinline{"\001"}, it
-would be ambiguous whether, upon seeing \sqlinline{"\001"}, the string ends or
+would be ambiguous whether, upon seeing \sqlinline{"\001"}, a key ends or
 continues with a literal \sqlinline{"\001"} character.  Since numbers are
 always values, there are no ambiguity issues with them, thankfully.
 \sqlinline{"\A"} represents an array nest level; \sqlinline{"\K"}, a key;
