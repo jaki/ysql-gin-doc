@@ -10,3 +10,28 @@ record:
 \begin{textcode*}{frame=none,xleftmargin=10pt}
 [<gin_column_attnum>, <gin_index_key>, <primary_keys>]
 \end{textcode*}
+
+If the columns of the GIN index are of different key type, this will likely
+pose a problem for DocDB since DocDB tables have fixed schemas.  Here are
+several solutions:
+
+\begin{oparts}
+\item
+  \emph{Create a DocDB table for each column.}  Problem is that, in postgres,
+  the index will show up once, but it somehow maps to multiple indexes in
+  DocDB.  It will probably take a lot of work to reconcile.
+\item
+  \emph{Have each GIN index column appear in the record, but make sure only one
+  is active while the rest are null.}  Problem is that it's a waste of space,
+  and the code needs to be careful not to violate the constraint.
+\item
+  \emph{Force all GIN index columns to map to text.}  Problem is that there may
+  need to be some extra processing done to translate between types.
+\item
+  \emph{Relax the requirement for columns to have a fixed schema.}  This may
+  also take work.
+\end{oparts}
+
+Since the attnum DocDB column is internal, allowing the user to specify hash or
+range on the hidden attnum column will require changes up to the syntax.  For
+now, it can be forced to be range partitioned.

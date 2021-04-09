@@ -19,7 +19,7 @@ CREATE INDEX ON tsvtab USING gin (ts1 ASC, ts2 DESC);
 INSERT INTO tsvtab VALUES (4, 'abc abc', 'def ghi');
 \end{sqlcode}
 
-The index should contain
+Assuming schemas don't need to be fixed, the index should contain
 
 \begin{oparts}
 \item
