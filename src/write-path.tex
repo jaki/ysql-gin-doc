@@ -16,3 +16,6 @@ For Yugabyte, we should
 \item
   \textbf{for each index key, write (key, ctid) pair to DocDB}
 \end{nparts}
+
+For \sqlinline{DELETE}s and \sqlinline{UPDATE}s, we need to figure out what GIN
+index records to delete.
