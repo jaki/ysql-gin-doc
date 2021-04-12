@@ -3,8 +3,13 @@
   GIN indexes can only be used on column types \sqlinline{tsvector},
   \sqlinline{anyarray}, \sqlinline{jsonb}
 \item
-  GIN indexes cannot be unique
+  GIN indexes cannot be unique\footnote{%
+    see \cinline{ginhandler}, \cinline{amcanunique}}
+\item
+  GIN indexes do not support included columns\footnote{%
+    see \cinline{ginhandler}, \cinline{amcaninclude}}
 \item
   GIN indexes can be on more than one column, but all columns must be
-  GINable
+  GINable\footnote{%
+    see \cinline{ginhandler}, \cinline{amcanmulticol}}
 \end{oparts}
