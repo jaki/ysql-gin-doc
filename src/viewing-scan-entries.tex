@@ -17,13 +17,14 @@ When the breakpoint hits, you'll have \cinline{IndexScanDesc scan} loaded with
 the scan entries.  Three key things to observe are
 
 \begin{textcode}
+p $i = $j = 0
 p ((GinScanOpaque)scan->opaque)->nkeys
-p ((GinScanOpaque)scan->opaque)->keys[0].nuserentries
-p *(text*)((GinScanOpaque)scan->opaque)->keys[i].scanEntry[j]->queryKey
+p ((GinScanOpaque)scan->opaque)->keys[$i].nuserentries
+p *(text*)((GinScanOpaque)scan->opaque)->keys[$i].scanEntry[$j++]->queryKey
 \end{textcode}
 
-where \textinline{i} and \textinline{j} should vary accordingly.  In this case,
-there should be one key and one entry whose key is \textinline{abc}.
+where \textinline{$i} and \textinline{$j} should vary accordingly.  In this
+case, there should be one key and one entry whose key is \textinline{abc}.
 
 The same can be done for other opclasses:
 

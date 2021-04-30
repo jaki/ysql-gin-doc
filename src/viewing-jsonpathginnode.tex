@@ -17,13 +17,14 @@ SELECT * FROM jpdemo WHERE jb @@ 'strict $.abc == "foo"';
 Generally, you want to look at
 
 \begin{textcode}
+p $i = 0
 p node->type
 p node->val.nargs
-p *((text*)node->args[i]->val.entryDatum)
+p *((text*)node->args[$i]->val.entryDatum)
 \end{textcode}
 
-where \textinline{i} should vary accordingly.  In this case, there's a top node
-of type \cinline{JSP_GIN_AND} with two arguments, both of type
+where \textinline{$i} should vary accordingly.  In this case, there's a top
+node of type \cinline{JSP_GIN_AND} with two arguments, both of type
 \cinline{JSP_GIN_ENTRY}.  The first has value \textinline{\001abc}, and the
 second has value \textinline{\005foo}.
 
