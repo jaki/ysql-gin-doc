@@ -6,12 +6,26 @@ to_tsquery('simple', 'the | fox')} does
   extract scan keys: \textinline{the} (\cinline{gingetbitmap},
   \cinline{ginNewScanKey})
 \item
-  get blocks from pending list (\cinline{gingetbitmap},
-  \cinline{scanPendingInsert})
+  get tuples from pending list, and add to bitmap (\cinline{gingetbitmap},
+  \cinline{scanPendingInsert}, \cinline{tbm_add_tuples})
 \item
-  get blocks from disk (\cinline{gingetbitmap}, \cinline{startScan})
+  get tuples from disk for each scan entry (\cinline{startScan},
+  \cinline{startScanEntry})
 \item
-  get tuples from blocks (\cinline{BitmapHeapNext},
+  arrange scan entries to required and additional (\cinline{startScan},
+  \cinline{startScanKey})
+\item
+  iterate over disk tuples filtered using required/additional
+  \begin{iparts}
+  \item
+    get a tuple along with whether it needs rechecking (\cinline{gingetbitmap},
+    \cinline{scanGetItem})
+  \item
+    add to bitmap (\cinline{gingetbitmap},
+    \cinline{tbm_add_tuples})
+  \end{iparts}
+\item
+  get tuples from bitmap (\cinline{BitmapHeapNext},
   \cinline{table_scan_bitmap_next_tuple})
 \item
   recheck tuple if needed (\cinline{BitmapHeapNext},
