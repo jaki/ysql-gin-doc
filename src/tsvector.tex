@@ -24,25 +24,40 @@ The index should contain
 
 \begin{oparts}
 \item
-  \textinline{Sabc\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{["abc", 4]}:
+  \textinline{Sabc\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{Sdef\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{["def", 4]}:
+  \textinline{Sdef\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{Sdef\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{["def", 5]}:
+  \textinline{Sdef\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{Sfoo\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{["foo", 5]}:
+  \textinline{Sfoo\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{Sghi\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{["ghi", 4]}:
+  \textinline{Sghi\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \end{oparts}
 
 Multicolumn example:
@@ -61,20 +76,29 @@ Assuming schemas don't need to be fixed, the index should contain
 
 \begin{oparts}
 \item
-  \textinline{H\x80\x00\x00\x02},
-  \textinline{Sabc\x00\x00},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{[2, "abc", 4]}:
+  \textinline{H\x80\x00\x00\x02}%
+  \textinline{Sabc\x00\x00}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{H\x80\x00\x00\x03},
-  \textinline{a\x9b\x9a\x99\xff\xff},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{[3, "def", 4]}:
+  \textinline{H\x80\x00\x00\x03}%
+  \textinline{a\x9b\x9a\x99\xff\xff}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \item
-  \textinline{H\x80\x00\x00\x03},
-  \textinline{a\x98\x97\x96\xff\xff},
-  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
-  \textinline{J\x80}, \textinline{#...}
+  \textinline{[3, "ghi", 4]}:
+  \textinline{H\x80\x00\x00\x03}%
+  \textinline{a\x98\x97\x96\xff\xff}%
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}%
+  \textinline{!}%
+  \textinline{J\x80}%
+  \textinline{#...}
 \end{oparts}
 
 This assumes the column attnum will be encoded using \cppinline{kInt32}.  This
