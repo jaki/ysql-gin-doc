@@ -11,12 +11,50 @@ for prefix search.  In fact, this is already happening for queries like
 Range partition is needed for efficient prefix queries.  Otherwise, hash
 partition is fine.
 
-Example:
+Single column example:
 
 \begin{sqlcode}
-CREATE TABLE tsvtab (i int, ts1 tsvector, ts2 tsvector, PRIMARY KEY (i ASC));
-CREATE INDEX ON tsvtab USING gin (ts1 ASC, ts2 DESC);
-INSERT INTO tsvtab VALUES (4, 'abc abc', 'def ghi');
+CREATE TABLE tsvtab (i int, ts1 tsvector, PRIMARY KEY (i ASC));
+CREATE INDEX ON tsvtab USING gin (ts1 ASC);
+INSERT INTO tsvtab VALUES (4, 'abc abc def ghi');
+INSERT INTO tsvtab VALUES (5, 'def foo def');
+\end{sqlcode}
+
+The index should contain
+
+\begin{oparts}
+\item
+  \textinline{Sabc\x00\x00},
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
+  \textinline{J\x80}, \textinline{#...}
+\item
+  \textinline{Sdef\x00\x00},
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
+  \textinline{J\x80}, \textinline{#...}
+\item
+  \textinline{Sdef\x00\x00},
+  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}, \textinline{!},
+  \textinline{J\x80}, \textinline{#...}
+\item
+  \textinline{Sfoo\x00\x00},
+  \textinline{SH\x80\x00\x01\x00\x01\x05!\x00\x00}, \textinline{!},
+  \textinline{J\x80}, \textinline{#...}
+\item
+  \textinline{Sghi\x00\x00},
+  \textinline{SH\x80\x00\x01\x00\x01\x04!\x00\x00}, \textinline{!},
+  \textinline{J\x80}, \textinline{#...}
+\end{oparts}
+
+Multicolumn example:
+
+\begin{sqlcode}
+CREATE TABLE twotsvtab (
+    i int,
+    ts1 tsvector,
+    ts2 tsvector,
+    PRIMARY KEY (i ASC));
+CREATE INDEX ON twotsvtab USING gin (ts1 ASC, ts2 DESC);
+INSERT INTO twotsvtab VALUES (4, 'abc abc', 'def ghi');
 \end{sqlcode}
 
 Assuming schemas don't need to be fixed, the index should contain
