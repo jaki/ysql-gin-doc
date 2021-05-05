@@ -3,8 +3,8 @@ to_tsquery('simple', 'the | fox')} does
 
 \begin{nparts}
 \item
-  extract scan keys: \textinline{the} (\cinline{gingetbitmap},
-  \cinline{ginNewScanKey})
+  extract scan keys: \textinline{the}, \textinline{fox}
+  (\cinline{gingetbitmap}, \cinline{ginNewScanKey})
 \item
   get tuples from pending list, and add to bitmap (\cinline{gingetbitmap},
   \cinline{scanPendingInsert}, \cinline{tbm_add_tuples})
