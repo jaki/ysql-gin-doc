@@ -22,7 +22,8 @@ bin/psql -d postgres
 Connect GDB to the postgres backend.
 
 \begin{bashcode}
-ps -fC postgres # look for line like "postgres: username postgres [local] idle"
+ps kstart_time -fC postgres
+# look for line like "postgres: username postgres [local] idle" towards bottom
 gdb -p <pid>
 \end{bashcode}
 
