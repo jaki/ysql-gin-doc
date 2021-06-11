@@ -40,3 +40,13 @@ each GIN key:
 #define GIN_SEARCH_MODE_ALL             2
 #define GIN_SEARCH_MODE_EVERYTHING      3   /* for internal use only */
 \end{ccode}
+
+\cinline{GinNullCategory}:
+
+\begin{ccode}
+#define GIN_CAT_NORM_KEY        0   /* normal, non-null key value */
+#define GIN_CAT_NULL_KEY        1   /* null key value */
+#define GIN_CAT_EMPTY_ITEM      2   /* placeholder for zero-key item */
+#define GIN_CAT_NULL_ITEM       3   /* placeholder for null item */
+#define GIN_CAT_EMPTY_QUERY     (-1)    /* placeholder for full-scan query */
+\end{ccode}
