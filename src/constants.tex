@@ -50,3 +50,16 @@ each GIN key:
 #define GIN_CAT_NULL_ITEM       3   /* placeholder for null item */
 #define GIN_CAT_EMPTY_QUERY     (-1)    /* placeholder for full-scan query */
 \end{ccode}
+
+Null category examples:
+
+\begin{oparts}
+\item norm key:
+  \sqlinline{'{2}'}
+\item null key:
+  \sqlinline{'{null}'}
+\item empty item:
+  \sqlinline{'{}'}
+\item null item:
+  \sqlinline{null}
+\end{oparts}
