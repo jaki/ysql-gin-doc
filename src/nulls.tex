@@ -1,0 +1,45 @@
+GIN indexes have more than one type of null:
+
+\begin{oparts}
+\item
+  \cinline{GIN_CAT_NULL_KEY}: null element in the container (e.g.\
+  \sqlinline{'{null}'})
+\item
+  \cinline{GIN_CAT_EMPTY_ITEM}: container without any element (e.g.\
+  \sqlinline{'{}'})
+\item
+  \cinline{GIN_CAT_NULL_ITEM}: null container (i.e.\ \sqlinline{null})
+\end{oparts}
+
+They are often used with search modes:
+
+\begin{oparts}
+\item
+  \cinline{GIN_SEARCH_MODE_INCLUDE_EMPTY}: match \cinline{GIN_CAT_EMPTY_ITEM}
+  (e.g.\ \sqlinline{somearray <@ '{1}'})
+\item
+  \cinline{GIN_SEARCH_MODE_ALL}: match everything but
+  \cinline{GIN_CAT_NULL_ITEM} (e.g.\ \sqlinline{somearray @> '{}'})
+\item
+  \cinline{GIN_SEARCH_MODE_EVERYTHING}: match everything (e.g.\
+  \sqlinline{somearray is null} when there is a partial index on that same
+  condition)
+\end{oparts}
+
+I don't think that there's a way to avoid having multiple null categories
+because they are distinguished in certain scans.  The question is how to
+represent these null categories in DocDB.\@
+
+DocDB currently stores nulls as \cppinline{ValueType::kNullHigh} and
+\cppinline{ValueType::kNullLow}.  They are single bytes by themselves, so it's
+not easy to extend them to hold categories.  I see two possible solutions:
+
+\begin{nparts}
+\item
+  Create a new pair of value types that allocate one byte after to determine
+  the category number.
+\item
+  Use the existing null value types but store metadata to the table schema
+  indicating that the table is a gin table so that these nulls are interpreted
+  as holding the category number on the following byte.
+\end{nparts}
