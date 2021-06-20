@@ -56,5 +56,10 @@ IN scan matters with respect to their ordering in DocDB.\@
 \cinline{GIN_CAT_EMPTY_ITEM} should sort either before or after any other
 regular value.  However, it's very cramped,\footnote{see
 \textinline{value_type.h}} and I don't think there's any space for new value
-types that are in the fringes.  Therefore, the second solution of reusing the
-existing null value types seems like the only option.
+types that are in the fringes.  This is the difficulty with the first option.
+
+Interpretting a value type differently depending on schema sounds like a
+difficult and bad idea.  The entire \textinline{ql_value.cc} doesn't have any
+idea of schema, so it would require significant refactoring that's probably
+going to increase interdependency.  This is the difficulty with the second
+option.
