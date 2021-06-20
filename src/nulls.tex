@@ -63,3 +63,10 @@ difficult and bad idea.  The entire \textinline{ql_value.cc} doesn't have any
 idea of schema, so it would require significant refactoring that's probably
 going to increase interdependency.  This is the difficulty with the second
 option.
+
+Finally, in both cases, upper layers need to change to accomodate for null
+categories.  For example, read requests currently express null by sending an
+empty value.  For GIN, null needs to be distinguished separately along with a
+category number.  The pggate layer also uses \cppinline{bool is_null} often, so
+some refactoring may need to be done there since pggate is shared by both
+regular and GIN index access methods.
