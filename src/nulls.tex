@@ -32,9 +32,7 @@ represent these null categories in DocDB.\@
 
 DocDB currently stores nulls as \cppinline{ValueType::kNullHigh} and
 \cppinline{ValueType::kNullLow}.  They are single bytes by themselves, so it's
-not easy to extend them to hold categories.\footnote{see
-\cppinline{InitKeyColumnPrimitiveValues} $\rightarrow$ \cppinline{IsNull}}  I
-see two possible solutions:
+not easy to extend them to hold categories.  I see two possible solutions:
 
 \begin{nparts}
 \item
@@ -66,7 +64,9 @@ option.
 
 Finally, in both cases, upper layers need to change to accomodate for null
 categories.  For example, read requests currently express null by sending an
-empty value.  For GIN, null needs to be distinguished separately along with a
-category number.  The pggate layer also uses \cppinline{bool is_null} often, so
-some refactoring may need to be done there since pggate is shared by both
-regular and GIN index access methods.
+empty value \cppinline{QLValuePB::VALUE_NOT_SET}.\footnote{see
+\cppinline{InitKeyColumnPrimitiveValues} $\rightarrow$ \cppinline{IsNull}}  For
+GIN, null needs to be distinguished separately along with a category number.
+The pggate layer also uses \cppinline{bool is_null} often, so some refactoring
+may need to be done there since pggate is shared by both regular and GIN index
+access methods.
