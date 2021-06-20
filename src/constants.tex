@@ -41,19 +41,6 @@ each GIN key:
 #define GIN_SEARCH_MODE_EVERYTHING      3   /* for internal use only */
 \end{ccode}
 
-Search mode examples:
-
-\begin{oparts}
-\item default:
-  \sqlinline{a @> '{1}'}
-\item include empty:
-  \sqlinline{a <@ '{1}'}
-\item all:
-  \sqlinline{a @> '{}'}
-\item everything:
-  \sqlinline{a is null} (when there is a partial index on that same condition)
-\end{oparts}
-
 \cinline{GinScanEntryData.queryCategory}:
 
 \begin{ccode}
@@ -63,16 +50,3 @@ Search mode examples:
 #define GIN_CAT_NULL_ITEM       3   /* placeholder for null item */
 #define GIN_CAT_EMPTY_QUERY     (-1)    /* placeholder for full-scan query */
 \end{ccode}
-
-Null category examples:
-
-\begin{oparts}
-\item norm key:
-  \sqlinline{'{2}'}
-\item null key:
-  \sqlinline{'{null}'}
-\item empty item:
-  \sqlinline{'{}'}
-\item null item:
-  \sqlinline{null}
-\end{oparts}
