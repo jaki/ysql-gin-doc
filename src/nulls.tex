@@ -43,3 +43,15 @@ not easy to extend them to hold categories.  I see two possible solutions:
   indicating that the table is a gin table so that these nulls are interpreted
   as holding the category number on the following byte.
 \end{nparts}
+
+Another consideration is sorting.  For user-facing sort ASC/DESC and NULLS
+FIRST/LAST, GIN doesn't really play a role since this sort happens on the
+container, not the elements.  However, internally, we may still want to
+guarantee certain sort orders for DocDB.\@  For example, if we do an IN read,
+the array of values must be sorted when passed to DocDB.\@  I'm not too sure
+why the limitation is there, but this may mean that the order of nulls in the
+IN scan matters with respect to their ordering in DocDB.\@
+\cinline{GIN_CAT_EMPTY_ITEM} should sort either before or after any other
+regular value.  However, it's very cramped, and I don't think there's any space
+for new value types that are in the fringes.  Therefore, the second solution of
+reusing the existing null value types seems like the only option.
