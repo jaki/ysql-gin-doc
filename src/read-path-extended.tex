@@ -15,14 +15,35 @@ to_tsquery('simple', 'the | fox')} does
   arrange scan entries to required and additional (\cinline{startScan},
   \cinline{startScanKey})
 \item
-  iterate over disk tuples filtered using required/additional
+  while there are still matches$\ldots$ (\cinline{gingetbitmap})
   \begin{iparts}
   \item
-    get a tuple along with whether it needs rechecking (\cinline{gingetbitmap},
+    until there is a match$\ldots$ (\cinline{gingetbitmap},
     \cinline{scanGetItem})
+    \begin{qparts}
+    \item
+      (assume single key and no lossy pages) (\cinline{scanGetItem},
+      \cinline{keyGetItem})
+    \item
+      for each required scan entry, get the next item greater than
+      \cinline{advancePast} (where the item and \cinline{advancePast} are base
+      table item pointers) (\cinline{keyGetItem}, \cinline{entryGetItem})
+    \item
+      for each additional scan entry, get the next item greater than
+      \cinline{advancePast} (\cinline{keyGetItem}, \cinline{entryGetItem})
+    \item
+      for each scan entry, get true/false for whether \cinline{minItem}
+      (minimum of all above items) exists in that scan entry's posting list (or
+      tree) (\cinline{keyGetItem})
+    \item
+      call tri-state consistent function using this information to get
+      true/false/maybe on entire query for \cinline{minItem}
+      (\cinline{keyGetItem}, \cinline{triConsistentFn})
+    \item
+      (true or maybe means it's a match)
+    \end{qparts}
   \item
-    add to bitmap (\cinline{gingetbitmap},
-    \cinline{tbm_add_tuples})
+    add item to bitmap (\cinline{gingetbitmap}, \cinline{tbm_add_tuples})
   \end{iparts}
 \item
   get tuples from bitmap (\cinline{BitmapHeapNext},
