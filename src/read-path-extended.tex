@@ -29,12 +29,14 @@ to_tsquery('simple', 'the | fox')} does
       \cinline{advancePast} (where the item and \cinline{advancePast} are base
       table item pointers) (\cinline{keyGetItem}, \cinline{entryGetItem})
     \item
+      set \cinline{advancePast} to \cinline{minItem} (minimum of all above
+      items) minus one
+    \item
       for each additional scan entry, get the next item greater than
       \cinline{advancePast} (\cinline{keyGetItem}, \cinline{entryGetItem})
     \item
-      for each scan entry, get true/false for whether \cinline{minItem}
-      (minimum of all above items) exists in that scan entry's posting list (or
-      tree) (\cinline{keyGetItem})
+      for each scan entry, get true/false for whether \cinline{minItem} exists
+      in that scan entry's posting list (or tree) (\cinline{keyGetItem})
     \item
       call tri-state consistent function using this information to get
       true/false/maybe on entire query for \cinline{minItem}
