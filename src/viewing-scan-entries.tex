@@ -1,5 +1,6 @@
 Scan entries are formed in \cinline{ginNewScanKey} called by
-\cinline{gingetbitmap}.  Put a breakpoint after that line:
+\cinline{gingetbitmap}.  Then, they are categorized to required and additional
+in \cinline{startScan}.  Put a breakpoint after that line:
 
 \begin{textcode}
 b ginget.c:1953
