@@ -70,3 +70,44 @@ p $defghi = $def_rotate ^ $ghi
 \end{textcode}
 
 See \cinline{JsonbHashScalarValue} for how this derivation is done.
+
+It's also possible to go through the entries extracted from the index.  Create
+two breakpoints, one for entries matching the current item and one for when the
+current item succeeds the consistent function.
+
+\begin{textcode}
+ginget.c:1228
+ginget.c:1238
+\end{textcode}
+
+For the first breakpoint, get the current item pointer and entry key (assuming
+text type) using
+
+\begin{textcode}
+p entry->curItem
+p *(text*)entry->queryKey
+\end{textcode}
+
+The second breakpoint just tells whether the recent item completely matched.
+For example, with
+
+\begin{sqlcode}
+-- Recreate index without fastupdate.
+DROP INDEX tstab_tsv_idx;
+CREATE INDEX ON tstab USING gin (tsv) WITH (fastupdate = false);
+
+INSERT INTO tstab VALUES
+  ('aaa ddd'),
+  ('bbb ddd'),
+  ('ccc ddd');
+SELECT * FROM tstab WHERE tsv @@ '(aaa & bbb) | (ccc & ddd)';
+\end{sqlcode}
+
+you get one key, three required entries \textinline{bbb}, \textinline{ccc},
+\textinline{ddd}, and one additional entry \textinline{aaa}.  The first
+considered item is \sqlinline{'bbb ddd'} since that's the min item in the
+posting lists of \textinline{bbb}, \textinline{ccc}, and \textinline{ddd}.  The
+consistent function is given the query and \textinline{aaa=false},
+\textinline{bbb=true}, \textinline{ccc=false}, \textinline{ddd=true}, and it
+fails.  The second considered item is \sqlinline{'ccc ddd'}, and it succeeds
+(hits the second breakpoint).
