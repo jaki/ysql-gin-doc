@@ -20,3 +20,24 @@ For Yugabyte, we should
 \item
   recheck each tuple if needed
 \end{nparts}
+
+This is a simplification as there are many more details, like multiple scan
+keys, required/additional scan entries, and special search modes.  The details
+for upstream postgres are in \protect\hyperlink{%
+  read-path-extended}{%
+  the appendix}.  I'll briefly outline what I believe should be the Yugabyte
+approach:
+
+\begin{nparts}
+\item
+  Support only one required scan entry, scanning all items of that entry and
+  performing recheck.
+\item
+  Support multiple required scan entries with recheck.
+\item
+  Use consistent function and parallel streams of scan entries to further
+  filter out items before fetching from the base table.  Since this may be less
+  performant if it enables scans of the additional entries to avoid MAYBEs in
+  the consistent function, consider making this a toggleable option rather than
+  a hard upgrade.
+\end{nparts}
